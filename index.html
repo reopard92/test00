@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 46</title>
+    <title>CODE NAME: 47</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* =========================================
-           GLOBAL THEME: DEEP SPACE (CODE NAME: 46)
+           GLOBAL THEME: DEEP SPACE (CODE NAME: 47)
            ========================================= */
         body {
             font-family: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
@@ -129,7 +129,7 @@
             font-size: 2rem;
         }
 
-        /* --- SIDE MENU ANIMATION --- */
+        /* --- SIDE MENU --- */
         .side-menu-overlay {
             position: fixed;
             top: 0;
@@ -164,7 +164,6 @@
         .side-menu-overlay.open .side-menu-content {
             transform: translateX(0);
         }
-
         .menu-item {
             padding: 20px 30px;
             color: #fff;
@@ -182,7 +181,6 @@
         .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.2s; }
         .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.3s; }
         .side-menu-overlay.open .menu-item:nth-child(4) { transition-delay: 0.4s; }
-
         .menu-item:hover { background: rgba(0,255,255,0.1); padding-left: 40px; color: #00ffff; }
         .menu-item.active { color: #00ffff; border-left: 4px solid #00ffff; background: rgba(0,255,255,0.05); }
 
@@ -217,7 +215,6 @@
         .next-location {
             font-size: 1rem; color: #aaa;
         }
-        
         .info-board {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
@@ -232,8 +229,6 @@
         .info-content {
             font-size: 0.9rem; color: #ddd; line-height: 1.6;
         }
-
-        /* Weather Widget */
         .weather-container {
             margin-bottom: 30px;
         }
@@ -291,7 +286,6 @@
         .member-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .member-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 15px 5px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
         .member-btn:hover, .member-btn.selected { background: rgba(0,255,255,0.2); border-color: #00ffff; color: #00ffff; }
-        
         .pin-input-area { margin-top: 30px; }
         .pin-display { font-size: 2rem; letter-spacing: 10px; margin-bottom: 20px; color: #00ffff; min-height: 40px; font-family: monospace; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 280px; margin: 0 auto; }
@@ -299,107 +293,28 @@
         .num-btn:active { background: rgba(0,255,255,0.3); }
         .num-btn.clear { color: #ff5555; font-size: 1rem; display: flex; justify-content: center; align-items: center; }
         .num-btn.enter { background: #00ffff; color: #000; font-weight: bold; font-size: 1rem; display: flex; justify-content: center; align-items: center; }
-
-        .cockpit-profile {
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-        }
-        .cockpit-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #444, #111);
-            border: 3px solid #00ffff;
-            margin: 0 auto 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2.5rem;
-            color: #fff;
-            box-shadow: 0 0 20px rgba(0,255,255,0.3);
-        }
-        .cockpit-name {
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            color: #fff;
-            margin-bottom: 5px;
-        }
-        .cp-rank-info {
-            background: rgba(255,255,255,0.03);
-            padding: 15px;
-            margin: 0 auto 25px auto;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 4px;
-            max-width: 80%;
-        }
-        .cockpit-stats-row {
-            display: flex;
-            justify-content: space-around;
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 30px;
-        }
+        .cockpit-profile { text-align: center; margin-bottom: 30px; position: relative; }
+        .cockpit-avatar { width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #444, #111); border: 3px solid #00ffff; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; color: #fff; box-shadow: 0 0 20px rgba(0,255,255,0.3); }
+        .cockpit-name { font-size: 1.5rem; letter-spacing: 2px; color: #fff; margin-bottom: 5px; }
+        .cp-rank-info { background: rgba(255,255,255,0.03); padding: 15px; margin: 0 auto 25px auto; text-align: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; max-width: 80%; }
+        .cockpit-stats-row { display: flex; justify-content: space-around; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px; margin-bottom: 30px; }
         .c-stat-item { text-align: center; }
         .c-stat-val { font-size: 1.2rem; color: #00ffff; font-weight: bold; }
         .c-stat-label { font-size: 0.7rem; color: #aaa; }
-
-        .cockpit-section {
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 20px;
-            margin-bottom: 20px;
-        }
-        .cockpit-title {
-            color: #81d4fa;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-        .title-placeholder {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-        .title-tag {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid #555;
-            color: #888;
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            border-radius: 4px;
-        }
-        .title-tag.active {
-            border-color: #ffd700;
-            color: #ffd700;
-            background: rgba(255,215,0,0.1);
-            box-shadow: 0 0 10px rgba(255,215,0,0.1);
-        }
-        .btn-logout {
-            background: transparent;
-            border: 1px solid #ff5555;
-            color: #ff5555;
-            width: 100%;
-            padding: 12px;
-            margin-top: 30px;
-            border-radius: 4px;
-            cursor: pointer;
-            letter-spacing: 2px;
-            transition: 0.3s;
-        }
-        .btn-logout:hover {
-            background: rgba(255, 85, 85, 0.1);
-        }
+        .cockpit-section { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-bottom: 20px; }
+        .cockpit-title { color: #81d4fa; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; }
+        .title-placeholder { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .title-tag { background: rgba(0,0,0,0.5); border: 1px solid #555; color: #888; padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; }
+        .title-tag.active { border-color: #ffd700; color: #ffd700; background: rgba(255,215,0,0.1); box-shadow: 0 0 10px rgba(255,215,0,0.1); }
+        .btn-logout { background: transparent; border: 1px solid #ff5555; color: #ff5555; width: 100%; padding: 12px; margin-top: 30px; border-radius: 4px; cursor: pointer; letter-spacing: 2px; transition: 0.3s; }
+        .btn-logout:hover { background: rgba(255, 85, 85, 0.1); }
         .rank-info-area { background: rgba(255,255,255,0.03); padding: 15px; margin-bottom: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .rank-name { font-size: 1.1rem; color: #00ffff; letter-spacing: 2px; margin-bottom: 5px; font-weight: 300; }
         .rank-progress-text { font-size: 0.8rem; color: #aaa; margin-bottom: 8px; }
         .rank-bar-bg { width: 100%; height: 2px; background: #333; }
         .rank-bar-fill { height: 100%; background: #00ffff; width: 0%; box-shadow: 0 0 10px #00ffff; }
 
-        /* INPUT STYLES (Existing) */
+        /* --- RESTORED INPUT STYLES (FROM CODE NAME: 38) --- */
         .input-header-area { position: relative; margin-bottom: 40px; min-height: 80px; }
         #matchDate { position: absolute; top: 5px; right: 0; color: #fff; font-size: 0.9rem; letter-spacing: 1px; }
         #courtSelect {
@@ -410,48 +325,32 @@
         }
         #courtSelect:focus { outline: none; border-bottom-color: #fff; background-color: #000; }
         #courtSelect option { background-color: #000; color: #fff; }
-        .coin-game-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 300px;
-        }
-        .coin-large {
-            width: 120px; height: 120px;
-            background: radial-gradient(circle at 30% 30%, #ffffff, #b0bec5);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: bold; color: #333;
-            cursor: pointer;
-            margin-bottom: 30px;
-            border: 4px solid #fff;
-        }
+        .header-ctrl-area { position: absolute; top: 0; right: 0; margin-top: 60px; display: flex; gap: 10px; }
+        
+        .coin-game-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; }
+        .coin-large { width: 120px; height: 120px; background: radial-gradient(circle at 30% 30%, #ffffff, #b0bec5); box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: #333; cursor: pointer; margin-bottom: 30px; border: 4px solid #fff; }
         .spinning { animation: spin 0.5s infinite ease-in-out; }
         @keyframes spin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
-        .round-title {
-            color: #fff; font-size: 1rem; font-weight: 300; letter-spacing: 3px;
-            margin-bottom: 20px; border-left: 2px solid rgba(255, 255, 255, 0.5); padding-left: 12px; display: inline-block;
-        }
+        
+        .round-title { color: #fff; font-size: 1rem; font-weight: 300; letter-spacing: 3px; margin-bottom: 20px; border-left: 2px solid rgba(255, 255, 255, 0.5); padding-left: 12px; display: inline-block; }
         .player-inputs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px; }
         .input-group label { display: block; margin-bottom: 6px; font-size: 0.7rem; color: #666; text-align: center; }
-        select.player-select {
-            width: 100%; padding: 8px 4px; font-size: 0.9rem;
-            background-color: rgba(20, 20, 30, 0.8); border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #eee; border-radius: 2px; text-align: center;
-        }
+        select.player-select { width: 100%; padding: 8px 4px; font-size: 0.9rem; background-color: rgba(20, 20, 30, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #eee; border-radius: 2px; text-align: center; }
         select.player-select:disabled { opacity: 0.3; }
         select.player-select option { background-color: #000; color: #fff; }
         select.player-select option:disabled { color: #555 !important; background-color: #111; }
+        
         table { width: 100%; border-collapse: collapse; margin-bottom: 30px; background: transparent; }
         th { background: transparent; color: #888; font-weight: 300; font-size: 0.75rem; padding: 10px; text-align: center; }
         td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.03); font-size: 0.9rem; color: #ddd; }
         .rank-1 { color: #fff; font-weight: bold; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
         .game-count { font-weight: normal; color: #81d4fa; }
         .rest-highlight { color: #e57373; font-size: 0.85rem; padding: 2px 8px; border: none; }
-        .score-select { 
-            width: 45px; padding: 5px; text-align: center; font-size: 1rem; 
-            background-color: #222; border: 1px solid #666; color: #fff; border-radius: 2px; 
-        }
+        
+        .score-select { width: 45px; padding: 5px; text-align: center; font-size: 1rem; background-color: #222; border: 1px solid #666; color: #fff; border-radius: 2px; }
         .score-select:focus { outline: none; border-color: #00ffff; background-color: #000; }
         .score-select.filled { background-color: rgba(0, 255, 255, 0.15); border-color: rgba(0, 255, 255, 0.6); font-weight: bold; color: #00ffff; }
+        
         .winner { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent); color: #fff !important; font-weight: bold; text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
         .loser { color: #555 !important; }
         .loser select { opacity: 0.3; }
@@ -460,8 +359,8 @@
         .btn-send { background: linear-gradient(135deg, #303f9f 0%, #7b1fa2 100%); color: #fff; border: none; padding: 15px 40px; border-radius: 2px; cursor: pointer; font-size: 0.95rem; letter-spacing: 3px; width: 100%; max-width: 350px; margin: 60px auto 0 auto; display: block; box-shadow: 0 10px 30px rgba(48, 63, 159, 0.3); }
         .btn-send:hover { background: linear-gradient(135deg, #3f51b5 0%, #8e24aa 100%); }
         .btn-send:disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; }
-        .header-ctrl-area { position: absolute; top: 0; right: 0; margin-top: 60px; display: flex; gap: 10px; }
-        
+
+        /* ... Other styles (Dashboard, Ranking, Game, etc. maintained) ... */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: rgba(20, 20, 30, 0.4); padding: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .stat-label { font-size: 0.7rem; color: #888; margin-bottom: 5px; font-weight: bold; }
@@ -484,12 +383,7 @@
         .modal-title { color: #fff; font-weight: 300; text-align: center; font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 2px; }
         .modal-medals { text-align: center; margin-bottom: 20px; font-size: 1.2rem; }
         .chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 30px; }
-        .sector-select {
-            padding: 8px 15px; font-size: 1rem;
-            background-color: rgba(0, 0, 0, 0.6); color: #00ffff;
-            border: 1px solid rgba(0, 255, 255, 0.5); border-radius: 4px;
-            outline: none; cursor: pointer; width: 100%; max-width: 300px; display: block; margin: 0 auto;
-        }
+        .sector-select { padding: 8px 15px; font-size: 1rem; background-color: rgba(0, 0, 0, 0.6); color: #00ffff; border: 1px solid rgba(0, 255, 255, 0.5); border-radius: 4px; outline: none; cursor: pointer; width: 100%; max-width: 300px; display: block; margin: 0 auto; }
         .sector-filter::-webkit-scrollbar { display: none; }
 
         /* FOOTER */
@@ -509,6 +403,140 @@
         @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
         .no-data { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
 
+        /* IMPORTANT: SMARTPHONE OPTIMIZATION RE-APPLIED FROM CODE NAME 38 */
+        @media (max-width: 600px) {
+            .container { padding: 5px; padding-bottom: 80px; }
+            .header-area { margin-top: 10px; }
+            
+            .input-header-area {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                row-gap: 15px;
+                padding-bottom: 10px;
+                min-height: auto;
+                margin-bottom: 20px;
+            }
+
+            #matchDate {
+                position: relative;
+                top: auto; right: auto;
+                grid-column: 2;
+                text-align: right;
+                font-size: 0.8rem;
+                margin-top: 8px;
+            }
+            #courtSelect {
+                grid-column: 1 / 3;
+                width: 80%;
+                max-width: 300px;
+                margin: 0 auto;
+                display: block;
+                text-align: center;
+                text-align-last: center;
+            }
+            .header-ctrl-area {
+                position: relative;
+                top: auto; right: auto;
+                margin-top: 0;
+                grid-column: 1 / 3;
+                justify-content: flex-end;
+            }
+            
+            .player-inputs {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .input-group {
+                display: flex;
+                align-items: center;
+                background: rgba(255,255,255,0.05);
+                padding: 5px 10px;
+                border-radius: 4px;
+            }
+            .input-group label {
+                margin-bottom: 0;
+                margin-right: 10px;
+                width: 20px;
+                font-size: 0.8rem;
+            }
+            
+            h1 { font-size: 1.4rem; padding-left: 0; text-align: center; }
+
+            /* --- KEY RESTORATION: GRID TABLE FOR MOBILE --- */
+            #r1_matchTableBody, #r2_matchTableBody {
+                display: block;
+                width: 100%;
+            }
+            table {
+                width: 100% !important;
+                display: block;
+            }
+            .standard-table {
+                display: table !important;
+                width: 100% !important;
+                box-sizing: border-box;
+            }
+            .standard-table thead { display: table-header-group !important; }
+            .standard-table tbody { display: table-row-group !important; }
+            .standard-table tr { 
+                display: table-row !important; 
+                width: auto !important; 
+                grid-template-columns: none !important;
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .standard-table th, .standard-table td {
+                display: table-cell !important;
+                width: auto !important;
+                text-align: center !important;
+                border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+            }
+
+            .input-match-table thead {
+                display: none;
+            }
+            
+            #r1_matchTableBody tr, #r2_matchTableBody tr {
+                display: grid;
+                grid-template-columns: 60px 1fr 60px;
+                grid-template-rows: auto auto auto auto auto;
+                gap: 5px;
+                margin-bottom: 15px; 
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 4px;
+                background: rgba(20,20,30,0.6);
+                padding: 10px;
+                width: 100% !important;
+                max-width: none !important;
+                margin-left: 0;
+                margin-right: 0;
+                box-sizing: border-box; 
+            }
+            
+            #r1_matchTableBody td, #r2_matchTableBody td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                border: none;
+                padding: 2px 0;
+                text-align: center;
+            }
+
+            #r1_matchTableBody td:nth-of-type(1), #r2_matchTableBody td:nth-of-type(1) { grid-row: 1; grid-column: 1 / 4; text-align: center; font-size: 0.8rem; color: #888; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; margin-bottom: 5px; }
+            #r1_matchTableBody td:nth-of-type(2), #r2_matchTableBody td:nth-of-type(2) { grid-row: 2; grid-column: 1 / 4; text-align: left !important; font-size: 0.9rem; border: none; padding: 2px 0; color: #fff; white-space: normal; word-break: break-all; }
+            #r1_matchTableBody td:nth-of-type(3), #r2_matchTableBody td:nth-of-type(3) { grid-row: 3; grid-column: 1; text-align: left; border: none; padding: 0; display: flex; align-items: center; }
+            #r1_matchTableBody td:nth-of-type(4), #r2_matchTableBody td:nth-of-type(4) { grid-row: 3; grid-column: 2; text-align: center; border: none; padding: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
+            #r1_matchTableBody td:nth-of-type(4) div, #r2_matchTableBody td:nth-of-type(4) div { width: 100%; display: flex; justify-content: center; gap: 5px; }
+            #r1_matchTableBody td:nth-of-type(5), #r2_matchTableBody td:nth-of-type(5) { grid-row: 3; grid-column: 3; text-align: right; border: none; padding: 0; display: flex; justify-content: flex-end; align-items: center; }
+            #r1_matchTableBody td:nth-of-type(6), #r2_matchTableBody td:nth-of-type(6) { grid-row: 4; grid-column: 1 / 4; text-align: right !important; font-size: 0.9rem; border: none; padding: 2px 0; color: #fff; white-space: normal; word-break: break-all; }
+            #r1_matchTableBody td:nth-of-type(7), #r2_matchTableBody td:nth-of-type(7) { grid-row: 5; grid-column: 1 / 4; text-align: center; margin-top: 10px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: none; }
+            #r1_matchTableBody td:nth-of-type(7)::before, #r2_matchTableBody td:nth-of-type(7)::before { content: "REST: "; color: #888; }
+            
+            .stat-value { font-size: 1.5rem; }
+            .medal-legend span, .rank-legend span { display: inline-block; margin-right: 8px; margin-bottom: 3px; font-size: 0.65rem; }
+        }
     </style>
 </head>
 <body>
@@ -533,7 +561,6 @@
         <h1 id="pageTitle">MAIN BRIDGE</h1>
         <div class="subtitle">DEEP SPACE INTEGRATED SYSTEM</div>
         <div class="header-btn right" id="menuToggleBtn" onclick="toggleSideMenu()">≡</div>
-        
         <div id="headerUserStatus" class="user-status-display">
             <div id="headerUserName" class="user-status-name status-guest">GUEST</div>
         </div>
@@ -545,16 +572,11 @@
             <div id="heroNextDate" class="next-date">LOADING...</div>
             <div id="heroNextLoc" class="next-location">-</div>
         </div>
-        
-        <div id="topMapArea" style="display:none;">
-            </div>
-
+        <div id="topMapArea" style="display:none;"></div>
         <div class="section-title">WEATHER INTEL (TOKYO)</div>
         <div class="weather-container">
-            <div id="weatherScroll" class="weather-scroll">
-                </div>
+            <div id="weatherScroll" class="weather-scroll"></div>
         </div>
-
         <div class="section-title">INFORMATION</div>
         <div class="info-board">
             <div class="info-title">ADMINISTRATOR</div>
@@ -695,7 +717,6 @@
             <p>1v1 TACTICAL CARD GAME</p>
             <button class="btn-hero" onclick="window.location.href='https://reopard92.github.io/game/'">PLAY NOW</button>
         </div>
-
         <div class="section-title">MINI GAMES & TOOLS</div>
         <div class="game-grid">
             <div class="game-card" onclick="window.location.href='https://reopard92.github.io/game/'">
@@ -703,13 +724,11 @@
                 <div class="game-icon">⚔️</div>
                 <div class="game-card-title">CARD BATTLE</div>
             </div>
-
             <div class="game-card" onclick="openCoinGame()">
                 <div class="game-status live">LIVE</div>
                 <div class="game-icon">🪙</div>
                 <div class="game-card-title">COIN TOSS</div>
             </div>
-
             <div class="game-card locked">
                 <div class="game-status">OFFLINE</div>
                 <div class="game-icon">🔒</div>
@@ -725,11 +744,9 @@
                 <div style="font-size:0.8rem; color:#888; margin-bottom:15px;">登録するメンバー名を選択してください</div>
                 <div id="loginUserGrid" class="member-grid"></div>
             </div>
-            
             <div id="step-pin-input" class="login-step" style="display:none;">
                 <div class="section-title" style="border:none; text-align:center;">SECURITY CHECK</div>
                 <div id="pinInstruction" style="font-size:0.8rem; color:#888; margin-bottom:15px;">4桁のパスコードを入力</div>
-                
                 <div class="pin-input-area">
                     <div id="pinDisplay" class="pin-display"></div>
                     <div class="numpad">
@@ -752,45 +769,25 @@
                 </div>
             </div>
         </div>
-
         <div id="cockpit-main" style="display:none;">
             <div class="cockpit-profile">
                 <div class="cockpit-avatar">👤</div>
                 <div id="cpName" class="cockpit-name">PLAYER</div>
                 <div id="cpRankInfo" class="cp-rank-info"></div>
             </div>
-
             <div class="cockpit-stats-row">
-                <div class="c-stat-item">
-                    <div class="c-stat-val">0</div>
-                    <div class="c-stat-label">COINS</div>
-                </div>
-                <div class="c-stat-item">
-                    <div class="c-stat-val" id="cpExp">0</div>
-                    <div class="c-stat-label">EXP</div>
-                </div>
-                <div class="c-stat-item">
-                    <div class="c-stat-val" id="cpWinRate">-%</div>
-                    <div class="c-stat-label">WIN RATE</div>
-                </div>
+                <div class="c-stat-item"><div class="c-stat-val">0</div><div class="c-stat-label">COINS</div></div>
+                <div class="c-stat-item"><div class="c-stat-val" id="cpExp">0</div><div class="c-stat-label">EXP</div></div>
+                <div class="c-stat-item"><div class="c-stat-val" id="cpWinRate">-%</div><div class="c-stat-label">WIN RATE</div></div>
             </div>
-
             <div class="cockpit-section">
                 <div class="cockpit-title">ACQUIRED TITLES</div>
-                <div class="title-placeholder">
-                    <div class="title-tag active">ROOKIE</div>
-                    <div class="title-tag">EARLY BIRD</div>
-                    <div class="title-tag">SNIPER</div>
-                </div>
+                <div class="title-placeholder"><div class="title-tag active">ROOKIE</div><div class="title-tag">EARLY BIRD</div><div class="title-tag">SNIPER</div></div>
             </div>
-
             <div class="cockpit-section">
                 <div class="cockpit-title">HANGAR (VEHICLE)</div>
-                <div style="text-align:center; padding:20px; border:1px dashed #333; color:#555;">
-                    NO VEHICLE ASSIGNED
-                </div>
+                <div style="text-align:center; padding:20px; border:1px dashed #333; color:#555;">NO VEHICLE ASSIGNED</div>
             </div>
-
             <button class="btn-logout" onclick="logoutCockpit()">LOGOUT</button>
         </div>
     </div>
@@ -812,19 +809,9 @@
         <div id="rankInfoArea" class="rank-info-area"></div>
         <div class="modal-medals" id="modalMedals"></div>
         <div class="section-title" style="font-size:0.9rem;">能力チャート</div>
-        <div class="chart-container" style="height:200px; margin-bottom:15px;">
-            <canvas id="radarChart"></canvas>
-        </div>
+        <div class="chart-container" style="height:200px; margin-bottom:15px;"><canvas id="radarChart"></canvas></div>
         <div class="section-title" style="font-size:0.9rem;">勝率推移</div>
-        <div class="chart-container" style="height:150px; margin-bottom:0;">
-            <canvas id="historyChart"></canvas>
-        </div>
-    </div>
-</div>
-
-<div id="videoModal" onclick="closeVideoModal(event)">
-    <div class="video-container">
-        <div id="videoPlayer"></div>
+        <div class="chart-container" style="height:150px; margin-bottom:0;"><canvas id="historyChart"></canvas></div>
     </div>
 </div>
 
@@ -832,20 +819,14 @@
     <div class="modal-content" style="max-width:300px; text-align:center;">
         <button class="close-btn" onclick="closeCoinGame(event)">×</button>
         <div class="modal-title">COIN TOSS</div>
-        <div class="coin-game-container">
-            <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
-            <div style="font-size:0.8rem; color:#aaa;">TAP COIN TO FLIP</div>
-        </div>
+        <div class="coin-game-container"><div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div><div style="font-size:0.8rem; color:#aaa;">TAP COIN TO FLIP</div></div>
     </div>
 </div>
 
 <div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
     <div class="modal-content">
         <button class="close-btn" onclick="closeScheduleModal(event)">×</button>
-        <div class="detail-header">
-            <div class="detail-date" id="modalScheduleDate"></div>
-            <div style="font-size:0.8rem; color:#888;">回答状況</div>
-        </div>
+        <div class="detail-header"><div class="detail-date" id="modalScheduleDate"></div><div style="font-size:0.8rem; color:#888;">回答状況</div></div>
         <ul class="detail-list" id="modalScheduleList"></ul>
     </div>
 </div>
@@ -895,7 +876,7 @@
     let loginState = { selectedUser: null, inputPin: "" };
 
     window.onload = function() {
-        // Safety Fallback for Loading Screen (Executes after 3 seconds no matter what)
+        // Safety Fallback: Force load if stuck
         setTimeout(() => {
             const ld = document.getElementById('loadingScreen');
             if(ld && ld.style.display !== 'none') {
@@ -925,7 +906,6 @@
             initLoginGrid();
             checkCockpitLogin(); 
 
-            // Normal Removal (Runs when init is successful)
             setTimeout(() => {
                 document.getElementById('loadingScreen').style.opacity = 0;
                 setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
@@ -935,13 +915,9 @@
         }
     };
 
-    // --- WEATHER API LOGIC (TOP PAGE) ---
     function fetchWeather() {
         const url = "https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&timezone=Asia%2FTokyo";
-        fetch(url)
-            .then(res => res.json())
-            .then(data => { renderWeather(data); })
-            .catch(e => console.error("Weather fetch failed", e));
+        fetch(url).then(res => res.json()).then(data => renderWeather(data)).catch(e => console.error(e));
     }
 
     function renderWeather(data) {
@@ -949,61 +925,37 @@
         if(!data || !data.daily) return;
         container.innerHTML = "";
         const daily = data.daily;
-        // Limit to 4 days
         for(let i=0; i<4; i++) {
-            const dateStr = daily.time[i]; 
-            const dObj = new Date(dateStr);
-            const mm = dObj.getMonth() + 1;
-            const dd = dObj.getDate();
+            const dateStr = daily.time[i]; const dObj = new Date(dateStr);
+            const mm = dObj.getMonth() + 1; const dd = dObj.getDate();
             const wCode = daily.weathercode[i];
-            const maxT = Math.round(daily.temperature_2m_max[i]);
-            const minT = Math.round(daily.temperature_2m_min[i]);
-            const rain = daily.precipitation_probability_max[i];
-            const wind = Math.round(daily.windspeed_10m_max[i]);
+            const maxT = Math.round(daily.temperature_2m_max[i]); const minT = Math.round(daily.temperature_2m_min[i]);
+            const rain = daily.precipitation_probability_max[i]; const wind = Math.round(daily.windspeed_10m_max[i]);
             let icon = "☁️";
-            if(wCode === 0) icon = "☀️";
-            else if(wCode >= 1 && wCode <= 3) icon = "⛅";
-            else if(wCode >= 51 && wCode <= 67) icon = "🌧️";
-            else if(wCode >= 95) icon = "⛈️";
-            else if(wCode >= 71) icon = "❄️";
-            const div = document.createElement('div');
-            div.className = "weather-card";
+            if(wCode === 0) icon = "☀️"; else if(wCode <= 3) icon = "⛅"; else if(wCode >= 51 && wCode <= 67) icon = "🌧️"; else if(wCode >= 95) icon = "⛈️"; else if(wCode >= 71) icon = "❄️";
+            const div = document.createElement('div'); div.className = "weather-card";
             div.innerHTML = `<div class="w-day">${mm}/${dd}</div><div class="w-icon">${icon}</div><div class="w-temp">${maxT}°/${minT}°</div><div class="w-rain">☔${rain}%</div><div class="w-wind">🍃${wind}m</div>`;
             container.appendChild(div);
         }
     }
 
-    // --- NEXT MISSION & MAP LOGIC ---
     function updateNextMission() {
-        if(!globalScheduleData || globalScheduleData.length === 0) {
-            document.getElementById('heroNextDate').textContent = "NO PLAN";
-            return;
-        }
-        const today = new Date();
-        today.setHours(0,0,0,0);
+        if(!globalScheduleData || globalScheduleData.length === 0) { document.getElementById('heroNextDate').textContent = "NO PLAN"; return; }
+        const today = new Date(); today.setHours(0,0,0,0);
         const futurePlans = globalScheduleData.filter(item => new Date(item.fullDate) >= today);
         futurePlans.sort((a,b) => new Date(a.fullDate) - new Date(b.fullDate));
         
         if(futurePlans.length > 0) {
             const next = futurePlans[0];
             document.getElementById('heroNextDate').textContent = next.date;
-            
             const title = next.title || "TENNIS MISSION";
             document.getElementById('heroNextLoc').textContent = title;
-            
-            // Map Logic
             const mapArea = document.getElementById('topMapArea');
-            mapArea.style.display = 'none';
-            mapArea.innerHTML = "";
-            
+            mapArea.style.display = 'none'; mapArea.innerHTML = "";
             let matchedKey = null;
             if(title.includes("百草")) matchedKey = "MOGUSA";
             if(title.includes("練馬")) matchedKey = "NERIMA";
-            
-            if(matchedKey) {
-                mapArea.style.display = 'block';
-                renderTopMap(matchedKey);
-            }
+            if(matchedKey) { mapArea.style.display = 'block'; renderTopMap(matchedKey); }
         } else {
             document.getElementById('heroNextDate').textContent = "NO PLAN";
         }
@@ -1015,209 +967,108 @@
         if (!data) return;
         currentCourtCost = data.costVal;
         const displayAddress = data.address.replace(" ", "<br>");
-        
-        c.innerHTML = `
-            <div class="section-title">SECTOR INFO: ${data.name}</div>
-            <div class="map-frame"><iframe src="${data.mapSrc}" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-            <div class="info-card" style="margin-bottom:30px;">
-                <div class="info-row"><div class="info-label">ADDRESS</div><div class="info-val">${displayAddress}<button onclick="copyToClipboard('${data.address}')" style="background:rgba(0,255,255,0.1); border:1px solid #00ffff; color:#00ffff; border-radius:4px; cursor:pointer; margin-left:10px; padding:2px 6px; font-size:0.7rem;">📋</button></div></div>
-                <div class="info-row"><div class="info-label">COST</div><div class="info-val">${data.costStr}</div></div>
-                <div style="margin-top:15px; padding-top:15px; border-top:1px dashed rgba(255,255,255,0.2);">
-                    <div style="font-size:0.75rem; color:#00ffff; margin-bottom:5px; letter-spacing:1px;">SPLIT CALCULATOR</div>
-                    <div style="display:flex; align-items:center; gap:8px; font-size:0.9rem;">
-                        COST × <select id="calcHours" onchange="calcSplit()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid #555; padding:4px; border-radius:4px;"><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
-                        ÷ <select id="calcMembers" onchange="calcSplit()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid #555; padding:4px; border-radius:4px;"><option value="4">4</option><option value="5">5</option><option value="6">6</option></select>
-                        = <span id="calcResult" style="color:#00ffff; font-weight:bold; font-size:1.1rem; margin-left:5px;">-</span>
-                    </div>
-                </div>
-            </div>`;
+        c.innerHTML = `<div class="section-title">SECTOR INFO: ${data.name}</div><div class="map-frame"><iframe src="${data.mapSrc}" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div><div class="info-card" style="margin-bottom:30px;"><div class="info-row"><div class="info-label">ADDRESS</div><div class="info-val">${displayAddress}<button onclick="copyToClipboard('${data.address}')" style="background:rgba(0,255,255,0.1); border:1px solid #00ffff; color:#00ffff; border-radius:4px; cursor:pointer; margin-left:10px; padding:2px 6px; font-size:0.7rem;">📋</button></div></div><div class="info-row"><div class="info-label">COST</div><div class="info-val">${data.costStr}</div></div><div style="margin-top:15px; padding-top:15px; border-top:1px dashed rgba(255,255,255,0.2);"><div style="font-size:0.75rem; color:#00ffff; margin-bottom:5px; letter-spacing:1px;">SPLIT CALCULATOR</div><div style="display:flex; align-items:center; gap:8px; font-size:0.9rem;">COST × <select id="calcHours" onchange="calcSplit()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid #555; padding:4px; border-radius:4px;"><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select> ÷ <select id="calcMembers" onchange="calcSplit()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid #555; padding:4px; border-radius:4px;"><option value="4">4</option><option value="5">5</option><option value="6">6</option></select> = <span id="calcResult" style="color:#00ffff; font-weight:bold; font-size:1.1rem; margin-left:5px;">-</span></div></div></div>`;
         calcSplit();
     }
 
-    // --- COCKPIT LOGIN LOGIC ---
     function initLoginGrid() {
-        const grid = document.getElementById('loginUserGrid');
-        grid.innerHTML = "";
+        const grid = document.getElementById('loginUserGrid'); grid.innerHTML = "";
         members.forEach(m => {
-            const btn = document.createElement('div');
-            btn.className = 'member-btn';
-            btn.textContent = m;
-            btn.onclick = () => selectLoginUser(m, btn);
-            grid.appendChild(btn);
+            const btn = document.createElement('div'); btn.className = 'member-btn'; btn.textContent = m;
+            btn.onclick = () => selectLoginUser(m, btn); grid.appendChild(btn);
         });
     }
 
     function selectLoginUser(name, btnElement) {
         document.querySelectorAll('.member-btn').forEach(b => b.classList.remove('selected'));
-        btnElement.classList.add('selected');
-        loginState.selectedUser = name;
+        btnElement.classList.add('selected'); loginState.selectedUser = name;
         setTimeout(() => {
             document.getElementById('step-select-user').style.display = 'none';
             document.getElementById('step-pin-input').style.display = 'block';
-            document.getElementById('pinInstruction').textContent = `${name} さんのパスコードを設定/入力`;
-            clearPin();
+            document.getElementById('pinInstruction').textContent = `${name} さんのパスコードを設定/入力`; clearPin();
         }, 300);
     }
 
-    function typePin(num) {
-        if(loginState.inputPin.length < 4) {
-            loginState.inputPin += num;
-            updatePinDisplay();
-        }
-    }
-
-    function clearPin() {
-        loginState.inputPin = "";
-        updatePinDisplay();
-    }
-
-    function updatePinDisplay() {
-        const dots = "•".repeat(loginState.inputPin.length);
-        document.getElementById('pinDisplay').textContent = dots;
-    }
-
+    function typePin(num) { if(loginState.inputPin.length < 4) { loginState.inputPin += num; updatePinDisplay(); } }
+    function clearPin() { loginState.inputPin = ""; updatePinDisplay(); }
+    function updatePinDisplay() { const dots = "•".repeat(loginState.inputPin.length); document.getElementById('pinDisplay').textContent = dots; }
     function submitPin() {
-        if(loginState.inputPin.length !== 4) {
-            showToast("4桁入力してください");
-            return;
-        }
+        if(loginState.inputPin.length !== 4) { showToast("4桁入力してください"); return; }
         const userData = { name: loginState.selectedUser, pin: loginState.inputPin, loginTime: new Date().getTime() };
         localStorage.setItem(LOGIN_KEY, JSON.stringify(userData));
-        showToast("LOGIN SUCCESS");
-        resetLoginStep();
-        checkCockpitLogin();
+        showToast("LOGIN SUCCESS"); resetLoginStep(); checkCockpitLogin();
     }
-
     function resetLoginStep() {
-        loginState.selectedUser = null;
-        loginState.inputPin = "";
+        loginState.selectedUser = null; loginState.inputPin = "";
         document.getElementById('step-select-user').style.display = 'block';
         document.getElementById('step-pin-input').style.display = 'none';
         document.querySelectorAll('.member-btn').forEach(b => b.classList.remove('selected'));
     }
-
     function checkCockpitLogin() {
         const stored = localStorage.getItem(LOGIN_KEY);
         const loginScreen = document.getElementById('cockpit-login');
         const mainScreen = document.getElementById('cockpit-main');
         const headerUserName = document.getElementById('headerUserName');
-        
         if (stored) {
             const user = JSON.parse(stored);
-            loginScreen.style.display = 'none';
-            mainScreen.style.display = 'block';
-            headerUserName.textContent = user.name;
-            headerUserName.className = "user-status-name status-user";
-            
+            loginScreen.style.display = 'none'; mainScreen.style.display = 'block';
+            headerUserName.textContent = user.name; headerUserName.className = "user-status-name status-user";
             document.getElementById('cpName').textContent = user.name;
             const pStats = playerStatsGlobal[user.name];
-            let games = 0;
-            let winRate = "-%";
+            let games = 0; let winRate = "-%";
             if (pStats) {
                 const ri = getRankInfo(pStats.games);
                 let barW = 100, txt = "MAX RANK";
                 if(ri.next) {
-                    const range = ri.next.min - ri.current.min;
-                    const cur = pStats.games - ri.current.min;
-                    barW = Math.min((cur/range)*100, 100);
-                    txt = `EXP: ${pStats.games} / ${ri.next.min} (NEXT: ${ri.next.name})`;
+                    const range = ri.next.min - ri.current.min; const cur = pStats.games - ri.current.min;
+                    barW = Math.min((cur/range)*100, 100); txt = `EXP: ${pStats.games} / ${ri.next.min} (NEXT: ${ri.next.name})`;
                 } else { txt = `EXP: ${pStats.games} (提督)`; }
-                document.getElementById('cpRankInfo').innerHTML = 
-                    `<div class="rank-name">${ri.current.name} <span>${ri.current.icon}</span></div>
-                     <div class="rank-progress-text">${txt}</div>
-                     <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${barW}%"></div></div>`;
-                games = pStats.games;
-                const total = pStats.wins + pStats.losses;
+                document.getElementById('cpRankInfo').innerHTML = `<div class="rank-name">${ri.current.name} <span>${ri.current.icon}</span></div><div class="rank-progress-text">${txt}</div><div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${barW}%"></div></div>`;
+                games = pStats.games; const total = pStats.wins + pStats.losses;
                 if(total > 0) winRate = ((pStats.wins / total) * 100).toFixed(1) + "%";
             } else {
-                document.getElementById('cpRankInfo').innerHTML = 
-                    `<div class="rank-name">候補生 <span>🌑</span></div><div class="rank-progress-text">NO DATA</div><div class="rank-bar-bg"><div class="rank-bar-fill" style="width:0%"></div></div>`;
+                document.getElementById('cpRankInfo').innerHTML = `<div class="rank-name">候補生 <span>🌑</span></div><div class="rank-progress-text">NO DATA</div><div class="rank-bar-bg"><div class="rank-bar-fill" style="width:0%"></div></div>`;
             }
-            document.getElementById('cpExp').textContent = games;
-            document.getElementById('cpWinRate').textContent = winRate;
+            document.getElementById('cpExp').textContent = games; document.getElementById('cpWinRate').textContent = winRate;
         } else {
-            loginScreen.style.display = 'block';
-            mainScreen.style.display = 'none';
-            headerUserName.textContent = "GUEST";
-            headerUserName.className = "user-status-name status-guest";
+            loginScreen.style.display = 'block'; mainScreen.style.display = 'none';
+            headerUserName.textContent = "GUEST"; headerUserName.className = "user-status-name status-guest";
         }
     }
-
     function logoutCockpit() {
-        if(confirm("ログアウトしますか？")) {
-            localStorage.removeItem(LOGIN_KEY);
-            resetLoginStep();
-            checkCockpitLogin();
-            showToast("LOGOUT");
-        }
+        if(confirm("ログアウトしますか？")) { localStorage.removeItem(LOGIN_KEY); resetLoginStep(); checkCockpitLogin(); showToast("LOGOUT"); }
     }
 
-    // --- NAVIGATION LOGIC ---
-    function toggleSideMenu() {
-        document.getElementById('sideMenu').classList.toggle('open');
-    }
-    
-    function closeSideMenu(e) {
-        if(e.target.id === 'sideMenu') {
-            document.getElementById('sideMenu').classList.remove('open');
-        }
-    }
-
+    function toggleSideMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
+    function closeSideMenu(e) { if(e.target.id === 'sideMenu') document.getElementById('sideMenu').classList.remove('open'); }
     function selectAppMode(mode) {
         document.getElementById('sideMenu').classList.remove('open');
         const items = document.querySelectorAll('.side-menu-content .menu-item');
         items.forEach(item => item.classList.remove('active'));
-
-        if (mode === 'top') {
-            items[0].classList.add('active');
-            switchMainView('top');
-        } else if (mode === 'tennis') {
-            items[1].classList.add('active');
-            switchMainView('match'); 
-        } else if (mode === 'game') {
-            items[2].classList.add('active');
-            switchMainView('game');
-        } else if (mode === 'cockpit') {
-            items[3].classList.add('active');
-            switchMainView('cockpit');
-        }
+        if (mode === 'top') { items[0].classList.add('active'); switchMainView('top'); }
+        else if (mode === 'tennis') { items[1].classList.add('active'); switchMainView('match'); }
+        else if (mode === 'game') { items[2].classList.add('active'); switchMainView('game'); }
+        else if (mode === 'cockpit') { items[3].classList.add('active'); switchMainView('cockpit'); }
     }
-
     function switchMainView(viewName) {
         sessionStorage.setItem('lastView', viewName);
         const bottomNav = document.getElementById('bottomNav');
         const pageTitle = document.getElementById('pageTitle');
         const subTitle = document.querySelector('.subtitle');
-
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
         const navs = document.querySelectorAll('.nav-item');
-        
         if(viewName === 'top') navs[0].classList.add('active');
         if(viewName === 'match') navs[1].classList.add('active');
         if(viewName === 'dashboard') navs[2].classList.add('active');
         if(viewName === 'ranking') navs[3].classList.add('active');
         if(viewName === 'schedule') navs[4].classList.add('active');
-        
-        if (viewName === 'game' || viewName === 'cockpit') {
-            bottomNav.classList.add('hidden');
-        } else {
-            bottomNav.classList.remove('hidden');
-        }
-
+        if (viewName === 'game' || viewName === 'cockpit') bottomNav.classList.add('hidden'); else bottomNav.classList.remove('hidden');
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         const targetSection = document.getElementById(`view-${viewName}`);
         if(targetSection) targetSection.classList.add('active');
-        
-        const titles = { 
-            'top': 'MAIN BRIDGE', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 
-            'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 
-            'game': 'GAME ARCHIVE', 'cockpit': 'MY COCKPIT'
-        };
+        const titles = { 'top': 'MAIN BRIDGE', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'game': 'GAME ARCHIVE', 'cockpit': 'MY COCKPIT' };
         pageTitle.textContent = titles[viewName] || 'TENNIS CHRONICLES';
-        
-        if(viewName === 'game') subTitle.textContent = "TACTICAL SIMULATION MODULES";
-        else subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
-
+        if(viewName === 'game') subTitle.textContent = "TACTICAL SIMULATION MODULES"; else subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         if (viewName === 'cockpit') checkCockpitLogin();
     }
 
@@ -1225,871 +1076,467 @@
     function openCoinGame() { document.getElementById('coinGameModal').style.display = 'flex'; document.getElementById('gameCoin').classList.remove('spinning'); document.getElementById('gameCoin').textContent = "TAP"; }
     function closeCoinGame(e) { if(e.target.id === 'coinGameModal' || e.target.className === 'close-btn') document.getElementById('coinGameModal').style.display = 'none'; }
     function playCoinToss() { const c = document.getElementById('gameCoin'); if(c.classList.contains('spinning')) return; c.classList.add('spinning'); c.textContent = ""; setTimeout(() => { c.classList.remove('spinning'); c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; }, 1500); }
-    function renderMapInfo(val) { /* Legacy */ }
+    function renderMapInfo(val) {} 
     function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { showToast("ADDRESS COPIED"); }); }
     function calcSplit() { const cost = currentCourtCost; const members = parseInt(document.getElementById('calcMembers').value); const hours = parseInt(document.getElementById('calcHours').value); const result = Math.ceil((cost * hours) / members); document.getElementById('calcResult').innerText = '¥' + result.toLocaleString(); }
     
-    // FULLY EXPANDED FUNCTIONS
+    // Core Functions
     function initSelectors() {
         ['r1', 'r2'].forEach(r => {
-            [1, 2, 3, 4, 5].forEach(i => {
+            [1,2,3,4,5].forEach(i => {
                 const el = document.getElementById(`${r}_p${i}`);
-                if (!el) return;
-                const def = document.createElement("option");
-                def.value = "-";
-                def.text = "-";
-                el.appendChild(def);
-                members.forEach(m => {
-                    const op = document.createElement("option");
-                    op.value = m;
-                    op.text = m;
-                    el.appendChild(op);
-                });
+                if(!el) return;
+                const def = document.createElement("option"); def.value = "-"; def.text = "-"; el.appendChild(def);
+                members.forEach(m => { const op = document.createElement("option"); op.value = m; op.text = m; el.appendChild(op); });
                 el.value = "-";
             });
         });
-        if (!loadState()) {
-            updateSchedule('r1');
-            updateSchedule('r2');
-        }
+        if (!loadState()) { updateSchedule('r1'); updateSchedule('r2'); }
     }
-
+    
     function toggleEditMode() {
         if (!isEditMode) {
             const pin = prompt("ENTER PASSCODE");
-            if (pin === "8047") {
-                isEditMode = true;
-                applyEditMode();
-                showToast("UNLOCKED");
-            } else if (pin !== null) {
-                alert("ACCESS DENIED");
-            }
-        } else {
-            isEditMode = false;
-            applyEditMode();
-            showToast("LOCKED");
-        }
+            if (pin === "8047") { isEditMode = true; applyEditMode(); showToast("UNLOCKED"); }
+            else if (pin !== null) { alert("ACCESS DENIED"); }
+        } else { isEditMode = false; applyEditMode(); showToast("LOCKED"); }
     }
-
+    
     function applyEditMode() {
         const btn = document.getElementById('editBtn');
-        const resetBtn = document.getElementById('resetBtn');
+        const resetBtn = document.getElementById('resetBtn'); 
         const inputs = document.querySelectorAll('select.player-select, select#courtSelect');
         const scores = document.querySelectorAll('select.score-select');
         const sendBtn = document.getElementById('sendButton');
         if (isEditMode) {
-            btn.textContent = "LOCK";
-            btn.classList.add("unlocked");
-            resetBtn.disabled = false;
-            inputs.forEach(el => el.disabled = false);
-            scores.forEach(el => el.disabled = false);
-            if (sendBtn) sendBtn.disabled = false;
+            btn.textContent = "LOCK"; btn.classList.add("unlocked"); resetBtn.disabled = false; 
+            inputs.forEach(el => el.disabled = false); scores.forEach(el => el.disabled = false);
+            if(sendBtn) sendBtn.disabled = false;
         } else {
-            btn.textContent = "EDIT";
-            btn.classList.remove("unlocked");
-            resetBtn.disabled = true;
-            inputs.forEach(el => el.disabled = true);
-            scores.forEach(el => el.disabled = true);
-            if (sendBtn) sendBtn.disabled = true;
+            btn.textContent = "EDIT"; btn.classList.remove("unlocked"); resetBtn.disabled = true; 
+            inputs.forEach(el => el.disabled = true); scores.forEach(el => el.disabled = true);
+            if(sendBtn) sendBtn.disabled = true;
         }
     }
-
+    
     function createScoreSelect() {
-        const s = document.createElement("select");
-        s.className = "score-select";
-        s.disabled = !isEditMode;
-        const d = document.createElement("option");
-        d.value = "-";
-        d.text = "-";
-        s.appendChild(d);
-        for (let i = 0; i <= 4; i++) {
-            const o = document.createElement("option");
-            o.value = i;
-            o.text = i;
-            s.appendChild(o);
-        }
+        const s = document.createElement("select"); s.className = "score-select"; s.disabled = !isEditMode;
+        const d = document.createElement("option"); d.value = "-"; d.text = "-"; s.appendChild(d);
+        for (let i = 0; i <= 4; i++) { const o = document.createElement("option"); o.value = i; o.text = i; s.appendChild(o); }
         return s;
     }
-
+    
     function secureReset() {
         if (!isEditMode) return;
         if (confirm("RESET INPUT?")) {
             document.querySelectorAll('.player-select').forEach(s => s.value = "-");
-            document.querySelectorAll('.score-select').forEach(s => s.value = "-");
+            document.querySelectorAll('.score-select').forEach(s => s.value = "-"); 
             document.getElementById('courtSelect').value = "-";
             localStorage.removeItem(STORAGE_KEY);
-            updateSchedule('r1');
-            updateSchedule('r2');
+            updateSchedule('r1'); updateSchedule('r2');
             showToast("RESET DONE");
         }
     }
-
+    
     function updatePlayerOptions(rp) {
-        const selects = [];
-        for (let i = 1; i <= 5; i++) selects.push(document.getElementById(`${rp}_p${i}`));
+        const selects = []; for(let i=1; i<=5; i++) selects.push(document.getElementById(`${rp}_p${i}`));
         const vals = selects.map(s => s.value).filter(v => v !== "-");
-        selects.forEach(s => {
-            s.querySelectorAll('option').forEach(o => {
-                if (o.value === "-") return;
-                o.disabled = (vals.includes(o.value) && s.value !== o.value);
-            });
-        });
+        selects.forEach(s => { s.querySelectorAll('option').forEach(o => { if (o.value === "-") return; o.disabled = (vals.includes(o.value) && s.value !== o.value); }); });
     }
-
+    
     function checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp) {
-        const vA = sA.value;
-        const vB = sB.value;
-        if (vA !== "-") sA.classList.add("filled");
-        else sA.classList.remove("filled");
-        if (vB !== "-") sB.classList.add("filled");
-        else sB.classList.remove("filled");
+        const vA = sA.value; const vB = sB.value;
+        if (vA !== "-") sA.classList.add("filled"); else sA.classList.remove("filled");
+        if (vB !== "-") sB.classList.add("filled"); else sB.classList.remove("filled");
         [cTA, cSA, cSB, cTB].forEach(c => c.classList.remove("winner", "loser"));
         if (vA !== "-" && vB !== "-") {
-            const iA = parseInt(vA);
-            const iB = parseInt(vB);
-            if (iA > iB) {
-                cTA.classList.add("winner");
-                cSA.classList.add("winner");
-                cTB.classList.add("loser");
-                cSB.classList.add("loser");
-            } else if (iB > iA) {
-                cTB.classList.add("winner");
-                cSB.classList.add("winner");
-                cTA.classList.add("loser");
-                cSA.classList.add("loser");
-            }
+            const iA = parseInt(vA); const iB = parseInt(vB);
+            if (iA > iB) { cTA.classList.add("winner"); cSA.classList.add("winner"); cTB.classList.add("loser"); cSB.classList.add("loser"); }
+            else if (iB > iA) { cTB.classList.add("winner"); cSB.classList.add("winner"); cTA.classList.add("loser"); cSA.classList.add("loser"); }
         }
-        updateInputRanking(rp);
-        saveState();
+        updateInputRanking(rp); saveState();
     }
-
+    
     function updateSchedule(rp) {
-        const p = {};
-        for (let i = 1; i <= 5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
+        const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
         updatePlayerOptions(rp);
-        const pl = { 1: p[1], 2: p[2], 3: p[3], 4: p[4], 5: p[5] };
+        const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
         const currentScores = [];
         const oldTbody = document.getElementById(`${rp}_matchTableBody`);
         if (oldTbody) {
             for (let i = 0; i < oldTbody.rows.length; i++) {
                 const sA = oldTbody.rows[i].querySelector('select[data-type="scoreA"]');
                 const sB = oldTbody.rows[i].querySelector('select[data-type="scoreB"]');
-                currentScores.push({
-                    a: sA ? sA.value : "-",
-                    b: sB ? sB.value : "-"
-                });
+                currentScores.push({ a: sA ? sA.value : "-", b: sB ? sB.value : "-" });
             }
         }
-        const tb = document.getElementById(`${rp}_matchTableBody`);
-        tb.innerHTML = "";
+        const tb = document.getElementById(`${rp}_matchTableBody`); tb.innerHTML = "";
         patterns.forEach((pat, idx) => {
             const row = document.createElement("tr");
-            row.dataset.pA1 = pl[pat[0]];
-            row.dataset.pA2 = pl[pat[1]];
-            row.dataset.pB1 = pl[pat[2]];
-            row.dataset.pB2 = pl[pat[3]];
-            const cNo = document.createElement("td");
-            cNo.textContent = `MATCH ${idx+1}`;
-            row.appendChild(cNo);
-            const cTA = document.createElement("td");
-            cTA.textContent = `${pl[pat[0]]} & ${pl[pat[1]]}`;
-            row.appendChild(cTA);
-            const cSA = document.createElement("td");
-            cSA.className = "score-cell";
-            const sA = createScoreSelect();
-            sA.setAttribute('data-type', 'scoreA');
-            if (currentScores[idx]) sA.value = currentScores[idx].a;
-            cSA.appendChild(sA);
-            row.appendChild(cSA);
+            row.dataset.pA1=pl[pat[0]]; row.dataset.pA2=pl[pat[1]]; row.dataset.pB1=pl[pat[2]]; row.dataset.pB2=pl[pat[3]];
+            const cNo = document.createElement("td"); cNo.textContent=`MATCH ${idx+1}`; row.appendChild(cNo);
+            const cTA = document.createElement("td"); cTA.textContent=`${pl[pat[0]]} & ${pl[pat[1]]}`; row.appendChild(cTA);
+            const cSA = document.createElement("td"); cSA.className="score-cell";
+            const sA = createScoreSelect(); sA.setAttribute('data-type','scoreA'); 
+            if(currentScores[idx]) sA.value = currentScores[idx].a;
+            cSA.appendChild(sA); row.appendChild(cSA);
             const probA = getWinProbability(pl[pat[0]], pl[pat[1]]);
-            const cVs = document.createElement("td");
-            cVs.className = "vs";
+            const cVs = document.createElement("td"); cVs.className="vs"; 
             cVs.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; width:100%;"><div style="font-size:0.6rem; color:#aaa; margin-bottom:2px;">WIN PROBABILITY</div><div style="display:flex; width:80%; height:4px; background:#333; border-radius:2px; overflow:hidden;"><div style="width:${probA}%; background:#00ffff; box-shadow:0 0 5px #00ffff;"></div><div style="width:${100-probA}%; background:#555;"></div></div><div style="display:flex; justify-content:space-between; width:80%; font-size:0.6rem; margin-top:2px;"><span style="color:#00ffff;">${probA}%</span><span style="color:#888;">${100-probA}%</span></div></div>`;
             row.appendChild(cVs);
-            const cSB = document.createElement("td");
-            cSB.className = "score-cell";
-            const sB = createScoreSelect();
-            sB.setAttribute('data-type', 'scoreB');
-            if (currentScores[idx]) sB.value = currentScores[idx].b;
-            cSB.appendChild(sB);
-            row.appendChild(cSB);
-            const cTB = document.createElement("td");
-            cTB.textContent = `${pl[pat[2]]} & ${pl[pat[3]]}`;
-            row.appendChild(cTB);
-            const cR = document.createElement("td");
-            cR.className = "rest-highlight";
-            cR.textContent = pl[pat[4]];
-            row.appendChild(cR);
+            const cSB = document.createElement("td"); cSB.className="score-cell";
+            const sB = createScoreSelect(); sB.setAttribute('data-type','scoreB'); 
+            if(currentScores[idx]) sB.value = currentScores[idx].b;
+            cSB.appendChild(sB); row.appendChild(cSB);
+            const cTB = document.createElement("td"); cTB.textContent=`${pl[pat[2]]} & ${pl[pat[3]]}`; row.appendChild(cTB);
+            const cR = document.createElement("td"); cR.className="rest-highlight"; cR.textContent=pl[pat[4]]; row.appendChild(cR);
             sA.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
             sB.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
             tb.appendChild(row);
             checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
         });
-        updateInputRanking(rp);
-        saveState();
+        updateInputRanking(rp); saveState();
     }
-
+    
     function calculateStats(rp) {
-        const p = {};
-        for (let i = 1; i <= 5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
-        let st = {};
-        [p[1], p[2], p[3], p[4], p[5]].forEach(n => {
-            if (n !== "-") st[n] = {
-                wins: 0,
-                losses: 0,
-                games: 0
-            }
-        });
+        const p={}; for(let i=1;i<=5;i++) p[i]=document.getElementById(`${rp}_p${i}`).value;
+        let st={}; [p[1],p[2],p[3],p[4],p[5]].forEach(n=>{if(n!=="-") st[n]={wins:0,losses:0,games:0}});
         const rows = document.getElementById(`${rp}_matchTableBody`).rows;
-        for (let row of rows) {
-            const sA = row.querySelector('select[data-type="scoreA"]').value;
-            const sB = row.querySelector('select[data-type="scoreB"]').value;
-            if (sA !== "-" && sB !== "-") {
-                const iA = parseInt(sA),
-                    iB = parseInt(sB);
-                [row.dataset.pA1, row.dataset.pA2].forEach(n => {
-                    if (st[n]) st[n].games += iA
-                });
-                [row.dataset.pB1, row.dataset.pB2].forEach(n => {
-                    if (st[n]) st[n].games += iB
-                });
-                if (iA > iB) {
-                    [row.dataset.pA1, row.dataset.pA2].forEach(n => {
-                        if (st[n]) st[n].wins++
-                    });
-                    [row.dataset.pB1, row.dataset.pB2].forEach(n => {
-                        if (st[n]) st[n].losses++
-                    });
-                } else if (iB > iA) {
-                    [row.dataset.pB1, row.dataset.pB2].forEach(n => {
-                        if (st[n]) st[n].wins++
-                    });
-                    [row.dataset.pA1, row.dataset.pA2].forEach(n => {
-                        if (st[n]) st[n].losses++
-                    });
-                }
+        for(let row of rows) {
+            const sA=row.querySelector('select[data-type="scoreA"]').value;
+            const sB=row.querySelector('select[data-type="scoreB"]').value;
+            if(sA!=="-" && sB!=="-"){
+                const iA=parseInt(sA), iB=parseInt(sB);
+                [row.dataset.pA1, row.dataset.pA2].forEach(n=>{if(st[n]) st[n].games+=iA});
+                [row.dataset.pB1, row.dataset.pB2].forEach(n=>{if(st[n]) st[n].games+=iB});
+                if(iA>iB){ [row.dataset.pA1, row.dataset.pA2].forEach(n=>{if(st[n]) st[n].wins++}); [row.dataset.pB1, row.dataset.pB2].forEach(n=>{if(st[n]) st[n].losses++}); }
+                else if(iB>iA){ [row.dataset.pB1, row.dataset.pB2].forEach(n=>{if(st[n]) st[n].wins++}); [row.dataset.pA1, row.dataset.pA2].forEach(n=>{if(st[n]) st[n].losses++}); }
             }
         }
         return st;
     }
-
+    
     function updateInputRanking(rp) {
         const st = calculateStats(rp);
-        const pl = Object.keys(st).sort((a, b) => {
-            const rA = (st[a].wins + st[a].losses) > 0 ? st[a].wins / (st[a].wins + st[a].losses) : 0;
-            const rB = (st[b].wins + st[b].losses) > 0 ? st[b].wins / (st[b].wins + st[b].losses) : 0;
-            if (rB !== rA) return rB - rA;
-            if (st[b].wins !== st[a].wins) return st[b].wins - st[a].wins;
-            return st[b].games - st[a].games;
+        const pl = Object.keys(st).sort((a,b)=>{
+            const rA=(st[a].wins+st[a].losses)>0 ? st[a].wins/(st[a].wins+st[a].losses) : 0;
+            const rB=(st[b].wins+st[b].losses)>0 ? st[b].wins/(st[b].wins+st[b].losses) : 0;
+            if(rB!==rA) return rB-rA;
+            if(st[b].wins!==st[a].wins) return st[b].wins-st[a].wins;
+            return st[b].games-st[a].games;
         });
-        const tb = document.getElementById(`${rp}_rankingTableBody`);
-        tb.innerHTML = "";
-        pl.forEach((n, i) => {
-            const tr = document.createElement("tr");
-            const tot = st[n].wins + st[n].losses;
-            const rate = tot > 0 ? ((st[n].wins / tot) * 100).toFixed(0) + "%" : "-";
-            tr.innerHTML = `<td class="${i===0?'rank-1':''}">${i+1}</td><td>${n}</td><td>${st[n].wins}-${st[n].losses}</td><td>${rate}</td><td>${st[n].games}</td>`;
+        const tb=document.getElementById(`${rp}_rankingTableBody`); tb.innerHTML="";
+        pl.forEach((n,i)=>{
+            const tr=document.createElement("tr");
+            const tot=st[n].wins+st[n].losses;
+            const rate=tot>0 ? ((st[n].wins/tot)*100).toFixed(0)+"%" : "-";
+            tr.innerHTML=`<td class="${i===0?'rank-1':''}">${i+1}</td><td>${n}</td><td>${st[n].wins}-${st[n].losses}</td><td>${rate}</td><td>${st[n].games}</td>`;
             tb.appendChild(tr);
         });
         updateInputTotalRanking();
     }
-
+    
     function updateInputTotalRanking() {
-        const s1 = calculateStats('r1');
-        const s2 = calculateStats('r2');
-        let total = {};
-        const allP = new Set([...Object.keys(s1), ...Object.keys(s2)]);
-        allP.forEach(n => {
-            total[n] = {
-                wins: 0,
-                losses: 0,
-                games: 0
-            };
+        const s1 = calculateStats('r1'); const s2 = calculateStats('r2');
+        let total = {}; const allP = new Set([...Object.keys(s1), ...Object.keys(s2)]);
+        allP.forEach(n => { total[n] = {wins:0, losses:0, games:0}; });
+        [s1, s2].forEach(s => { for(let n in s) { total[n].wins += s[n].wins; total[n].losses += s[n].losses; total[n].games += s[n].games; } });
+        const sorted = Array.from(allP).sort((a,b)=>{
+            const rA=(total[a].wins+total[a].losses)>0 ? total[a].wins/(total[a].wins+total[a].losses) : 0;
+            const rB=(total[b].wins+total[b].losses)>0 ? total[b].wins/(total[b].wins+total[b].losses) : 0;
+            if(rB!==rA) return rB-rA;
+            if(total[b].wins!==total[a].wins) return total[b].wins-total[a].wins;
+            return total[b].games-total[a].games;
         });
-        [s1, s2].forEach(s => {
-            for (let n in s) {
-                total[n].wins += s[n].wins;
-                total[n].losses += s[n].losses;
-                total[n].games += s[n].games;
-            }
-        });
-        const sorted = Array.from(allP).sort((a, b) => {
-            const rA = (total[a].wins + total[a].losses) > 0 ? total[a].wins / (total[a].wins + total[a].losses) : 0;
-            const rB = (total[b].wins + total[b].losses) > 0 ? total[b].wins / (total[b].wins + total[b].losses) : 0;
-            if (rB !== rA) return rB - rA;
-            if (total[b].wins !== total[a].wins) return total[b].wins - total[a].wins;
-            return total[b].games - total[a].games;
-        });
-        const tb = document.getElementById('total_input_rankingTableBody');
-        tb.innerHTML = "";
-        sorted.forEach((n, i) => {
-            const tr = document.createElement("tr");
-            const tot = total[n].wins + total[n].losses;
-            const rate = tot > 0 ? ((total[n].wins / tot) * 100).toFixed(0) + "%" : "-";
-            tr.innerHTML = `<td class="${i===0?'rank-1':''}">${i+1}</td><td>${n}</td><td>${total[n].wins}-${total[n].losses}</td><td>${rate}</td><td>${total[n].games}</td>`;
+        const tb=document.getElementById('total_input_rankingTableBody'); tb.innerHTML="";
+        sorted.forEach((n,i)=>{
+            const tr=document.createElement("tr");
+            const tot=total[n].wins+total[n].losses;
+            const rate=tot>0 ? ((total[n].wins/tot)*100).toFixed(0)+"%" : "-";
+            tr.innerHTML=`<td class="${i===0?'rank-1':''}">${i+1}</td><td>${n}</td><td>${total[n].wins}-${total[n].losses}</td><td>${rate}</td><td>${total[n].games}</td>`;
             tb.appendChild(tr);
         });
     }
-
+    
+    function saveState() {
+        if(isLoading) return;
+        const court = document.getElementById('courtSelect').value;
+        const rd = {};
+        ['r1','r2'].forEach(r => {
+            const pl={}; for(let i=1;i<=5;i++) pl[`p${i}`]=document.getElementById(`${r}_p${i}`).value;
+            const sc=[]; const rows=document.getElementById(`${r}_matchTableBody`).rows;
+            for(let row of rows) { sc.push({a:row.querySelector('select[data-type="scoreA"]').value, b:row.querySelector('select[data-type="scoreB"]').value}); }
+            rd[r]={players:pl, scores:sc};
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({meta:{court}, rounds:rd}));
+    }
+    
+    function loadState() {
+        const json = localStorage.getItem(STORAGE_KEY); if(!json) return false;
+        try {
+            isLoading = true;
+            const data=JSON.parse(json);
+            if(data.meta && data.meta.court) document.getElementById('courtSelect').value=data.meta.court;
+            ['r1','r2'].forEach(r => {
+                if(data.rounds && data.rounds[r]) {
+                    const rd=data.rounds[r];
+                    for(let i=1;i<=5;i++) document.getElementById(`${r}_p${i}`).value=rd.players[`p${i}`];
+                    updateSchedule(r); 
+                    const rows=document.getElementById(`${r}_matchTableBody`).rows;
+                    rd.scores.forEach((s, idx)=>{
+                        if(rows[idx]) {
+                            const sA=rows[idx].querySelector('select[data-type="scoreA"]');
+                            const sB=rows[idx].querySelector('select[data-type="scoreB"]');
+                            sA.value=s.a; sB.value=s.b;
+                            const cTA = rows[idx].cells[1]; const cSA = rows[idx].cells[2];
+                            const cSB = rows[idx].cells[4]; const cTB = rows[idx].cells[5];
+                            checkWinner(sA, sB, cTA, cSA, cSB, cTB, r);
+                        }
+                    });
+                }
+            });
+            updatePlayerOptions('r1'); updatePlayerOptions('r2'); applyEditMode(); isLoading = false; return true;
+        } catch(e) { console.error(e); isLoading = false; return false; }
+    }
+    
     function sendToSpreadsheet() {
-        if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("ここに")) {
-            alert("GAS_WEB_APP_URL Error");
-            return;
-        }
-        const btn = document.getElementById('sendButton');
-        btn.disabled = true;
-        btn.textContent = "SENDING...";
+        if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("ここに")) { alert("GAS_WEB_APP_URL Error"); return; }
+        const btn = document.getElementById('sendButton'); btn.disabled = true; btn.textContent = "SENDING...";
         const date = document.getElementById('matchDate').textContent;
         const court = document.getElementById('courtSelect').value === '-' ? 'コート未定' : document.getElementById('courtSelect').value;
         let rankings = [];
         ['r1', 'r2'].forEach(r => {
             const rows = document.getElementById(`${r}_rankingTableBody`).querySelectorAll('tr');
-            const roundName = r === 'r1' ? '1回戦' : '2回戦';
+            const roundName = r==='r1' ? '1回戦' : '2回戦';
             rows.forEach(row => {
                 const cols = row.querySelectorAll('td');
-                if (cols.length > 0) {
+                if(cols.length>0) {
                     const wl = cols[2].textContent.split('-');
-                    rankings.push({
-                        rank: cols[0].textContent,
-                        name: cols[1].textContent + ` (${roundName})`,
-                        win: wl[0],
-                        lose: wl[1],
-                        rate: cols[3].textContent,
-                        games: cols[4].textContent
-                    });
+                    rankings.push({ rank: cols[0].textContent, name: cols[1].textContent + ` (${roundName})`, win: wl[0], lose: wl[1], rate: cols[3].textContent, games: cols[4].textContent });
                 }
             });
         });
         let matches = [];
         ['r1', 'r2'].forEach(r => {
             const rows = document.getElementById(`${r}_matchTableBody`).rows;
-            for (let i = 0; i < rows.length; i++) {
+            for(let i=0; i<rows.length; i++) {
                 const row = rows[i];
-                if (row.dataset.pA1) {
+                if(row.dataset.pA1) {
                     const sA = row.querySelector('select[data-type="scoreA"]').value;
                     const sB = row.querySelector('select[data-type="scoreB"]').value;
-                    if (sA !== "-" && sB !== "-") {
-                        matches.push({
-                            round: r === 'r1' ? 1 : 2,
-                            no: i + 1,
-                            pA1: row.dataset.pA1,
-                            pA2: row.dataset.pA2,
-                            scoreA: sA,
-                            scoreB: sB,
-                            pB1: row.dataset.pB1,
-                            pB2: row.dataset.pB2
-                        });
+                    if(sA!=="-" && sB!=="-") {
+                        matches.push({ round: r==='r1'?1:2, no: i+1, pA1: row.dataset.pA1, pA2: row.dataset.pA2, scoreA: sA, scoreB: sB, pB1: row.dataset.pB1, pB2: row.dataset.pB2 });
                     }
                 }
             }
         });
-        if (rankings.length === 0) {
-            showToast("NO DATA");
-            btn.disabled = false;
-            btn.textContent = "TRANSMIT DATA";
-            return;
-        }
+        if(rankings.length===0) { showToast("NO DATA"); btn.disabled=false; btn.textContent="TRANSMIT DATA"; return; }
         fetch(GAS_WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    date,
-                    court,
-                    rankings,
-                    matches
-                })
-            }).then(() => {
-                showToast("SENT SUCCESSFULLY");
-                fetchAnalysisData();
-            }).catch(e => {
-                console.error(e);
-                showToast("FAILED");
-            })
-            .finally(() => {
-                btn.textContent = "TRANSMIT DATA";
-                btn.disabled = !isEditMode;
-            });
+            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ date, court, rankings, matches })
+        }).then(() => { showToast("SENT SUCCESSFULLY"); fetchAnalysisData(); })
+        .catch(e => { console.error(e); showToast("FAILED"); })
+        .finally(() => { btn.textContent="TRANSMIT DATA"; btn.disabled = !isEditMode; });
     }
-
-    function showToast(msg) {
-        const t = document.getElementById("toast");
-        t.textContent = msg;
-        t.className = "show";
-        setTimeout(() => {
-            t.className = t.className.replace("show", "")
-        }, 3000);
-    }
-
-    function getPlayerWinRate(name) {
-        if (!playerStatsGlobal || !playerStatsGlobal[name]) return 0.5;
-        const p = playerStatsGlobal[name];
-        const total = p.wins + p.losses;
-        return total > 0 ? p.wins / total : 0.5;
-    }
-
-    function getWinProbability(p1, p2) {
-        if (p1 === "-" || p2 === "-") return 0;
-        const r1 = getPlayerWinRate(p1);
-        const r2 = getPlayerWinRate(p2);
-        return Math.round(((r1 + r2) / 2) * 100);
-    }
-
+    
+    function showToast(msg) { const t=document.getElementById("toast"); t.textContent=msg; t.className="show"; setTimeout(()=>{t.className=t.className.replace("show","")},3000); }
+    function getPlayerWinRate(name) { if(!playerStatsGlobal || !playerStatsGlobal[name]) return 0.5; const p = playerStatsGlobal[name]; const total = p.wins + p.losses; return total > 0 ? p.wins / total : 0.5; }
+    function getWinProbability(p1, p2) { if(p1 === "-" || p2 === "-") return 0; const r1 = getPlayerWinRate(p1); const r2 = getPlayerWinRate(p2); return Math.round(((r1 + r2) / 2) * 100); }
+    
     async function fetchAnalysisData() {
-        if (GAS_WEB_APP_URL.includes("ここに")) return;
+        if(GAS_WEB_APP_URL.includes("ここに")) return;
         try {
             const res = await fetch(GAS_WEB_APP_URL);
             const json = await res.json();
-            if (json.status === 'success') {
-                rawAnalysisRankings = json.rankings;
-                rawAnalysisMatches = json.matches;
-                processAnalysisData();
-            }
-        } catch (e) {
-            console.error(e);
-        }
+            if(json.status === 'success') { rawAnalysisRankings = json.rankings; rawAnalysisMatches = json.matches; processAnalysisData(); }
+        } catch(e) { console.error(e); }
     }
-
-    function filterRanking(sector) {
-        currentSector = sector;
-        processAnalysisData();
-    }
-
+    
+    function filterRanking(sector) { currentSector = sector; processAnalysisData(); }
+    
     function processAnalysisData() {
         const rRows = rawAnalysisRankings.slice(1);
-        let pStats = {},
-            mDates = new Set(),
-            totalG = 0,
-            logs = {};
-        let max = {
-            wins: 0,
-            games: 0,
-            mvpCount: 0,
-            matches: 0,
-            sniperCount: 0,
-            clutchWins: 0,
-            clutchTotal: 0,
-            bestWR: 0,
-            clutchR: 0,
-            sniper: 0
-        };
+        let pStats = {}, mDates = new Set(), totalG = 0, logs = {};
+        let max = { wins:0, games:0, mvpCount:0, matches:0, sniperCount:0, clutchWins:0, clutchTotal:0, bestWR:0, clutchR:0, sniper:0 };
         rRows.forEach(row => {
             if (!row[0] || !row[3]) return;
-            const rawName = String(row[3]);
-            if (rawName.includes("undefined") || rawName.trim() === "") return;
-            const court = row[1];
-            if (currentSector !== 'ALL' && court !== currentSector) return;
+            const rawName = String(row[3]); if(rawName.includes("undefined") || rawName.trim() === "") return;
+            const court = row[1]; if (currentSector !== 'ALL' && court !== currentSector) return;
             const dObj = new Date(row[0]);
-            const y = dObj.getFullYear();
-            const m = ('0' + (dObj.getMonth() + 1)).slice(-2);
-            const day = ('0' + dObj.getDate()).slice(-2);
+            const y = dObj.getFullYear(); const m = ('0' + (dObj.getMonth() + 1)).slice(-2); const day = ('0' + dObj.getDate()).slice(-2);
             const d = `${y}-${m}-${day}`;
-            const rk = row[2];
-            const nm = rawName.split(' (')[0];
-            const w = parseInt(row[4]),
-                l = parseInt(row[5]),
-                g = parseInt(row[7]);
-            mDates.add(d);
-            totalG += g;
-            if (!pStats[nm]) pStats[nm] = {
-                name: nm,
-                wins: 0,
-                losses: 0,
-                games: 0,
-                mvpCount: 0,
-                matches: 0,
-                history: [],
-                sniperCount: 0,
-                clutchWins: 0,
-                clutchTotal: 0
-            };
-            pStats[nm].wins += w;
-            pStats[nm].losses += l;
-            pStats[nm].games += g;
-            pStats[nm].matches += (w + l);
-            if (rk == 1) pStats[nm].mvpCount++;
-            const rt = (pStats[nm].wins + pStats[nm].losses) > 0 ? pStats[nm].wins / (pStats[nm].wins + pStats[nm].losses) * 100 : 0;
-            const hLog = pStats[nm].history.find(h => h.date === d);
-            if (hLog) hLog.rate = rt;
-            else pStats[nm].history.push({
-                date: d,
-                rate: rt
-            });
+            const rk = row[2]; const nm = rawName.split(' (')[0];
+            const w = parseInt(row[4]), l = parseInt(row[5]), g = parseInt(row[7]);
+            mDates.add(d); totalG += g;
+            if(!pStats[nm]) pStats[nm] = {name:nm, wins:0, losses:0, games:0, mvpCount:0, matches:0, history:[], sniperCount:0, clutchWins:0, clutchTotal:0};
+            pStats[nm].wins += w; pStats[nm].losses += l; pStats[nm].games += g; pStats[nm].matches += (w+l);
+            if(rk==1) pStats[nm].mvpCount++;
+            const rt = (pStats[nm].wins + pStats[nm].losses) > 0 ? pStats[nm].wins/(pStats[nm].wins+pStats[nm].losses)*100 : 0;
+            const hLog = pStats[nm].history.find(h=>h.date===d);
+            if(hLog) hLog.rate = rt; else pStats[nm].history.push({date:d, rate:rt});
             const k = `${d}_${court}`;
-            if (!logs[k]) logs[k] = {
-                date: d,
-                court: court,
-                records: []
-            };
-            logs[k].records.push({
-                rank: rk,
-                name: nm,
-                win: w,
-                lose: l,
-                rate: row[6],
-                games: g
-            });
+            if(!logs[k]) logs[k] = {date:d, court:court, records:[]};
+            logs[k].records.push({ rank:rk, name:nm, win:w, lose:l, rate:row[6], games:g });
         });
+        
         let pairStats = {};
         const mRows = rawAnalysisMatches ? rawAnalysisMatches.slice(1) : [];
         mRows.forEach(row => {
-            const matchCourt = row[1];
-            if (currentSector !== 'ALL' && matchCourt !== currentSector) return;
-            const pA1 = row[4],
-                pA2 = row[5],
-                sA = parseInt(row[6]),
-                sB = parseInt(row[7]),
-                pB1 = row[8],
-                pB2 = row[9];
-            if (pA1 === "-") return;
-            const pairA = [pA1, pA2].sort().join(' & ');
-            const pairB = [pB1, pB2].sort().join(' & ');
-            if (!pairStats[pairA]) pairStats[pairA] = {
-                wins: 0,
-                losses: 0,
-                total: 0
-            };
-            if (!pairStats[pairB]) pairStats[pairB] = {
-                wins: 0,
-                losses: 0,
-                total: 0
-            };
-            pairStats[pairA].total++;
-            pairStats[pairB].total++;
-            if (sA > sB) {
-                pairStats[pairA].wins++;
-                pairStats[pairB].losses++;
-            } else if (sB > sA) {
-                pairStats[pairB].wins++;
-                pairStats[pairA].losses++;
-            }
-            if (sA === 4 && sB === 0) {
-                if (pStats[pA1]) pStats[pA1].sniperCount++;
-                if (pStats[pA2]) pStats[pA2].sniperCount++;
-            }
-            if (sA === 0 && sB === 4) {
-                if (pStats[pB1]) pStats[pB1].sniperCount++;
-                if (pStats[pB2]) pStats[pB2].sniperCount++;
-            }
-            if (Math.abs(sA - sB) === 1) {
-                [pA1, pA2, pB1, pB2].forEach(p => {
-                    if (pStats[p]) pStats[p].clutchTotal++
-                });
-                if (sA > sB) {
-                    if (pStats[pA1]) pStats[pA1].clutchWins++;
-                    if (pStats[pA2]) pStats[pA2].clutchWins++;
-                } else {
-                    if (pStats[pB1]) pStats[pB1].clutchWins++;
-                    if (pStats[pB2]) pStats[pB2].clutchWins++;
-                }
+            const matchCourt = row[1]; if (currentSector !== 'ALL' && matchCourt !== currentSector) return;
+            const pA1=row[4], pA2=row[5], sA=parseInt(row[6]), sB=parseInt(row[7]), pB1=row[8], pB2=row[9];
+            if(pA1==="-") return;
+            const pairA = [pA1,pA2].sort().join(' & '); const pairB = [pB1,pB2].sort().join(' & ');
+            if(!pairStats[pairA]) pairStats[pairA]={wins:0,losses:0,total:0}; if(!pairStats[pairB]) pairStats[pairB]={wins:0,losses:0,total:0};
+            pairStats[pairA].total++; pairStats[pairB].total++;
+            if(sA > sB) { pairStats[pairA].wins++; pairStats[pairB].losses++; } else if(sB > sA) { pairStats[pairB].wins++; pairStats[pairA].losses++; }
+            if(sA===4 && sB===0) { if(pStats[pA1]) pStats[pA1].sniperCount++; if(pStats[pA2]) pStats[pA2].sniperCount++; }
+            if(sA===0 && sB===4) { if(pStats[pB1]) pStats[pB1].sniperCount++; if(pStats[pB2]) pStats[pB2].sniperCount++; }
+            if(Math.abs(sA-sB)===1) {
+                [pA1,pA2,pB1,pB2].forEach(p=>{if(pStats[p]) pStats[p].clutchTotal++});
+                if(sA>sB) { if(pStats[pA1]) pStats[pA1].clutchWins++; if(pStats[pA2]) pStats[pA2].clutchWins++; }
+                else { if(pStats[pB1]) pStats[pB1].clutchWins++; if(pStats[pB2]) pStats[pB2].clutchWins++; }
             }
         });
-        let maxWR = 0,
-            maxSn = 0,
-            maxCR = 0;
+        
+        let maxWR = 0, maxSn = 0, maxCR = 0;
         Object.values(pStats).forEach(p => {
-            if (p.wins > max.wins) max.wins = p.wins;
-            if (p.games > max.games) max.games = p.games;
-            if (p.mvpCount > max.mvpCount) max.mvpCount = p.mvpCount;
-            if (p.matches > max.matches) max.matches = p.matches;
-            if (p.sniperCount > maxSn) maxSn = p.sniperCount;
-            const r = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0;
-            if (r > maxWR) maxWR = r;
-            const cr = p.clutchTotal > 0 ? p.clutchWins / p.clutchTotal : 0;
-            if (cr > maxCR && p.clutchTotal > 0) maxCR = cr;
+            if(p.wins>max.wins) max.wins=p.wins;
+            if(p.games>max.games) max.games=p.games;
+            if(p.mvpCount>max.mvpCount) max.mvpCount=p.mvpCount;
+            if(p.matches>max.matches) max.matches=p.matches;
+            if(p.sniperCount>maxSn) maxSn=p.sniperCount;
+            const r = (p.wins+p.losses)>0 ? p.wins/(p.wins+p.losses) : 0;
+            if(r>maxWR) maxWR=r;
+            const cr = p.clutchTotal>0 ? p.clutchWins/p.clutchTotal : 0;
+            if(cr>maxCR && p.clutchTotal>0) maxCR=cr;
         });
-        max.sniper = maxSn;
-        max.clutchR = maxCR;
-        max.bestWR = maxWR;
-        playerStatsGlobal = pStats;
-        playerStatsGlobal._max = max;
+        max.sniper = maxSn; max.clutchR = maxCR; max.bestWR = maxWR;
+        playerStatsGlobal = pStats; playerStatsGlobal._max = max;
+        
         document.getElementById('totalMissions').textContent = mDates.size;
         document.getElementById('totalGames').textContent = totalG;
         const avg = mDates.size > 0 ? (totalG / mDates.size).toFixed(1) : "0";
         document.getElementById('avgGames').textContent = avg;
+        
         const lastD = Array.from(mDates).sort().pop();
-        if (lastD) {
-            const todayLogs = logs[Object.keys(logs).find(k => k.startsWith(lastD))];
-            if (todayLogs) {
-                let dS = {};
-                todayLogs.records.forEach(r => {
-                    if (!dS[r.name]) dS[r.name] = 0;
-                    dS[r.name] += parseInt(r.win);
-                });
-                const best = Object.entries(dS).sort((a, b) => b[1] - a[1])[0];
+        if(lastD) {
+            const todayLogs = logs[Object.keys(logs).find(k=>k.startsWith(lastD))];
+            if(todayLogs) {
+                let dS={}; todayLogs.records.forEach(r=>{ if(!dS[r.name])dS[r.name]=0; dS[r.name]+=parseInt(r.win); });
+                const best = Object.entries(dS).sort((a,b)=>b[1]-a[1])[0];
                 document.getElementById('latestMvp').textContent = best ? best[0] : '-';
             }
         }
-        const sortedP = Object.values(pStats).sort((a, b) => {
-            const rA = (a.wins + a.losses) > 0 ? a.wins / (a.wins + a.losses) : 0;
-            const rB = (b.wins + b.losses) > 0 ? b.wins / (b.wins + b.losses) : 0;
-            if (rB !== rA) return rB - rA;
-            return b.wins - a.wins;
+        
+        const sortedP = Object.values(pStats).sort((a,b)=>{
+            const rA = (a.wins+a.losses)>0?a.wins/(a.wins+a.losses):0;
+            const rB = (b.wins+b.losses)>0?b.wins/(b.wins+b.losses):0;
+            if(rB!==rA) return rB-rA; return b.wins-a.wins;
         });
-        renderAnalysisRanking(sortedP);
-        renderAnalysisPairs(pairStats);
-        renderAnalysisLogs(logs);
-        renderAnalysisChart(sortedP);
+        
+        renderAnalysisRanking(sortedP); renderAnalysisPairs(pairStats); renderAnalysisLogs(logs); renderAnalysisChart(sortedP);
         checkCockpitLogin();
-        if (currentSector === 'ALL') {
-            updateSchedule('r1');
-            updateSchedule('r2');
-        }
+        if(currentSector === 'ALL') { updateSchedule('r1'); updateSchedule('r2'); }
     }
-
-    function getRankInfo(games) {
-        for (let i = CREW_RANKS.length - 1; i >= 0; i--) {
-            if (games >= CREW_RANKS[i].min) return {
-                current: CREW_RANKS[i],
-                next: CREW_RANKS[i + 1] || null
-            };
-        }
-        return {
-            current: CREW_RANKS[0],
-            next: CREW_RANKS[1]
-        };
-    }
-
+    
+    function getRankInfo(games) { for(let i=CREW_RANKS.length-1; i>=0; i--) { if(games>=CREW_RANKS[i].min) return {current:CREW_RANKS[i], next:CREW_RANKS[i+1]||null}; } return {current:CREW_RANKS[0], next:CREW_RANKS[1]}; }
+    
     function getMedals(p, m) {
         let h = "";
-        const r = (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) : 0;
-        const cr = p.clutchTotal > 0 ? p.clutchWins / p.clutchTotal : 0;
-        if (r === m.bestWR && p.matches > 0) h += '<span class="medal-icon">👑</span>';
-        if (r >= 0.7 && p.matches > 0) h += '<span class="medal-icon">🔥</span>';
-        if (p.matches === m.matches && m.matches > 0) h += '<span class="medal-icon">💪🏼</span>';
-        for (let i = 0; i < Math.min(p.mvpCount, 3); i++) h += '<span class="medal-icon">⭐</span>';
-        if (p.sniperCount === m.sniper && m.sniper > 0) h += '<span class="medal-icon">🎯</span>';
-        if (cr === m.clutchR && m.clutchR > 0 && p.clutchTotal > 0) h += '<span class="medal-icon">❤️‍🔥</span>';
+        const r = (p.wins+p.losses)>0 ? p.wins/(p.wins+p.losses) : 0;
+        const cr = p.clutchTotal>0 ? p.clutchWins/p.clutchTotal : 0;
+        if(r===m.bestWR && p.matches>0) h+='<span class="medal-icon">👑</span>';
+        if(r>=0.7 && p.matches>0) h+='<span class="medal-icon">🔥</span>';
+        if(p.matches===m.matches && m.matches>0) h+='<span class="medal-icon">💪🏼</span>';
+        for(let i=0; i<Math.min(p.mvpCount,3); i++) h+='<span class="medal-icon">⭐</span>';
+        if(p.sniperCount===m.sniper && m.sniper>0) h+='<span class="medal-icon">🎯</span>';
+        if(cr===m.clutchR && m.clutchR>0 && p.clutchTotal>0) h+='<span class="medal-icon">❤️‍🔥</span>';
         return h;
     }
-
+    
     function renderAnalysisRanking(players) {
-        const tb = document.getElementById('leaderboardBody');
-        tb.innerHTML = "";
-        players.forEach((p, i) => {
+        const tb = document.getElementById('leaderboardBody'); tb.innerHTML="";
+        players.forEach((p,i)=>{
             if (!p.name || p.name === "undefined") return;
             const tr = document.createElement('tr');
-            const rate = (p.wins + p.losses) > 0 ? ((p.wins / (p.wins + p.losses)) * 100).toFixed(1) + '%' : '-';
+            const rate = (p.wins+p.losses)>0 ? ((p.wins/(p.wins+p.losses))*100).toFixed(1)+'%' : '-';
             const rk = getRankInfo(p.games).current;
             tr.onclick = () => showModal(p.name);
             tr.innerHTML = `<td class="${i===0?'rank-1':''}">${i+1}</td><td style="text-align:left;padding-left:10px;"><span class="rank-icon">${rk.icon}</span> ${p.name} ${getMedals(p, playerStatsGlobal._max)}</td><td>${p.wins}</td><td>${rate}</td><td>${p.mvpCount}</td>`;
             tb.appendChild(tr);
         });
     }
-
+    
     function renderAnalysisPairs(ps) {
-        const tb = document.getElementById('pairRankingBody');
-        tb.innerHTML = "";
-        const pairs = Object.entries(ps).map(([n, s]) => ({
-            name: n,
-            ...s
-        })).filter(p => p.total >= 2).sort((a, b) => {
-            const rA = a.wins / a.total,
-                rB = b.wins / b.total;
-            if (rA !== rB) return rB - rA;
-            return a.wins - b.wins;
-        });
-        if (pairs.length === 0) {
-            tb.innerHTML = '<tr><td colspan="4" class="no-data">データ不足 (2試合以上)</td></tr>';
-            return;
-        }
-        pairs.forEach((p, i) => {
+        const tb = document.getElementById('pairRankingBody'); tb.innerHTML="";
+        const pairs = Object.entries(ps).map(([n,s])=>({name:n,...s})).filter(p=>p.total>=2).sort((a,b)=>{ const rA=a.wins/a.total, rB=b.wins/b.total; if(rA!==rB) return rB-rA; return a.wins-b.wins; });
+        if(pairs.length===0) { tb.innerHTML='<tr><td colspan="4" class="no-data">データ不足 (2試合以上)</td></tr>'; return; }
+        pairs.forEach((p,i)=>{
             const tr = document.createElement('tr');
-            const rate = (p.wins / p.total * 100).toFixed(1) + '%';
-            const pct = (p.wins / p.total) * 100;
+            const rate = (p.wins/p.total*100).toFixed(1)+'%';
+            const pct = (p.wins/p.total)*100;
             const bar = `background:linear-gradient(90deg, rgba(0,200,255,0.15) ${pct}%, transparent ${pct}%)`;
             tr.innerHTML = `<td class="${i===0?'rank-1':''}">${i+1}</td><td style="font-size:0.8rem;">${p.name}</td><td>${p.wins}-${p.losses}</td><td style="${bar}">${rate}</td>`;
             tb.appendChild(tr);
         });
     }
-
+    
     function renderAnalysisLogs(logs) {
-        const c = document.getElementById('logsContainer');
-        c.innerHTML = "";
+        const c = document.getElementById('logsContainer'); c.innerHTML="";
         Object.keys(logs).sort().reverse().forEach(k => {
             const l = logs[k];
             let ds = {};
-            l.records.forEach(r => {
-                if (!ds[r.name]) ds[r.name] = {
-                    n: r.name,
-                    w: 0,
-                    l: 0
-                };
-                ds[r.name].w += parseInt(r.win);
-                ds[r.name].l += parseInt(r.lose);
-            });
-            const sD = Object.values(ds).sort((a, b) => {
-                const rA = (a.w + a.l) > 0 ? a.w / (a.w + a.l) : 0;
-                const rB = (b.w + b.l) > 0 ? b.w / (b.w + b.l) : 0;
-                if (rA !== rB) return rB - rA;
-                return b.w - a.w;
-            });
+            l.records.forEach(r => { if(!ds[r.name]) ds[r.name]={n:r.name,w:0,l:0}; ds[r.name].w+=parseInt(r.win); ds[r.name].l+=parseInt(r.lose); });
+            const sD = Object.values(ds).sort((a,b)=>{ const rA=(a.w+a.l)>0?a.w/(a.w+a.l):0; const rB=(b.w+b.l)>0?b.w/(b.w+b.l):0; if(rA!==rB) return rB-rA; return b.w-a.w; });
             const winner = sD.length > 0 ? sD[0].n : '-';
-            const div = document.createElement('div');
-            div.className = "log-item";
+            const div = document.createElement('div'); div.className="log-item";
             div.innerHTML = `<div class="log-header" onclick="this.nextElementSibling.classList.toggle('open')"><div><span class="log-date">${l.date}</span><span class="log-court">@${l.court}</span></div><div style="font-size:0.7rem;color:#aaa;">TOP: ${winner}</div></div><div class="log-content"><table class="standard-table"><thead><tr><th>順位</th><th>名前</th><th>勝敗</th><th>勝率</th></tr></thead><tbody>${sD.map((r,i)=>`<tr><td style="color:${i==0?'#fff':''}">${i+1}</td><td>${r.n}</td><td>${r.w}-${r.l}</td><td>${((r.w+r.l)>0?((r.w/(r.w+r.l))*100).toFixed(0)+'%':'-')}</td></tr>`).join('')}</tbody></table></div>`;
             c.appendChild(div);
         });
     }
-
+    
     function renderAnalysisChart(players) {
-        if (winRateChartInstance) winRateChartInstance.destroy();
+        if(winRateChartInstance) winRateChartInstance.destroy();
         const ctx = document.getElementById('winRateChart').getContext('2d');
-        const tops = players.slice(0, 5);
+        const tops = players.slice(0,5);
         new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: tops.map(p => p.name),
-                datasets: [{
-                    label: '勝率 (%)',
-                    data: tops.map(p => (p.wins + p.losses) > 0 ? p.wins / (p.wins + p.losses) * 100 : 0),
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                    borderColor: '#fff',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        grid: {
-                            color: 'rgba(255,255,255,0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return (context.dataset.label || '') + ': ' + (context.parsed.y !== null ? context.parsed.y.toFixed(1) + '%' : '');
-                            }
-                        }
-                    }
-                }
-            }
+            data: { labels: tops.map(p=>p.name), datasets: [{ label:'勝率 (%)', data: tops.map(p=>(p.wins+p.losses)>0?p.wins/(p.wins+p.losses)*100:0), backgroundColor:'rgba(255,255,255,0.1)', borderColor:'#fff', borderWidth:1 }] },
+            options: { responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true,max:100,grid:{color:'rgba(255,255,255,0.05)'}},x:{grid:{display:false}}}, plugins: { tooltip: { callbacks: { label: function(context) { return (context.dataset.label||'') + ': ' + (context.parsed.y!==null?context.parsed.y.toFixed(1)+'%':''); } } } } }
         });
     }
-
+    
     function showModal(name) {
-        const p = playerStatsGlobal[name];
-        const max = playerStatsGlobal._max;
-        if (!p) return;
+        const p = playerStatsGlobal[name]; const max = playerStatsGlobal._max; if(!p) return;
         document.getElementById('modalPlayerName').textContent = p.name;
         document.getElementById('modalMedals').innerHTML = getMedals(p, max);
         const ri = getRankInfo(p.games);
-        let barW = 100,
-            txt = "MAX RANK";
-        if (ri.next) {
-            const range = ri.next.min - ri.current.min;
-            const cur = p.games - ri.current.min;
-            barW = Math.min((cur / range) * 100, 100);
-            txt = `経験値: ${p.games} / ${ri.next.min} (次: ${ri.next.name})`;
-        } else {
-            txt = `経験値: ${p.games} (提督)`;
-        }
+        let barW = 100, txt = "MAX RANK";
+        if(ri.next) {
+            const range = ri.next.min - ri.current.min; const cur = p.games - ri.current.min;
+            barW = Math.min((cur/range)*100, 100); txt = `経験値: ${p.games} / ${ri.next.min} (次: ${ri.next.name})`;
+        } else { txt = `経験値: ${p.games} (提督)`; }
         document.getElementById('rankInfoArea').innerHTML = `<div class="rank-name">${ri.current.name} <span>${ri.current.icon}</span></div><div class="rank-progress-text">${txt}</div><div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${barW}%"></div></div>`;
         document.getElementById('playerModal').style.display = 'flex';
         const ctxR = document.getElementById('radarChart').getContext('2d');
-        if (radarChartInstance) radarChartInstance.destroy();
+        if(radarChartInstance) radarChartInstance.destroy();
         const safeCalc = (val, maxVal) => maxVal > 0 ? (val / maxVal) * 100 : 0;
         radarChartInstance = new Chart(ctxR, {
             type: 'radar',
-            data: {
-                labels: ['勝率', '勝利', 'MVP', '試合数', 'ゲーム'],
-                datasets: [{
-                    label: '能力値',
-                    data: [p.wins + p.losses > 0 ? (p.wins / (p.wins + p.losses) * 100) : 0, safeCalc(p.wins, max.wins), safeCalc(p.mvpCount, max.mvpCount), safeCalc(p.matches, max.matches), safeCalc(p.games, max.games)],
-                    backgroundColor: 'rgba(0,255,255,0.2)',
-                    borderColor: '#00ffff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        angleLines: {
-                            color: 'rgba(255,255,255,0.2)'
-                        },
-                        grid: {
-                            color: 'rgba(255,255,255,0.2)'
-                        },
-                        pointLabels: {
-                            color: '#00ffff',
-                            font: {
-                                size: 9
-                            }
-                        },
-                        ticks: {
-                            display: false
-                        },
-                        min: 0,
-                        max: 100
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.raw.toFixed(1);
-                            }
-                        }
-                    }
-                }
-            }
+            data: { labels: ['勝率', '勝利', 'MVP', '試合数', 'ゲーム'], datasets: [{ label: '能力値', data: [ p.wins + p.losses > 0 ? (p.wins/(p.wins+p.losses)*100) : 0, safeCalc(p.wins, max.wins), safeCalc(p.mvpCount, max.mvpCount), safeCalc(p.matches, max.matches), safeCalc(p.games, max.games) ], backgroundColor:'rgba(0,255,255,0.2)', borderColor:'#00ffff', borderWidth:2 }] },
+            options: { responsive:true, maintainAspectRatio:false, scales:{ r:{ angleLines:{color:'rgba(255,255,255,0.2)'}, grid:{color:'rgba(255,255,255,0.2)'}, pointLabels:{color:'#00ffff',font:{size:9}}, ticks:{display:false}, min: 0, max: 100 } }, plugins: { tooltip: { callbacks: { label: function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1); } } } } } 
         });
         const ctxH = document.getElementById('historyChart').getContext('2d');
-        if (historyChartInstance) historyChartInstance.destroy();
-        const hist = p.history.sort((a, b) => new Date(a.date) - new Date(b.date));
+        if(historyChartInstance) historyChartInstance.destroy();
+        const hist = p.history.sort((a,b)=>new Date(a.date)-new Date(b.date));
         historyChartInstance = new Chart(ctxH, {
             type: 'line',
-            data: {
-                labels: hist.map(h => h.date.slice(5)),
-                datasets: [{
-                    label: '勝率推移',
-                    data: hist.map(h => h.rate),
-                    borderColor: '#f0f',
-                    backgroundColor: 'rgba(255,0,255,0.1)',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        grid: {
-                            color: 'rgba(255,255,255,0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
+            data: { labels: hist.map(h=>h.date.slice(5)), datasets: [{ label:'勝率推移', data: hist.map(h=>h.rate), borderColor:'#f0f', backgroundColor:'rgba(255,0,255,0.1)', borderWidth:2, tension:0.3, fill:true }] },
+            options: { responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true,max:100,grid:{color:'rgba(255,255,255,0.1)'}},x:{grid:{display:false}}} }
         });
     }
-
-    function closeModal(e) {
-        if (e.target.id === 'playerModal' || e.target.className === 'close-btn') document.getElementById('playerModal').style.display = 'none';
-    }
+    
+    function closeModal(e) { if(e.target.id==='playerModal'||e.target.className==='close-btn') document.getElementById('playerModal').style.display='none'; }
 </script>
 
 </body>
