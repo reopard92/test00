@@ -12,7 +12,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Firebase Compat Scripts for Namespaced API usage -->
+    <!-- Firebase Compat Scripts -->
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
@@ -118,7 +118,7 @@
             font-size: 2rem; /* Restore simple icon size */
         }
 
-        /* --- SIDE MENU ANIMATION (FIXED) --- */
+        /* --- SIDE MENU ANIMATION --- */
         .side-menu-overlay {
             position: fixed;
             top: 0;
@@ -128,13 +128,10 @@
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(10px);
             z-index: 6000;
-            
-            /* Changed from display:none to visibility for animation */
             visibility: hidden;
             opacity: 0;
-            display: flex; /* Always flex, but hidden */
+            display: flex; 
             justify-content: flex-end;
-            
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
         .side-menu-overlay.open {
@@ -150,17 +147,12 @@
             padding-top: 90px;
             display: flex;
             flex-direction: column;
-            
-            /* Slide Animation Setting */
             transform: translateX(100%);
-            /* Smooth organic easing */
             transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .side-menu-overlay.open .side-menu-content {
             transform: translateX(0);
         }
-
-        /* Stagger Animation for Menu Items */
         .menu-item {
             padding: 20px 30px;
             color: #fff;
@@ -169,21 +161,16 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
             cursor: pointer;
             text-transform: uppercase;
-            
-            /* Initial state for stagger */
             opacity: 0;
             transform: translateX(30px);
             transition: all 0.4s ease;
         }
-        
         .side-menu-overlay.open .menu-item {
             opacity: 1;
             transform: translateX(0);
         }
-        /* Delays */
         .side-menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.2s; }
         .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.3s; }
-
         .menu-item:hover {
             background: rgba(0,255,255,0.1);
             padding-left: 40px;
@@ -376,170 +363,6 @@
         .loader-bar::after { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: #fff; box-shadow: 0 0 10px #fff; animation: load 2s ease-in-out forwards; }
         @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
         .no-data { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
-
-        /* =========================================
-           MAP / INFO CARD STYLES
-           ========================================= */
-        .map-frame {
-            position: relative; width: 100%; padding-bottom: 75%; height: 0; 
-            overflow: hidden; border: 1px solid #00ffff; 
-            box-shadow: 0 0 15px rgba(0,255,255,0.15); margin-bottom: 20px;
-            background: #000;
-        }
-        .map-frame iframe {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            /* Map filter for Sci-Fi look */
-            filter: invert(100%) hue-rotate(180deg) brightness(0.85) contrast(1.2) grayscale(0.5);
-        }
-        .info-card {
-            background: rgba(20, 30, 40, 0.6); 
-            border: 1px solid rgba(255,255,255,0.15); 
-            padding: 20px; 
-            border-left: 3px solid #00ffff;
-            animation: fadeIn 0.5s ease;
-        }
-        .info-row {
-            display: flex; margin-bottom: 12px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-            padding-bottom: 6px;
-        }
-        .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .info-label { width: 80px; color: #00ffff; font-size: 0.75rem; letter-spacing: 1px; align-self: center; }
-        .info-val { color: #fff; font-size: 0.9rem; flex: 1; word-break: break-all; }
-        .empty-map-state {
-            text-align: center; padding: 60px 0; color: #666; 
-            font-family: 'Courier New', monospace; letter-spacing: 2px;
-            border: 1px dashed rgba(255,255,255,0.1);
-        }
-
-        /* =========================================
-           SCHEDULE VIEW STYLES (REVERTED TO CODE NAME: 39)
-           ========================================= */
-        .month-tabs-area {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .month-tab {
-            background: rgba(255,255,255,0.1);
-            color: #888;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: 0.3s;
-        }
-        .month-tab.active {
-            background: #00ffff;
-            color: #000;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(0,255,255,0.3);
-        }
-
-        .schedule-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .schedule-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer;
-            transition: background 0.2s;
-            position: relative;
-        }
-        .schedule-item:hover {
-            background: rgba(255,255,255,0.05);
-        }
-        .schedule-item.top-attendance {
-            background: linear-gradient(90deg, rgba(0,255,255,0.1), transparent);
-            border-left: 3px solid #00ffff;
-        }
-        .schedule-date {
-            font-size: 1.1rem;
-            color: #fff;
-            letter-spacing: 1px;
-            display: flex; align-items: center;
-        }
-        .schedule-counts {
-            display: flex;
-            gap: 15px;
-            font-size: 1rem;
-            color: #ccc;
-            align-items: center;
-        }
-        .count-ok { color: #fff; font-weight: bold; }
-        .count-maybe { color: #aaa; }
-        .count-ng { color: #666; }
-        .count-symbol { margin-right: 2px; font-size: 0.9rem; }
-        
-        .crown-icon {
-            color: #ffd700;
-            font-size: 1.2rem;
-            margin-right: 8px;
-            filter: drop-shadow(0 0 5px rgba(255,215,0,0.6));
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-
-        /* Detail Modal Styles */
-        .detail-header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 15px;
-        }
-        .detail-date {
-            font-size: 1.4rem;
-            color: #fff;
-            letter-spacing: 2px;
-        }
-        .detail-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .member-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 5px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .member-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .member-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #333;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.8rem;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .member-name {
-            font-size: 1rem;
-            color: #fff;
-        }
-        .member-status {
-            font-size: 1.2rem;
-        }
-        .status-ok { color: #00ffff; text-shadow: 0 0 5px rgba(0,255,255,0.5); }
-        .status-maybe { color: #fff; }
-        .status-ng { color: #555; }
 
         /* =========================================
            TOP PAGE STYLES (NEW)
@@ -924,7 +747,7 @@
         </div>
     </div>
 
-    <!-- VIEW: SCHEDULE (REVERTED TO CODE NAME: 39) -->
+    <!-- VIEW: SCHEDULE -->
     <div id="view-schedule" class="view-section">
         <div class="section-title">MISSION SCHEDULE</div>
         <div style="text-align:center; margin: 15px 0 25px 0;">
@@ -1074,45 +897,72 @@
     // スケジュールデータ保存用
     let globalScheduleData = [];
 
-    // --- Firebase Init ---
-    // Use compat syntax
-    const firebaseConfig = JSON.parse(__firebase_config);
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    // --- Firebase Init (SAFETY WRAP) ---
+    // Use compat syntax inside try-catch to prevent crash
+    let app, auth, db;
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-    window.onload = function() {
-        initSelectors();
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
-        fetchAnalysisData();
-        fetchScheduleData(); // Real Fetch
-        fetchWeather(); // Get Weather
-        
-        // Restore last view from sessionStorage to keep page state on refresh
-        const lastView = sessionStorage.getItem('lastView');
-        if (lastView) {
-            switchMainView(lastView);
+    
+    try {
+        if(typeof firebase !== 'undefined') {
+            const firebaseConfig = JSON.parse(__firebase_config);
+            app = firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
         } else {
-            // Default to TOP
-            switchMainView('top'); 
+            console.warn("Firebase scripts not loaded yet.");
+        }
+    } catch(e) {
+        console.error("Firebase init failed:", e);
+    }
+
+    // MAIN ENTRY POINT
+    window.onload = function() {
+        // 1. FORCE LOADING SCREEN REMOVAL (Safety) - Ensures screen is never stuck
+        setTimeout(() => {
+            const ls = document.getElementById('loadingScreen');
+            if(ls && ls.style.display !== 'none') {
+                ls.style.opacity = 0;
+                setTimeout(() => { ls.style.display = 'none'; }, 800);
+            }
+        }, 2000); // 2 seconds max waiting time
+
+        // 2. Normal Initialization
+        try {
+            initSelectors();
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const dateEl = document.getElementById('matchDate');
+            if(dateEl) dateEl.textContent = `${yyyy}-${mm}-${dd}`;
+            
+            // Restore last view from sessionStorage to keep page state on refresh
+            const lastView = sessionStorage.getItem('lastView');
+            if (lastView) {
+                switchMainView(lastView);
+            } else {
+                // Default to TOP
+                switchMainView('top'); 
+            }
+
+            fetchAnalysisData();
+            fetchScheduleData(); // Real Fetch
+            fetchWeather(); // Get Weather
+        } catch(e) {
+            console.error("Main Init Error", e);
         }
 
-        setTimeout(() => {
-            document.getElementById('loadingScreen').style.opacity = 0;
-            setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
-        }, 1000);
-
-        // Auth
+        // 3. Auth with retry
         const initAuth = async () => {
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await auth.signInWithCustomToken(__initial_auth_token);
-          } else {
-            await auth.signInAnonymously();
+          try {
+              if(!auth) return;
+              if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await auth.signInWithCustomToken(__initial_auth_token);
+              } else {
+                await auth.signInAnonymously();
+              }
+          } catch(e) {
+              console.error("Auth Error", e);
           }
         };
         initAuth();
@@ -1164,11 +1014,13 @@
         const navs = document.querySelectorAll('.nav-item');
         // Update index for navigation active state
         // Order: [0]TOP [1]INPUT [2]DATA [3]RANK [4]SCHEDULE
-        if(viewName === 'top') navs[0].classList.add('active');
-        if(viewName === 'match') navs[1].classList.add('active');
-        if(viewName === 'dashboard') navs[2].classList.add('active');
-        if(viewName === 'ranking') navs[3].classList.add('active');
-        if(viewName === 'schedule') navs[4].classList.add('active');
+        if(navs.length >= 5) {
+            if(viewName === 'top') navs[0].classList.add('active');
+            if(viewName === 'match') navs[1].classList.add('active');
+            if(viewName === 'dashboard') navs[2].classList.add('active');
+            if(viewName === 'ranking') navs[3].classList.add('active');
+            if(viewName === 'schedule') navs[4].classList.add('active');
+        }
         
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         
@@ -1182,7 +1034,8 @@
             'ranking': 'RANKING', 
             'schedule': 'MISSION SCHEDULE' 
         };
-        document.getElementById('pageTitle').textContent = titles[viewName] || 'TENNIS CHRONICLES';
+        const titleEl = document.getElementById('pageTitle');
+        if(titleEl) titleEl.textContent = titles[viewName] || 'TENNIS CHRONICLES';
     }
 
     function manualReload() {
@@ -1217,6 +1070,7 @@
     // ================== WEATHER LOGIC (Open-Meteo) ==================
     async function fetchWeather() {
         const container = document.getElementById('weatherContainer');
+        if(!container) return;
         try {
             // Tokyo coordinates
             const url = 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=Asia%2FTokyo';
@@ -1339,14 +1193,20 @@
         document.getElementById('calcResult').innerText = '¥' + result.toLocaleString();
     }
 
-    // ================== SCHEDULE LOGIC (REVERTED TO CODE NAME: 39) ==================
+    // ================== SCHEDULE LOGIC (With Safety Guard) ==================
     function fetchScheduleData() {
         const list = document.getElementById('scheduleList');
         // GASからのレスポンスを待つ
         fetch(SCHEDULE_GAS_URL)
           .then(response => response.json())
           .then(data => {
-            globalScheduleData = data; // 保存
+            // Safety check for data format
+            if (!Array.isArray(data)) {
+                console.warn("Invalid data format for schedule");
+                list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ取得エラー</div>';
+                return;
+            }
+            globalScheduleData = data; 
             if(data.length === 0) {
                 list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">予定がありません</div>';
                 return;
@@ -1355,7 +1215,7 @@
           })
           .catch(error => {
             console.error(error);
-            list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ読み込みエラー<br>GAS URLを確認してください</div>';
+            list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">読み込みエラー<br>接続を確認してください</div>';
           });
     }
 
@@ -1363,17 +1223,26 @@
         const tabsContainer = document.getElementById('scheduleTabs');
         tabsContainer.innerHTML = "";
         
-        // 存在する月を抽出 (yyyy-mm)
-        const months = [...new Set(data.map(item => item.fullDate.substring(0, 7)))];
+        // Data guard: filter out items without fullDate
+        const validData = data.filter(item => item && item.fullDate);
+        
+        if (validData.length === 0) {
+             tabsContainer.innerHTML = '<div style="padding:5px; color:#666; font-size:0.8rem;">NO DATES</div>';
+             return;
+        }
+
+        // Extract unique months
+        const months = [...new Set(validData.map(item => item.fullDate.substring(0, 7)))];
         
         months.forEach((m, idx) => {
             const btn = document.createElement('div');
             btn.className = 'month-tab';
-            // 表示名: "2026-01" -> "1月"
-            const mNum = parseInt(m.split('-')[1]);
+            // Display name: "2026-01" -> "1月"
+            const parts = m.split('-');
+            const mNum = parts.length > 1 ? parseInt(parts[1]) : '?';
             btn.textContent = `${mNum}月`;
             btn.onclick = () => {
-                // タブ切り替え
+                // Tab switching
                 document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
                 btn.classList.add('active');
                 renderScheduleList(m);
@@ -1390,36 +1259,45 @@
         const list = document.getElementById('scheduleList');
         list.innerHTML = "";
         
-        // 選択された月のデータのみフィルタ
-        const filtered = globalScheduleData.filter(item => item.fullDate.startsWith(targetMonth));
+        if (!globalScheduleData) return;
+
+        // Filter data for selected month, with guards
+        const filtered = globalScheduleData.filter(item => 
+            item && item.fullDate && typeof item.fullDate === 'string' && item.fullDate.startsWith(targetMonth)
+        );
         
-        // その月で最も参加(ok)が多い数を探す
+        // Find max 'ok' count
         let maxOk = 0;
         filtered.forEach(item => {
-            if(item.counts.ok > maxOk) maxOk = item.counts.ok;
+            if(item.counts && item.counts.ok > maxOk) maxOk = item.counts.ok;
         });
 
         filtered.forEach((item, index) => {
+            if (!item) return;
+
             const li = document.createElement('li');
             li.className = 'schedule-item';
             
-            // 最多人数ならハイライト
+            // Highlight logic
             let crownHtml = "";
-            if (maxOk > 0 && item.counts.ok === maxOk) {
+            if (item.counts && maxOk > 0 && item.counts.ok === maxOk) {
                 li.classList.add('top-attendance');
                 crownHtml = '<span class="crown-icon">👑</span>';
             }
 
-            // クリック時にグローバルデータのインデックスではなく、フィルタ後のデータを使う必要があるため
-            // 直接オブジェクトを渡すか、フィルタ済みのインデックスを使う
             li.onclick = () => showScheduleDetail(item);
             
+            const okVal = (item.counts && item.counts.ok !== undefined) ? item.counts.ok : 0;
+            const maybeVal = (item.counts && item.counts.maybe !== undefined) ? item.counts.maybe : 0;
+            const ngVal = (item.counts && item.counts.ng !== undefined) ? item.counts.ng : 0;
+            const dateStr = item.date || 'Unknown';
+
             li.innerHTML = `
-                <div class="schedule-date">${crownHtml}${item.date}</div>
+                <div class="schedule-date">${crownHtml}${dateStr}</div>
                 <div class="schedule-counts">
-                    <span class="count-ok"><span class="count-symbol">◯</span>${item.counts.ok}</span>
-                    <span class="count-maybe"><span class="count-symbol">△</span>${item.counts.maybe}</span>
-                    <span class="count-ng"><span class="count-symbol">✕</span>${item.counts.ng}</span>
+                    <span class="count-ok"><span class="count-symbol">◯</span>${okVal}</span>
+                    <span class="count-maybe"><span class="count-symbol">△</span>${maybeVal}</span>
+                    <span class="count-ng"><span class="count-symbol">✕</span>${ngVal}</span>
                 </div>
             `;
             list.appendChild(li);
@@ -1427,24 +1305,25 @@
     }
 
     function showScheduleDetail(itemData) {
-        document.getElementById('modalScheduleDate').innerText = itemData.date;
+        document.getElementById('modalScheduleDate').innerText = itemData.date || '詳細';
         const list = document.getElementById('modalScheduleList');
         list.innerHTML = "";
         
         if (!itemData.details || itemData.details.length === 0) {
             list.innerHTML = '<li style="padding:20px; text-align:center; color:#888;">回答データなし</li>';
         } else {
-            // ok順、maybe順、ng順にソート
+            // Sort by status
             const sortedDetails = itemData.details.sort((a, b) => {
                 const rank = { "ok": 1, "maybe": 2, "ng": 3 };
-                return rank[a.status] - rank[b.status];
+                return (rank[a.status] || 99) - (rank[b.status] || 99);
             });
 
             sortedDetails.forEach(member => {
                 const li = document.createElement('li');
                 li.className = 'member-item';
                 
-                const initial = member.name.charAt(0);
+                const nameStr = member.name || '?';
+                const initial = nameStr.charAt(0);
                 let statusIcon = '';
                 if(member.status === 'ok') statusIcon = '<span class="status-ok">◯</span>';
                 else if(member.status === 'maybe') statusIcon = '<span class="status-maybe">△</span>';
@@ -1453,7 +1332,7 @@
                 li.innerHTML = `
                     <div class="member-info">
                         <div class="member-avatar">${initial}</div>
-                        <div class="member-name">${member.name}</div>
+                        <div class="member-name">${nameStr}</div>
                     </div>
                     <div class="member-status">${statusIcon}</div>
                 `;
