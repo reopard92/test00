@@ -1212,14 +1212,11 @@
         const list = document.getElementById('scheduleList');
         const infoBox = document.getElementById('topInfoBox');
         
-        // Cache busting to prevent stale data
+        // キャッシュ回避策：URLに時刻パラメータを付与して、毎回新しいデータを取得させる
         const url = SCHEDULE_GAS_URL + (SCHEDULE_GAS_URL.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
 
-        // Use credentials: 'omit' to avoid CORS issues with multiple Google accounts logged in
-        fetch(url, {
-            method: 'GET',
-            credentials: 'omit' 
-        })
+        // オプションなしのシンプルなGETリクエスト（これがGASとの通信で最も安定します）
+        fetch(url)
           .then(response => {
               if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1254,8 +1251,12 @@
             renderInfoSection(infoData);
           })
           .catch(error => {
-            console.error(error);
-            list.innerHTML = '<div style="padding:20px;text-align:center;color:#f55;font-size:0.8rem;">通信エラー<br>GASの公開設定(全員)を確認してください</div>';
+            console.error("Schedule Fetch Error:", error);
+            // エラーの詳細を表示
+            list.innerHTML = `<div style="padding:20px;text-align:center;color:#f55;font-size:0.8rem;">
+                通信エラーが発生しました。<br>
+                <span style="font-size:0.7rem; color:#aaa;">(GASのデプロイ更新忘れの可能性があります)</span>
+            </div>`;
           });
     }
 
