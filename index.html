@@ -365,6 +365,170 @@
         .no-data { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
 
         /* =========================================
+           MAP / INFO CARD STYLES
+           ========================================= */
+        .map-frame {
+            position: relative; width: 100%; padding-bottom: 75%; height: 0; 
+            overflow: hidden; border: 1px solid #00ffff; 
+            box-shadow: 0 0 15px rgba(0,255,255,0.15); margin-bottom: 20px;
+            background: #000;
+        }
+        .map-frame iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            /* Map filter for Sci-Fi look */
+            filter: invert(100%) hue-rotate(180deg) brightness(0.85) contrast(1.2) grayscale(0.5);
+        }
+        .info-card {
+            background: rgba(20, 30, 40, 0.6); 
+            border: 1px solid rgba(255,255,255,0.15); 
+            padding: 20px; 
+            border-left: 3px solid #00ffff;
+            animation: fadeIn 0.5s ease;
+        }
+        .info-row {
+            display: flex; margin-bottom: 12px; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            padding-bottom: 6px;
+        }
+        .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .info-label { width: 80px; color: #00ffff; font-size: 0.75rem; letter-spacing: 1px; align-self: center; }
+        .info-val { color: #fff; font-size: 0.9rem; flex: 1; word-break: break-all; }
+        .empty-map-state {
+            text-align: center; padding: 60px 0; color: #666; 
+            font-family: 'Courier New', monospace; letter-spacing: 2px;
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+
+        /* =========================================
+           SCHEDULE VIEW STYLES
+           ========================================= */
+        .month-tabs-area {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .month-tab {
+            background: rgba(255,255,255,0.1);
+            color: #888;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .month-tab.active {
+            background: #00ffff;
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0,255,255,0.3);
+        }
+
+        .schedule-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+        .schedule-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        .schedule-item.top-attendance {
+            background: linear-gradient(90deg, rgba(0,255,255,0.1), transparent);
+            border-left: 3px solid #00ffff;
+        }
+        .schedule-date {
+            font-size: 1.1rem;
+            color: #fff;
+            letter-spacing: 1px;
+            display: flex; align-items: center;
+        }
+        .schedule-counts {
+            display: flex;
+            gap: 15px;
+            font-size: 1rem;
+            color: #ccc;
+            align-items: center;
+        }
+        .count-ok { color: #fff; font-weight: bold; }
+        .count-maybe { color: #aaa; }
+        .count-ng { color: #666; }
+        .count-symbol { margin-right: 2px; font-size: 0.9rem; }
+        
+        .crown-icon {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-right: 8px;
+            filter: drop-shadow(0 0 5px rgba(255,215,0,0.6));
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* Detail Modal Styles */
+        .detail-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+        }
+        .detail-date {
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+        .detail-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #333;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .member-name {
+            font-size: 1rem;
+            color: #fff;
+        }
+        .member-status {
+            font-size: 1.2rem;
+        }
+        .status-ok { color: #00ffff; text-shadow: 0 0 5px rgba(0,255,255,0.5); }
+        .status-maybe { color: #fff; }
+        .status-ng { color: #555; }
+
+        /* =========================================
            TOP PAGE STYLES (NEW)
            ========================================= */
         .next-match-card {
@@ -747,16 +911,16 @@
         </div>
     </div>
 
-    <!-- VIEW: SCHEDULE -->
+    <!-- VIEW: SCHEDULE (RESTORED TO ORIGINAL VISUAL) -->
     <div id="view-schedule" class="view-section">
         <div class="section-title">MISSION SCHEDULE</div>
         <div style="text-align:center; margin: 15px 0 25px 0;">
             <a href="https://liff.line.me/2008858372-NgwrDQlQ" target="_blank" style="color:#00ffff; text-decoration:none; border-bottom:1px solid #00ffff; padding-bottom:3px; font-size:0.9rem; letter-spacing:1px;">日程調整記入はこちらから ↗</a>
         </div>
         <div id="scheduleTabs" class="month-tabs-area"></div>
-        <div id="scheduleList" class="schedule-list">
+        <ul id="scheduleList" class="schedule-list">
             <div style="padding:20px; text-align:center; color:#888;">LOADING DATA...</div>
-        </div>
+        </ul>
     </div>
 
     <!-- VIEW: GAME PORTAL -->
@@ -854,6 +1018,17 @@
 </div>
 
 <div id="toast"></div>
+
+<!-- FORCE LOADING REMOVAL SCRIPT -->
+<script>
+    setTimeout(function() {
+        var ls = document.getElementById('loadingScreen');
+        if(ls) {
+            ls.style.opacity = '0';
+            setTimeout(function() { ls.style.display = 'none'; }, 800);
+        }
+    }, 3000);
+</script>
 
 <script>
     if ('serviceWorker' in navigator) {
@@ -1193,29 +1368,28 @@
         document.getElementById('calcResult').innerText = '¥' + result.toLocaleString();
     }
 
-    // ================== SCHEDULE LOGIC (With Safety Guard) ==================
+    // ================== SCHEDULE LOGIC (RESTORED EXACTLY TO TURN 1) ==================
     function fetchScheduleData() {
         const list = document.getElementById('scheduleList');
-        // GASからのレスポンスを待つ
         fetch(SCHEDULE_GAS_URL)
           .then(response => response.json())
           .then(data => {
-            // Safety check for data format
-            if (!Array.isArray(data)) {
-                console.warn("Invalid data format for schedule");
-                list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ取得エラー</div>';
-                return;
+            // Safety: wrap global init
+            try {
+                globalScheduleData = data; 
+                if(data.length === 0) {
+                    list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">予定がありません</div>';
+                    return;
+                }
+                initScheduleTabs(data);
+            } catch(e) {
+                console.error("Data process error", e);
+                list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ処理エラー</div>';
             }
-            globalScheduleData = data; 
-            if(data.length === 0) {
-                list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">予定がありません</div>';
-                return;
-            }
-            initScheduleTabs(data);
           })
           .catch(error => {
             console.error(error);
-            list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">読み込みエラー<br>接続を確認してください</div>';
+            list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ読み込みエラー<br>GAS URLを確認してください</div>';
           });
     }
 
@@ -1223,107 +1397,97 @@
         const tabsContainer = document.getElementById('scheduleTabs');
         tabsContainer.innerHTML = "";
         
-        // Data guard: filter out items without fullDate
-        const validData = data.filter(item => item && item.fullDate);
-        
-        if (validData.length === 0) {
-             tabsContainer.innerHTML = '<div style="padding:5px; color:#666; font-size:0.8rem;">NO DATES</div>';
-             return;
+        // Exact logic from Turn 1, added try-catch for safety
+        try {
+            const months = [...new Set(data.map(item => item.fullDate.substring(0, 7)))];
+            
+            months.forEach((m, idx) => {
+                const btn = document.createElement('div');
+                btn.className = 'month-tab';
+                // 表示名: "2026-01" -> "1月"
+                const parts = m.split('-');
+                const mNum = parts.length > 1 ? parseInt(parts[1]) : '?';
+                btn.textContent = `${mNum}月`;
+                btn.onclick = () => {
+                    // タブ切り替え
+                    document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderScheduleList(m);
+                };
+                if(idx === 0) {
+                    btn.classList.add('active');
+                    renderScheduleList(m);
+                }
+                tabsContainer.appendChild(btn);
+            });
+        } catch(e) {
+            console.error("Tabs Init Error", e);
         }
-
-        // Extract unique months
-        const months = [...new Set(validData.map(item => item.fullDate.substring(0, 7)))];
-        
-        months.forEach((m, idx) => {
-            const btn = document.createElement('div');
-            btn.className = 'month-tab';
-            // Display name: "2026-01" -> "1月"
-            const parts = m.split('-');
-            const mNum = parts.length > 1 ? parseInt(parts[1]) : '?';
-            btn.textContent = `${mNum}月`;
-            btn.onclick = () => {
-                // Tab switching
-                document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
-                btn.classList.add('active');
-                renderScheduleList(m);
-            };
-            if(idx === 0) {
-                btn.classList.add('active');
-                renderScheduleList(m);
-            }
-            tabsContainer.appendChild(btn);
-        });
     }
 
     function renderScheduleList(targetMonth) {
         const list = document.getElementById('scheduleList');
         list.innerHTML = "";
         
-        if (!globalScheduleData) return;
-
-        // Filter data for selected month, with guards
-        const filtered = globalScheduleData.filter(item => 
-            item && item.fullDate && typeof item.fullDate === 'string' && item.fullDate.startsWith(targetMonth)
-        );
-        
-        // Find max 'ok' count
-        let maxOk = 0;
-        filtered.forEach(item => {
-            if(item.counts && item.counts.ok > maxOk) maxOk = item.counts.ok;
-        });
-
-        filtered.forEach((item, index) => {
-            if (!item) return;
-
-            const li = document.createElement('li');
-            li.className = 'schedule-item';
+        try {
+            // 選択された月のデータのみフィルタ
+            const filtered = globalScheduleData.filter(item => item.fullDate.startsWith(targetMonth));
             
-            // Highlight logic
-            let crownHtml = "";
-            if (item.counts && maxOk > 0 && item.counts.ok === maxOk) {
-                li.classList.add('top-attendance');
-                crownHtml = '<span class="crown-icon">👑</span>';
-            }
+            // その月で最も参加(ok)が多い数を探す
+            let maxOk = 0;
+            filtered.forEach(item => {
+                if(item.counts.ok > maxOk) maxOk = item.counts.ok;
+            });
 
-            li.onclick = () => showScheduleDetail(item);
-            
-            const okVal = (item.counts && item.counts.ok !== undefined) ? item.counts.ok : 0;
-            const maybeVal = (item.counts && item.counts.maybe !== undefined) ? item.counts.maybe : 0;
-            const ngVal = (item.counts && item.counts.ng !== undefined) ? item.counts.ng : 0;
-            const dateStr = item.date || 'Unknown';
+            filtered.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'schedule-item';
+                
+                // 最多人数ならハイライト
+                let crownHtml = "";
+                if (maxOk > 0 && item.counts.ok === maxOk) {
+                    li.classList.add('top-attendance');
+                    crownHtml = '<span class="crown-icon">👑</span>';
+                }
 
-            li.innerHTML = `
-                <div class="schedule-date">${crownHtml}${dateStr}</div>
-                <div class="schedule-counts">
-                    <span class="count-ok"><span class="count-symbol">◯</span>${okVal}</span>
-                    <span class="count-maybe"><span class="count-symbol">△</span>${maybeVal}</span>
-                    <span class="count-ng"><span class="count-symbol">✕</span>${ngVal}</span>
-                </div>
-            `;
-            list.appendChild(li);
-        });
+                // クリック時にグローバルデータのインデックスではなく、フィルタ後のデータを使う必要があるため
+                // 直接オブジェクトを渡すか、フィルタ済みのインデックスを使う
+                li.onclick = () => showScheduleDetail(item);
+                
+                li.innerHTML = `
+                    <div class="schedule-date">${crownHtml}${item.date}</div>
+                    <div class="schedule-counts">
+                        <span class="count-ok"><span class="count-symbol">◯</span>${item.counts.ok}</span>
+                        <span class="count-maybe"><span class="count-symbol">△</span>${item.counts.maybe}</span>
+                        <span class="count-ng"><span class="count-symbol">✕</span>${item.counts.ng}</span>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        } catch(e) {
+            console.error("Render List Error", e);
+        }
     }
 
     function showScheduleDetail(itemData) {
-        document.getElementById('modalScheduleDate').innerText = itemData.date || '詳細';
+        document.getElementById('modalScheduleDate').innerText = itemData.date;
         const list = document.getElementById('modalScheduleList');
         list.innerHTML = "";
         
         if (!itemData.details || itemData.details.length === 0) {
             list.innerHTML = '<li style="padding:20px; text-align:center; color:#888;">回答データなし</li>';
         } else {
-            // Sort by status
+            // ok順、maybe順、ng順にソート
             const sortedDetails = itemData.details.sort((a, b) => {
                 const rank = { "ok": 1, "maybe": 2, "ng": 3 };
-                return (rank[a.status] || 99) - (rank[b.status] || 99);
+                return rank[a.status] - rank[b.status];
             });
 
             sortedDetails.forEach(member => {
                 const li = document.createElement('li');
                 li.className = 'member-item';
                 
-                const nameStr = member.name || '?';
-                const initial = nameStr.charAt(0);
+                const initial = member.name.charAt(0);
                 let statusIcon = '';
                 if(member.status === 'ok') statusIcon = '<span class="status-ok">◯</span>';
                 else if(member.status === 'maybe') statusIcon = '<span class="status-maybe">△</span>';
@@ -1332,7 +1496,7 @@
                 li.innerHTML = `
                     <div class="member-info">
                         <div class="member-avatar">${initial}</div>
-                        <div class="member-name">${nameStr}</div>
+                        <div class="member-name">${member.name}</div>
                     </div>
                     <div class="member-status">${statusIcon}</div>
                 `;
