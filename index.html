@@ -365,170 +365,6 @@
         .no-data { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
 
         /* =========================================
-           MAP / INFO CARD STYLES
-           ========================================= */
-        .map-frame {
-            position: relative; width: 100%; padding-bottom: 75%; height: 0; 
-            overflow: hidden; border: 1px solid #00ffff; 
-            box-shadow: 0 0 15px rgba(0,255,255,0.15); margin-bottom: 20px;
-            background: #000;
-        }
-        .map-frame iframe {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            /* Map filter for Sci-Fi look */
-            filter: invert(100%) hue-rotate(180deg) brightness(0.85) contrast(1.2) grayscale(0.5);
-        }
-        .info-card {
-            background: rgba(20, 30, 40, 0.6); 
-            border: 1px solid rgba(255,255,255,0.15); 
-            padding: 20px; 
-            border-left: 3px solid #00ffff;
-            animation: fadeIn 0.5s ease;
-        }
-        .info-row {
-            display: flex; margin-bottom: 12px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-            padding-bottom: 6px;
-        }
-        .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .info-label { width: 80px; color: #00ffff; font-size: 0.75rem; letter-spacing: 1px; align-self: center; }
-        .info-val { color: #fff; font-size: 0.9rem; flex: 1; word-break: break-all; }
-        .empty-map-state {
-            text-align: center; padding: 60px 0; color: #666; 
-            font-family: 'Courier New', monospace; letter-spacing: 2px;
-            border: 1px dashed rgba(255,255,255,0.1);
-        }
-
-        /* =========================================
-           SCHEDULE VIEW STYLES
-           ========================================= */
-        .month-tabs-area {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .month-tab {
-            background: rgba(255,255,255,0.1);
-            color: #888;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: 0.3s;
-        }
-        .month-tab.active {
-            background: #00ffff;
-            color: #000;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(0,255,255,0.3);
-        }
-
-        .schedule-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .schedule-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer;
-            transition: background 0.2s;
-            position: relative;
-        }
-        .schedule-item:hover {
-            background: rgba(255,255,255,0.05);
-        }
-        .schedule-item.top-attendance {
-            background: linear-gradient(90deg, rgba(0,255,255,0.1), transparent);
-            border-left: 3px solid #00ffff;
-        }
-        .schedule-date {
-            font-size: 1.1rem;
-            color: #fff;
-            letter-spacing: 1px;
-            display: flex; align-items: center;
-        }
-        .schedule-counts {
-            display: flex;
-            gap: 15px;
-            font-size: 1rem;
-            color: #ccc;
-            align-items: center;
-        }
-        .count-ok { color: #fff; font-weight: bold; }
-        .count-maybe { color: #aaa; }
-        .count-ng { color: #666; }
-        .count-symbol { margin-right: 2px; font-size: 0.9rem; }
-        
-        .crown-icon {
-            color: #ffd700;
-            font-size: 1.2rem;
-            margin-right: 8px;
-            filter: drop-shadow(0 0 5px rgba(255,215,0,0.6));
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-
-        /* Detail Modal Styles */
-        .detail-header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 15px;
-        }
-        .detail-date {
-            font-size: 1.4rem;
-            color: #fff;
-            letter-spacing: 2px;
-        }
-        .detail-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .member-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 5px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .member-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .member-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #333;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.8rem;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .member-name {
-            font-size: 1rem;
-            color: #fff;
-        }
-        .member-status {
-            font-size: 1.2rem;
-        }
-        .status-ok { color: #00ffff; text-shadow: 0 0 5px rgba(0,255,255,0.5); }
-        .status-maybe { color: #fff; }
-        .status-ng { color: #555; }
-
-        /* =========================================
            TOP PAGE STYLES (NEW)
            ========================================= */
         .next-match-card {
@@ -583,8 +419,14 @@
             color: #ccc;
             font-size: 0.9rem;
         }
-        .info-box p { margin-bottom: 10px; }
-        .info-box p:last-child { margin-bottom: 0; }
+        .info-box p { margin-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;}
+        .info-box p:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+        .info-date { color: #00ffff; font-size: 0.8rem; margin-right: 10px; }
+        .info-content { color: #eee; }
+        .info-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 2px; margin-right: 8px; }
+        .tag-update { background: rgba(0,255,255,0.2); color: #00ffff; }
+        .tag-alert { background: rgba(255,80,80,0.2); color: #ff5050; }
+        .tag-info { background: rgba(255,255,255,0.1); color: #aaa; }
 
         /* Court Detail Modal */
         .info-card {
@@ -789,11 +631,8 @@
         </div>
 
         <div class="section-title">INFORMATION</div>
-        <div class="info-box">
-            <p style="color:#00ffff;">■ SYSTEM UPDATE: CODE NAME 43</p>
-            <p>・トップページを追加しました。</p>
-            <p>・MAP機能をトップページに統合しました。</p>
-            <p>・気象観測モジュールを実装しました。</p>
+        <div class="info-box" id="topInfoBox">
+            <div style="padding:10px; color:#888;">LOADING INFO...</div>
         </div>
     </div>
 
@@ -1044,7 +883,7 @@
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtWaBkvdPNzkN1_7lmFRnAQLbnu6A40YUQdbzX6gTfIY5CznZs13GYxZw/exec";
     
     // 【重要】ここに「STEP 1」でデプロイした新しいGASのURLを貼ってください！
-    const SCHEDULE_GAS_URL = "https://script.google.com/macros/s/AKfycbxkywDklSyaMf93hYhG-ULAyAEQ1qHGgaYjNewTxX34pfySOZKYsbwehygCccEvnchB/exec";
+    const SCHEDULE_GAS_URL = "https://script.google.com/macros/s/AKfycbwKbZyZCV-Jy_P6xOSDYMp3EWDuwfBSO7cj9hKDs9D3IPMIV4BWYTwCgdfl1pkESbX6TA/exec";
     
     const members = ["周平", "すが", "凌矢", "祐介", "志村", "カトケン", "小田"];
     const STORAGE_KEY = 'tennis_match_data_v7_holo';
@@ -1368,29 +1207,80 @@
         document.getElementById('calcResult').innerText = '¥' + result.toLocaleString();
     }
 
-    // ================== SCHEDULE LOGIC (RESTORED EXACTLY TO TURN 1) ==================
+    // ================== SCHEDULE LOGIC (RESTORED + NEW INFO LOGIC) ==================
     function fetchScheduleData() {
         const list = document.getElementById('scheduleList');
-        fetch(SCHEDULE_GAS_URL)
-          .then(response => response.json())
+        const infoBox = document.getElementById('topInfoBox');
+        
+        // Cache busting to prevent stale data
+        const url = SCHEDULE_GAS_URL + (SCHEDULE_GAS_URL.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+
+        // Use credentials: 'omit' to avoid CORS issues with multiple Google accounts logged in
+        fetch(url, {
+            method: 'GET',
+            credentials: 'omit' 
+        })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+          })
           .then(data => {
-            // Safety: wrap global init
-            try {
-                globalScheduleData = data; 
-                if(data.length === 0) {
-                    list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">予定がありません</div>';
-                    return;
-                }
-                initScheduleTabs(data);
-            } catch(e) {
-                console.error("Data process error", e);
-                list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ処理エラー</div>';
+            // Check data structure: Old Array vs New Object
+            let scheduleData = [];
+            let infoData = [];
+
+            if (Array.isArray(data)) {
+                scheduleData = data;
+            } else if (data.schedule) {
+                scheduleData = data.schedule;
+                infoData = data.info || [];
+            } else {
+                // Fallback or Empty
+                scheduleData = [];
             }
+
+            globalScheduleData = scheduleData;
+            
+            // Render Schedule
+            if(scheduleData.length === 0) {
+                list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">予定がありません</div>';
+            } else {
+                initScheduleTabs(scheduleData);
+            }
+
+            // Render Info
+            renderInfoSection(infoData);
           })
           .catch(error => {
             console.error(error);
-            list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ読み込みエラー<br>GAS URLを確認してください</div>';
+            list.innerHTML = '<div style="padding:20px;text-align:center;color:#f55;font-size:0.8rem;">通信エラー<br>GASの公開設定(全員)を確認してください</div>';
           });
+    }
+
+    function renderInfoSection(infoList) {
+        const box = document.getElementById('topInfoBox');
+        if (!infoList || infoList.length === 0) {
+            box.innerHTML = '<p style="color:#888;">No recent updates.</p>';
+            return;
+        }
+        
+        let html = "";
+        infoList.forEach(item => {
+            let tagClass = "tag-info";
+            if (item.type === 'UPDATE') tagClass = "tag-update";
+            if (item.type === 'ALERT') tagClass = "tag-alert";
+            
+            html += `
+                <p>
+                    <span class="info-tag ${tagClass}">${item.type}</span>
+                    <span class="info-date">${item.date}</span>
+                    <span class="info-content">${item.content}</span>
+                </p>
+            `;
+        });
+        box.innerHTML = html;
     }
 
     function initScheduleTabs(data) {
