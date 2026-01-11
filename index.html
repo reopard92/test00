@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 43</title>
+    <title>CODE NAME: 45</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -11,15 +11,9 @@
     <link rel="apple-touch-icon" href="./icon.png">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Firebase Compat Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
-
     <style>
         /* =========================================
-           GLOBAL THEME: DEEP SPACE (CODE NAME: 43)
+           GLOBAL THEME: DEEP SPACE (CODE NAME: 45)
            ========================================= */
         body {
             font-family: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
@@ -118,7 +112,7 @@
             font-size: 2rem; /* Restore simple icon size */
         }
 
-        /* --- SIDE MENU ANIMATION --- */
+        /* --- SIDE MENU ANIMATION (FIXED) --- */
         .side-menu-overlay {
             position: fixed;
             top: 0;
@@ -128,10 +122,12 @@
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(10px);
             z-index: 6000;
+            
             visibility: hidden;
             opacity: 0;
             display: flex; 
             justify-content: flex-end;
+            
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
         .side-menu-overlay.open {
@@ -147,12 +143,14 @@
             padding-top: 90px;
             display: flex;
             flex-direction: column;
+            
             transform: translateX(100%);
             transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .side-menu-overlay.open .side-menu-content {
             transform: translateX(0);
         }
+
         .menu-item {
             padding: 20px 30px;
             color: #fff;
@@ -161,16 +159,20 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
             cursor: pointer;
             text-transform: uppercase;
+            
             opacity: 0;
             transform: translateX(30px);
             transition: all 0.4s ease;
         }
+        
         .side-menu-overlay.open .menu-item {
             opacity: 1;
             transform: translateX(0);
         }
         .side-menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.2s; }
         .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.3s; }
+        .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.4s; } /* My Page */
+
         .menu-item:hover {
             background: rgba(0,255,255,0.1);
             padding-left: 40px;
@@ -325,7 +327,7 @@
         .log-date { color: #fff; font-weight: bold; font-size: 1rem; }
         .log-content { display: none; padding: 15px; background: rgba(0, 0, 0, 0.3); }
         .log-content.open { display: block; animation: fadeIn 0.3s; }
-        #playerModal, #coinGameModal, #scheduleDetailModal, #courtDetailModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
+        #playerModal, #coinGameModal, #scheduleDetailModal, #loginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: rgba(15, 20, 30, 0.95); border: 1px solid #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; }
         .close-btn { position: absolute; top: 15px; right: 15px; color: #fff; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
         .modal-title { color: #fff; font-weight: 300; text-align: center; font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 2px; }
@@ -365,70 +367,19 @@
         .no-data { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
 
         /* =========================================
-           TOP PAGE STYLES (NEW)
+           MAP / INFO CARD STYLES
            ========================================= */
-        .next-match-card {
-            background: linear-gradient(135deg, rgba(20, 30, 40, 0.9) 0%, rgba(10, 15, 20, 0.95) 100%);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-left: 4px solid #00ffff;
-            padding: 25px 20px;
-            margin-bottom: 40px;
-            position: relative;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        .map-frame {
+            position: relative; width: 100%; padding-bottom: 75%; height: 0; 
+            overflow: hidden; border: 1px solid #00ffff; 
+            box-shadow: 0 0 15px rgba(0,255,255,0.15); margin-bottom: 20px;
+            background: #000;
         }
-        .next-match-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-            background: linear-gradient(135deg, rgba(30, 40, 50, 0.9) 0%, rgba(20, 25, 35, 0.95) 100%);
+        .map-frame iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            /* Map filter for Sci-Fi look */
+            filter: invert(100%) hue-rotate(180deg) brightness(0.85) contrast(1.2) grayscale(0.5);
         }
-        .next-label {
-            font-size: 0.75rem; color: #00ffff; letter-spacing: 2px; margin-bottom: 10px; display: block;
-        }
-        .next-date {
-            font-size: 1.8rem; color: #fff; font-weight: 300; letter-spacing: 1px; margin-bottom: 5px;
-        }
-        .next-place {
-            font-size: 1.1rem; color: #ccc;
-        }
-        .tap-hint {
-            position: absolute; bottom: 15px; right: 15px; font-size: 0.7rem; color: #666;
-        }
-
-        .weather-grid {
-            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 30px;
-        }
-        .weather-item {
-            min-width: 90px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px 10px;
-            text-align: center;
-            border-radius: 4px;
-        }
-        .w-date { font-size: 0.8rem; color: #aaa; margin-bottom: 5px; }
-        .w-icon { font-size: 2rem; margin: 10px 0; }
-        .w-temp { font-size: 0.9rem; color: #fff; }
-        .w-wind { font-size: 0.7rem; color: #00ffff; margin-top: 5px; }
-
-        .info-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            color: #ccc;
-            font-size: 0.9rem;
-        }
-        .info-box p { margin-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;}
-        .info-box p:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
-        .info-date { color: #00ffff; font-size: 0.8rem; margin-right: 10px; }
-        .info-content { color: #eee; }
-        .info-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 2px; margin-right: 8px; }
-        .tag-update { background: rgba(0,255,255,0.2); color: #00ffff; }
-        .tag-alert { background: rgba(255,80,80,0.2); color: #ff5050; }
-        .tag-info { background: rgba(255,255,255,0.1); color: #aaa; }
-
-        /* Court Detail Modal */
         .info-card {
             background: rgba(20, 30, 40, 0.6); 
             border: 1px solid rgba(255,255,255,0.15); 
@@ -444,6 +395,187 @@
         .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .info-label { width: 80px; color: #00ffff; font-size: 0.75rem; letter-spacing: 1px; align-self: center; }
         .info-val { color: #fff; font-size: 0.9rem; flex: 1; word-break: break-all; }
+        .empty-map-state {
+            text-align: center; padding: 60px 0; color: #666; 
+            font-family: 'Courier New', monospace; letter-spacing: 2px;
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+
+        /* =========================================
+           SCHEDULE VIEW STYLES
+           ========================================= */
+        .month-tabs-area {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .month-tab {
+            background: rgba(255,255,255,0.1);
+            color: #888;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .month-tab.active {
+            background: #00ffff;
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0,255,255,0.3);
+        }
+
+        .schedule-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+        .schedule-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        .schedule-item.top-attendance {
+            background: linear-gradient(90deg, rgba(0,255,255,0.1), transparent);
+            border-left: 3px solid #00ffff;
+        }
+        .schedule-date {
+            font-size: 1.1rem;
+            color: #fff;
+            letter-spacing: 1px;
+            display: flex; align-items: center;
+        }
+        .schedule-counts {
+            display: flex;
+            gap: 15px;
+            font-size: 1rem;
+            color: #ccc;
+            align-items: center;
+        }
+        .count-ok { color: #fff; font-weight: bold; }
+        .count-maybe { color: #aaa; }
+        .count-ng { color: #666; }
+        .count-symbol { margin-right: 2px; font-size: 0.9rem; }
+        
+        .crown-icon {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-right: 8px;
+            filter: drop-shadow(0 0 5px rgba(255,215,0,0.6));
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* Detail Modal Styles */
+        .detail-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+        }
+        .detail-date {
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+        .detail-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #333;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .member-name {
+            font-size: 1rem;
+            color: #fff;
+        }
+        .member-status {
+            font-size: 1.2rem;
+        }
+        .status-ok { color: #00ffff; text-shadow: 0 0 5px rgba(0,255,255,0.5); }
+        .status-maybe { color: #fff; }
+        .status-ng { color: #555; }
+        
+        /* WEATHER WIDGET STYLES */
+        .weather-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .weather-container::-webkit-scrollbar { display: none; }
+        .weather-card {
+            min-width: 80px;
+            background: rgba(20, 30, 40, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .weather-date { font-size: 0.7rem; color: #888; margin-bottom: 5px; letter-spacing: 1px; }
+        .weather-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .weather-temp { font-size: 0.8rem; color: #fff; }
+        .weather-rain { font-size: 0.7rem; color: #81d4fa; margin-top: 2px; }
+        .weather-card.today { border-color: #00ffff; background: rgba(0, 255, 255, 0.05); }
+
+        /* MY PAGE STYLES */
+        .login-input-group { text-align:center; margin-bottom:20px; }
+        .login-input { 
+            background: rgba(0,0,0,0.5); border: 1px solid #00ffff; color: #00ffff; 
+            padding: 10px; font-size: 1.2rem; text-align: center; letter-spacing: 5px; width: 200px;
+            border-radius: 4px; outline: none;
+        }
+        .login-btn {
+            background: #00ffff; color: #000; font-weight: bold; border: none;
+            padding: 10px 30px; letter-spacing: 2px; cursor: pointer; border-radius: 2px;
+            box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: 0.3s;
+        }
+        .login-btn:hover { box-shadow: 0 0 25px rgba(0,255,255,0.8); background: #fff; }
+        .error-msg { color: #ff5252; font-size: 0.8rem; margin-top: 10px; min-height: 1.2em; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
+        
+        .mypage-header { text-align: center; margin-bottom: 30px; }
+        .commander-title { font-size: 0.8rem; color: #888; letter-spacing: 3px; }
+        .commander-name { font-size: 2rem; color: #fff; font-weight: 300; text-shadow: 0 0 15px rgba(255,255,255,0.5); margin: 5px 0; }
+        .logout-btn { background: transparent; border: 1px solid rgba(255,50,50,0.5); color: #ff5252; padding: 5px 15px; font-size: 0.7rem; cursor: pointer; margin-top: 10px; }
 
         /* =========================================
            SMARTPHONE OPTIMIZATION
@@ -604,40 +736,57 @@
     <div class="side-menu-content">
         <div class="menu-item active" onclick="selectAppMode('tennis')">🎾 TENNIS</div>
         <div class="menu-item" onclick="selectAppMode('game')">🎮 GAME</div>
+        <div class="menu-item" onclick="openMyPage()">👤 MY PAGE</div>
     </div>
 </div>
 
 <div class="container">
     <header class="app-header">
         <div class="header-btn left" onclick="manualReload()">↻</div>
-        <h1 id="pageTitle">CODE NAME: 43</h1>
+        <h1 id="pageTitle">MATCH INPUT</h1>
         <div class="subtitle">DEEP SPACE INTEGRATED SYSTEM</div>
         <div class="header-btn right" id="menuToggleBtn" onclick="toggleSideMenu()">≡</div>
     </header>
-
-    <!-- VIEW: TOP PAGE (NEW) -->
-    <div id="view-top" class="view-section active">
-        <div class="section-title">NEXT MISSION</div>
-        <div id="nextMatchCard" class="next-match-card" onclick="showCourtDetail('MOGUSA')">
-            <span class="next-label">SCHEDULED</span>
-            <div class="next-date">2026.02.15 (Sun)</div>
-            <div class="next-place">百草テニスガーデン | 13:00 - 17:00</div>
-            <div class="tap-hint">TAP FOR DETAIL</div>
+    
+    <!-- TOP SECTION -->
+    <div id="view-top" class="view-section">
+        <div class="section-title">WEATHER FORECAST</div>
+        <div id="weather-forecast" class="weather-container">
+            <div class="weather-card"><div class="spinning">❖</div></div>
         </div>
 
-        <div class="section-title">TOKYO WEATHER EST.</div>
-        <div id="weatherContainer" class="weather-grid">
-            <div style="padding:15px; color:#888;">SCANNING ATMOSPHERE...</div>
+        <div class="section-title">COURT NAVIGATION</div>
+        <div class="sector-filter-area" style="text-align:center; margin-bottom:20px;">
+            <select id="mapSectorSelect" class="sector-select" onchange="renderMapInfo(this.value)">
+                <option value="-">SELECT SECTOR</option>
+                <option value="MOGUSA">百草テニスガーデン</option>
+                <option value="NERIMA">練馬ステップイン</option>
+            </select>
         </div>
-
-        <div class="section-title">INFORMATION</div>
-        <div class="info-box" id="topInfoBox">
-            <div style="padding:10px; color:#888;">LOADING INFO...</div>
+        <div id="mapContainer">
+            <div class="empty-map-state">
+                <div class="spinning" style="display:inline-block; margin-bottom:10px;">❖</div><br>
+                WAITING FOR NAVI INPUT...
+            </div>
         </div>
     </div>
 
-    <!-- VIEW: MATCH INPUT -->
-    <div id="view-match" class="view-section">
+    <!-- MY PAGE SECTION (NEW) -->
+    <div id="view-mypage" class="view-section">
+        <div class="mypage-header">
+            <div class="commander-title">COMMANDER IDENTITY</div>
+            <div class="commander-name" id="myPageName">UNKNOWN</div>
+            <button class="logout-btn" onclick="logout()">TERMINATE SESSION</button>
+        </div>
+        
+        <div class="section-title">PERSONAL STATUS</div>
+        <div id="myPageStats"></div>
+        
+        <div class="section-title" style="margin-top:30px;">MEDAL COLLECTION</div>
+        <div id="myPageMedals" class="modal-medals"></div>
+    </div>
+
+    <div id="view-match" class="view-section active">
         <div class="input-header-area">
             <div id="matchDate"></div>
             <select id="courtSelect" onchange="saveState()" disabled>
@@ -698,7 +847,6 @@
         <button id="sendButton" class="btn-send" onclick="sendToSpreadsheet()" disabled>TRANSMIT DATA</button>
     </div>
 
-    <!-- VIEW: DATA -->
     <div id="view-dashboard" class="view-section">
         <div class="section-title">活動状況サマリー</div>
         <div class="dashboard-grid">
@@ -715,7 +863,6 @@
         <div id="logsContainer"></div>
     </div>
 
-    <!-- VIEW: RANKING -->
     <div id="view-ranking" class="view-section">
         <div class="section-title">通算個人ランキング</div>
         <div class="sector-filter-area" style="text-align:center; margin-bottom:20px;">
@@ -750,19 +897,17 @@
         </div>
     </div>
 
-    <!-- VIEW: SCHEDULE (RESTORED TO ORIGINAL VISUAL) -->
     <div id="view-schedule" class="view-section">
         <div class="section-title">MISSION SCHEDULE</div>
         <div style="text-align:center; margin: 15px 0 25px 0;">
             <a href="https://liff.line.me/2008858372-NgwrDQlQ" target="_blank" style="color:#00ffff; text-decoration:none; border-bottom:1px solid #00ffff; padding-bottom:3px; font-size:0.9rem; letter-spacing:1px;">日程調整記入はこちらから ↗</a>
         </div>
         <div id="scheduleTabs" class="month-tabs-area"></div>
-        <ul id="scheduleList" class="schedule-list">
+        <div id="scheduleList" class="schedule-list">
             <div style="padding:20px; text-align:center; color:#888;">LOADING DATA...</div>
-        </ul>
+        </div>
     </div>
 
-    <!-- VIEW: GAME PORTAL -->
     <div id="view-game" class="view-section">
         <div class="game-hero">
             <div class="game-tag">DEV PHASE 1</div>
@@ -802,6 +947,28 @@
     <button class="nav-item" onclick="switchMainView('ranking')"><span class="nav-icon">👑</span>RANK</button>
     <button class="nav-item" onclick="switchMainView('schedule')"><span class="nav-icon">📅</span>SCHEDULE</button>
 </nav>
+
+<!-- LOGIN MODAL (NEW) -->
+<div id="loginModal">
+    <div class="modal-content" style="text-align: center;">
+        <button class="close-btn" onclick="closeLoginModal()">×</button>
+        <div class="modal-title">IDENTITY VERIFICATION</div>
+        <div style="color:#888; font-size:0.8rem; margin-bottom:20px;">BIO-METRIC SCAN REQUIRED</div>
+        
+        <div class="login-input-group">
+            <div style="font-size:0.7rem; color:#00ffff; margin-bottom:5px;">SELECT IDENTITY</div>
+            <select id="loginNameSelect" class="sector-select" style="margin-bottom:20px;">
+                <!-- Filled via JS -->
+            </select>
+            
+            <div style="font-size:0.7rem; color:#00ffff; margin-bottom:5px;">ENTER PASSCODE</div>
+            <input type="password" id="loginPinInput" class="login-input" maxlength="4" placeholder="****">
+            <div id="loginError" class="error-msg"></div>
+        </div>
+        
+        <button class="login-btn" onclick="attemptLogin()">VERIFY</button>
+    </div>
+</div>
 
 <div id="playerModal" onclick="closeModal(event)">
     <div class="modal-content">
@@ -848,26 +1015,7 @@
     </div>
 </div>
 
-<div id="courtDetailModal" onclick="closeCourtModal(event)">
-    <div class="modal-content">
-        <button class="close-btn" onclick="closeCourtModal(event)">×</button>
-        <div class="modal-title">COURT INFO</div>
-        <div id="courtDetailContent"></div>
-    </div>
-</div>
-
 <div id="toast"></div>
-
-<!-- FORCE LOADING REMOVAL SCRIPT -->
-<script>
-    setTimeout(function() {
-        var ls = document.getElementById('loadingScreen');
-        if(ls) {
-            ls.style.opacity = '0';
-            setTimeout(function() { ls.style.display = 'none'; }, 800);
-        }
-    }, 3000);
-</script>
 
 <script>
     if ('serviceWorker' in navigator) {
@@ -881,12 +1029,11 @@
     }
 
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtWaBkvdPNzkN1_7lmFRnAQLbnu6A40YUQdbzX6gTfIY5CznZs13GYxZw/exec";
-    
-    // 【重要】ここに「STEP 1」でデプロイした新しいGASのURLを貼ってください！
-    const SCHEDULE_GAS_URL = "https://script.google.com/macros/s/AKfycbwKbZyZCV-Jy_P6xOSDYMp3EWDuwfBSO7cj9hKDs9D3IPMIV4BWYTwCgdfl1pkESbX6TA/exec";
+    const SCHEDULE_GAS_URL = "https://script.google.com/macros/s/AKfycbxkywDklSyaMf93hYhG-ULAyAEQ1qHGgaYjNewTxX34pfySOZKYsbwehygCccEvnchB/exec";
     
     const members = ["周平", "すが", "凌矢", "祐介", "志村", "カトケン", "小田"];
     const STORAGE_KEY = 'tennis_match_data_v7_holo';
+    const LOGIN_KEY = 'deep_space_auth_user_v1';
     const CREW_RANKS = [
         { name: '候補生',     min: 0,   icon: '🌑' },
         { name: 'パイロット', min: 100,  icon: '🛸' },
@@ -906,80 +1053,34 @@
     
     let rawAnalysisRankings = [];
     let rawAnalysisMatches = [];
+    let rawMembersData = []; // NEW: Store PINs
     let currentSector = 'ALL';
     
-    // スケジュールデータ保存用
     let globalScheduleData = [];
 
-    // --- Firebase Init (SAFETY WRAP) ---
-    // Use compat syntax inside try-catch to prevent crash
-    let app, auth, db;
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    
-    try {
-        if(typeof firebase !== 'undefined') {
-            const firebaseConfig = JSON.parse(__firebase_config);
-            app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            db = firebase.firestore();
-        } else {
-            console.warn("Firebase scripts not loaded yet.");
-        }
-    } catch(e) {
-        console.error("Firebase init failed:", e);
-    }
-
-    // MAIN ENTRY POINT
     window.onload = function() {
-        // 1. FORCE LOADING SCREEN REMOVAL (Safety) - Ensures screen is never stuck
-        setTimeout(() => {
-            const ls = document.getElementById('loadingScreen');
-            if(ls && ls.style.display !== 'none') {
-                ls.style.opacity = 0;
-                setTimeout(() => { ls.style.display = 'none'; }, 800);
-            }
-        }, 2000); // 2 seconds max waiting time
-
-        // 2. Normal Initialization
-        try {
-            initSelectors();
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            const dateEl = document.getElementById('matchDate');
-            if(dateEl) dateEl.textContent = `${yyyy}-${mm}-${dd}`;
-            
-            // Restore last view from sessionStorage to keep page state on refresh
-            const lastView = sessionStorage.getItem('lastView');
-            if (lastView) {
-                switchMainView(lastView);
-            } else {
-                // Default to TOP
-                switchMainView('top'); 
-            }
-
-            fetchAnalysisData();
-            fetchScheduleData(); // Real Fetch
-            fetchWeather(); // Get Weather
-        } catch(e) {
-            console.error("Main Init Error", e);
+        initSelectors();
+        initLoginSelect();
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
+        fetchAnalysisData();
+        fetchScheduleData();
+        fetchWeather();
+        
+        const lastView = sessionStorage.getItem('lastView');
+        if (lastView) {
+            switchMainView(lastView);
+        } else {
+            switchMainView('top'); 
         }
 
-        // 3. Auth with retry
-        const initAuth = async () => {
-          try {
-              if(!auth) return;
-              if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await auth.signInWithCustomToken(__initial_auth_token);
-              } else {
-                await auth.signInAnonymously();
-              }
-          } catch(e) {
-              console.error("Auth Error", e);
-          }
-        };
-        initAuth();
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.opacity = 0;
+            setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
+        }, 1000);
     };
 
     // --- NAVIGATION LOGIC ---
@@ -1004,13 +1105,11 @@
 
         if (mode === 'tennis') {
             items[0].classList.add('active');
-            // Show Tennis Views (TOP)
             switchMainView('top'); 
             bottomNav.classList.remove('hidden');
             subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         } else if (mode === 'game') {
             items[1].classList.add('active');
-            // Show Game Portal
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('view-game').classList.add('active');
             bottomNav.classList.add('hidden');
@@ -1021,20 +1120,15 @@
     }
 
     function switchMainView(viewName) {
-        // Save current view for refresh
         sessionStorage.setItem('lastView', viewName);
 
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
         const navs = document.querySelectorAll('.nav-item');
-        // Update index for navigation active state
-        // Order: [0]TOP [1]INPUT [2]DATA [3]RANK [4]SCHEDULE
-        if(navs.length >= 5) {
-            if(viewName === 'top') navs[0].classList.add('active');
-            if(viewName === 'match') navs[1].classList.add('active');
-            if(viewName === 'dashboard') navs[2].classList.add('active');
-            if(viewName === 'ranking') navs[3].classList.add('active');
-            if(viewName === 'schedule') navs[4].classList.add('active');
-        }
+        if(viewName === 'top') navs[0].classList.add('active');
+        if(viewName === 'match') navs[1].classList.add('active');
+        if(viewName === 'dashboard') navs[2].classList.add('active');
+        if(viewName === 'ranking') navs[3].classList.add('active');
+        if(viewName === 'schedule') navs[4].classList.add('active');
         
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         
@@ -1042,18 +1136,166 @@
         if(targetSection) targetSection.classList.add('active');
         
         const titles = { 
-            'top': 'CODE NAME: 43',
+            'top': 'HOME', 
             'match': 'MATCH INPUT', 
             'dashboard': 'DASHBOARD', 
             'ranking': 'RANKING', 
-            'schedule': 'MISSION SCHEDULE' 
+            'schedule': 'MISSION SCHEDULE',
+            'mypage': 'MY QUARTERS'
         };
-        const titleEl = document.getElementById('pageTitle');
-        if(titleEl) titleEl.textContent = titles[viewName] || 'TENNIS CHRONICLES';
+        document.getElementById('pageTitle').textContent = titles[viewName] || 'TENNIS CHRONICLES';
     }
 
     function manualReload() {
         location.reload();
+    }
+
+    // --- LOGIN / MY PAGE LOGIC ---
+    function initLoginSelect() {
+        const sel = document.getElementById('loginNameSelect');
+        if(!sel) return;
+        sel.innerHTML = '';
+        members.forEach(m => {
+            const op = document.createElement('option');
+            op.value = m;
+            op.text = m;
+            sel.appendChild(op);
+        });
+    }
+
+    function openMyPage() {
+        document.getElementById('sideMenu').classList.remove('open');
+        const currentUser = localStorage.getItem(LOGIN_KEY);
+        
+        if (currentUser) {
+            // Already logged in
+            showMyPage(currentUser);
+        } else {
+            // Show Login Modal
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('loginError').textContent = "";
+            document.getElementById('loginPinInput').value = "";
+        }
+    }
+
+    function closeLoginModal() {
+        document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function attemptLogin() {
+        if (!rawMembersData || rawMembersData.length === 0) {
+            // Fallback if user hasn't updated GAS yet
+            document.getElementById('loginError').textContent = "ERROR: DB CONNECTION FAILED";
+            return;
+        }
+
+        const name = document.getElementById('loginNameSelect').value;
+        const pin = document.getElementById('loginPinInput').value;
+        
+        // Find member in loaded data
+        const member = rawMembersData.find(m => m.name === name);
+        
+        if (!member) {
+            document.getElementById('loginError').textContent = "USER DATA NOT FOUND";
+            return;
+        }
+
+        // Simple PIN verification (Note: PIN is loaded as string or number)
+        if (String(member.pin) === String(pin)) {
+            // Success
+            localStorage.setItem(LOGIN_KEY, name);
+            closeLoginModal();
+            showMyPage(name);
+            showToast(`WELCOME BACK, ${name}`);
+        } else {
+            document.getElementById('loginError').textContent = "ACCESS DENIED: INVALID PIN";
+        }
+    }
+
+    function logout() {
+        if(confirm("TERMINATE SESSION?")) {
+            localStorage.removeItem(LOGIN_KEY);
+            switchMainView('top');
+            showToast("SESSION ENDED");
+        }
+    }
+
+    function showMyPage(name) {
+        switchMainView('mypage');
+        document.getElementById('myPageName').textContent = name;
+        
+        // Render Stats
+        const p = playerStatsGlobal[name];
+        const statsDiv = document.getElementById('myPageStats');
+        const medalDiv = document.getElementById('myPageMedals');
+        
+        if (p) {
+            const max = playerStatsGlobal._max;
+            const rank = getRankInfo(p.games).current;
+            const winRate = (p.wins + p.losses) > 0 ? ((p.wins / (p.wins + p.losses)) * 100).toFixed(1) : 0;
+            
+            statsDiv.innerHTML = `
+                <div class="dashboard-grid">
+                    <div class="stat-card"><div class="stat-label">RANK</div><div class="stat-value" style="font-size:1.2rem;">${rank.icon} ${rank.name}</div></div>
+                    <div class="stat-card"><div class="stat-label">WIN RATE</div><div class="stat-value highlight">${winRate}%</div></div>
+                    <div class="stat-card"><div class="stat-label">WINS</div><div class="stat-value">${p.wins}</div></div>
+                    <div class="stat-card"><div class="stat-label">GAMES</div><div class="stat-value">${p.games}</div></div>
+                </div>
+            `;
+            medalDiv.innerHTML = getMedals(p, max) || '<div style="color:#666; font-size:0.8rem;">NO MEDALS ACQUIRED</div>';
+        } else {
+            statsDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">NO BATTLE DATA FOUND</div>';
+            medalDiv.innerHTML = '';
+        }
+    }
+
+    // --- WEATHER LOGIC ---
+    function fetchWeather() {
+        const url = "https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo";
+        
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('weather-forecast');
+            container.innerHTML = "";
+            const daily = data.daily;
+            
+            for(let i=0; i<daily.time.length; i++) {
+                const dateStr = daily.time[i].slice(5).replace('-', '/');
+                const maxT = Math.round(daily.temperature_2m_max[i]);
+                const minT = Math.round(daily.temperature_2m_min[i]);
+                const rain = daily.precipitation_probability_max[i];
+                const code = daily.weathercode[i];
+                const icon = weatherCodeToIcon(code);
+                const isToday = i === 0 ? 'today' : '';
+
+                const div = document.createElement('div');
+                div.className = `weather-card ${isToday}`;
+                div.innerHTML = `
+                    <div class="weather-date">${dateStr}</div>
+                    <div class="weather-icon">${icon}</div>
+                    <div class="weather-temp">${maxT}° / ${minT}°</div>
+                    <div class="weather-rain">☂ ${rain}%</div>
+                `;
+                container.appendChild(div);
+            }
+        })
+        .catch(err => {
+            console.error("Weather Fetch Error", err);
+            document.getElementById('weather-forecast').innerHTML = '<div style="color:#666; font-size:0.8rem;">WEATHER SIGNAL LOST</div>';
+        });
+    }
+
+    function weatherCodeToIcon(code) {
+        if (code === 0) return "☀";
+        if (code === 1 || code === 2 || code === 3) return "☁";
+        if (code === 45 || code === 48) return "🌫";
+        if (code >= 51 && code <= 67) return "☂";
+        if (code >= 71 && code <= 77) return "☃";
+        if (code >= 80 && code <= 82) return "☂";
+        if (code >= 85 && code <= 86) return "☃";
+        if (code >= 95) return "⚡";
+        return "❓";
     }
 
     // --- COIN TOSS GAME LOGIC ---
@@ -1081,59 +1323,7 @@
         }, 1500);
     }
 
-    // ================== WEATHER LOGIC (Open-Meteo) ==================
-    async function fetchWeather() {
-        const container = document.getElementById('weatherContainer');
-        if(!container) return;
-        try {
-            // Tokyo coordinates
-            const url = 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=Asia%2FTokyo';
-            const res = await fetch(url);
-            const data = await res.json();
-            
-            if (!data.daily) throw new Error("No data");
-
-            let html = "";
-            const days = data.daily.time;
-            const codes = data.daily.weathercode;
-            const maxT = data.daily.temperature_2m_max;
-            const minT = data.daily.temperature_2m_min;
-            const wind = data.daily.windspeed_10m_max;
-
-            const wmo = {
-                0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
-                45: '🌫️', 48: '🌫️',
-                51: '🌧️', 53: '🌧️', 55: '🌧️',
-                61: '☔', 63: '☔', 65: '☔',
-                71: '❄️', 73: '❄️', 75: '❄️',
-                80: '🌦️', 81: '🌦️', 82: '⛈️',
-                95: '⛈️', 96: '⛈️', 99: '⛈️'
-            };
-
-            for(let i=0; i<days.length; i++) {
-                const dateObj = new Date(days[i]);
-                const m = dateObj.getMonth() + 1;
-                const d = dateObj.getDate();
-                const icon = wmo[codes[i]] || '❓';
-                
-                html += `
-                    <div class="weather-item">
-                        <div class="w-date">${m}/${d}</div>
-                        <div class="w-icon">${icon}</div>
-                        <div class="w-temp">${Math.round(maxT[i])}° <span style="font-size:0.7em;color:#aaa;">/ ${Math.round(minT[i])}°</span></div>
-                        <div class="w-wind">🍃 ${Math.round(wind[i])}m</div>
-                    </div>
-                `;
-            }
-            container.innerHTML = html;
-
-        } catch (e) {
-            console.error(e);
-            container.innerHTML = '<div style="padding:15px;color:#f55;">WEATHER DATA OFFLINE</div>';
-        }
-    }
-
-    // ================== COURT DETAIL LOGIC ==================
+    // ================== MAP LOGIC ==================
     const courtDatabase = {
         "MOGUSA": {
             name: "百草テニスガーデン",
@@ -1141,7 +1331,8 @@
             tel: "042-591-1212",
             hours: "9:00～18:00",
             costStr: "¥4,500/h",
-            costVal: 4500
+            costVal: 4500,
+            mapSrc: "https://googleusercontent.com/maps.google.com/5"
         },
         "NERIMA": {
             name: "練馬ステップイン",
@@ -1149,26 +1340,22 @@
             tel: "03-3904-7051",
             hours: "9:00～21:30",
             costStr: "¥4,000/h",
-            costVal: 4000
+            costVal: 4000,
+            mapSrc: ""
         }
     };
 
-    function showCourtDetail(courtKey) {
-        const modal = document.getElementById('courtDetailModal');
-        const content = document.getElementById('courtDetailContent');
-        const data = courtDatabase[courtKey];
-        
+    function renderMapInfo(val) {
+        const c = document.getElementById('mapContainer');
+        const data = courtDatabase[val];
         if (!data) {
-            content.innerHTML = '<div style="text-align:center; padding:20px;">NO DATA AVAILABLE</div>';
-            modal.style.display = 'flex';
+            c.innerHTML = `<div class="empty-map-state"><div class="spinning" style="display:inline-block; margin-bottom:10px;">❖</div><br>WAITING FOR NAVI INPUT...</div>`;
             return;
         }
-
         currentCourtCost = data.costVal;
         const displayAddress = data.address.replace(" ", "<br>");
-
-        content.innerHTML = `
-            <div class="info-card" style="margin-top:0;">
+        c.innerHTML = `
+            <div class="info-card" style="margin-top:20px;">
                 <div class="info-row"><div class="info-label">SECTOR</div><div class="info-val" style="color:#00ffff; font-weight:bold;">${data.name}</div></div>
                 <div class="info-row">
                     <div class="info-label">ADDRESS</div>
@@ -1180,25 +1367,16 @@
                 <div style="margin-top:15px; padding-top:15px; border-top:1px dashed rgba(255,255,255,0.2);">
                     <div style="font-size:0.75rem; color:#00ffff; margin-bottom:5px; letter-spacing:1px;">SPLIT CALCULATOR</div>
                     <div style="display:flex; align-items:center; gap:8px; font-size:0.9rem;">
-                        COST × <select id="calcHours" onchange="calcSplit()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid #555; padding:4px; border-radius:4px;"><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select>
-                        ÷ <select id="calcMembers" onchange="calcSplit()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid #555; padding:4px; border-radius:4px;"><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select>
+                        COST × <select id="calcHours" onchange="calcSplit()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid #555; padding:4px; border-radius:4px;"><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select>
+                        ÷ <select id="calcMembers" onchange="calcSplit()" style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid #555; padding:4px; border-radius:4px;"><option value="4">4</option><option value="5">5</option><option value="6">6</option></select>
                         = <span id="calcResult" style="color:#00ffff; font-weight:bold; font-size:1.1rem; margin-left:5px;">-</span>
                     </div>
                 </div>
             </div>`;
-        
-        calcSplit();
-        modal.style.display = 'flex';
-    }
-
-    function closeCourtModal(e) {
-        if(e.target.id === 'courtDetailModal' || e.target.className === 'close-btn') {
-            document.getElementById('courtDetailModal').style.display = 'none';
-        }
+            calcSplit();
     }
 
     function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { showToast("ADDRESS COPIED"); }); }
-    
     function calcSplit() {
         const cost = currentCourtCost;
         const members = parseInt(document.getElementById('calcMembers').value);
@@ -1207,157 +1385,74 @@
         document.getElementById('calcResult').innerText = '¥' + result.toLocaleString();
     }
 
-    // ================== SCHEDULE LOGIC (RESTORED + NEW INFO LOGIC) ==================
+    // ================== SCHEDULE LOGIC ==================
     function fetchScheduleData() {
         const list = document.getElementById('scheduleList');
-        const infoBox = document.getElementById('topInfoBox');
-        
-        // キャッシュ回避策：URLに時刻パラメータを付与して、毎回新しいデータを取得させる
-        const url = SCHEDULE_GAS_URL + (SCHEDULE_GAS_URL.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
-
-        // オプションなしのシンプルなGETリクエスト（これがGASとの通信で最も安定します）
-        fetch(url)
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error(`HTTP error! Status: ${response.status}`);
-              }
-              return response.json();
-          })
+        fetch(SCHEDULE_GAS_URL)
+          .then(response => response.json())
           .then(data => {
-            // Check data structure: Old Array vs New Object
-            let scheduleData = [];
-            let infoData = [];
-
-            if (Array.isArray(data)) {
-                scheduleData = data;
-            } else if (data.schedule) {
-                scheduleData = data.schedule;
-                infoData = data.info || [];
-            } else {
-                // Fallback or Empty
-                scheduleData = [];
-            }
-
-            globalScheduleData = scheduleData;
-            
-            // Render Schedule
-            if(scheduleData.length === 0) {
+            globalScheduleData = data;
+            if(data.length === 0) {
                 list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">予定がありません</div>';
-            } else {
-                initScheduleTabs(scheduleData);
+                return;
             }
-
-            // Render Info
-            renderInfoSection(infoData);
+            initScheduleTabs(data);
           })
           .catch(error => {
-            console.error("Schedule Fetch Error:", error);
-            // エラーの詳細を表示
-            list.innerHTML = `<div style="padding:20px;text-align:center;color:#f55;font-size:0.8rem;">
-                通信エラーが発生しました。<br>
-                <span style="font-size:0.7rem; color:#aaa;">(GASのデプロイ更新忘れの可能性があります)</span>
-            </div>`;
+            console.error(error);
+            list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ読み込みエラー<br>GAS URLを確認してください</div>';
           });
-    }
-
-    function renderInfoSection(infoList) {
-        const box = document.getElementById('topInfoBox');
-        if (!infoList || infoList.length === 0) {
-            box.innerHTML = '<p style="color:#888;">No recent updates.</p>';
-            return;
-        }
-        
-        let html = "";
-        infoList.forEach(item => {
-            let tagClass = "tag-info";
-            if (item.type === 'UPDATE') tagClass = "tag-update";
-            if (item.type === 'ALERT') tagClass = "tag-alert";
-            
-            html += `
-                <p>
-                    <span class="info-tag ${tagClass}">${item.type}</span>
-                    <span class="info-date">${item.date}</span>
-                    <span class="info-content">${item.content}</span>
-                </p>
-            `;
-        });
-        box.innerHTML = html;
     }
 
     function initScheduleTabs(data) {
         const tabsContainer = document.getElementById('scheduleTabs');
         tabsContainer.innerHTML = "";
+        const months = [...new Set(data.map(item => item.fullDate.substring(0, 7)))];
         
-        // Exact logic from Turn 1, added try-catch for safety
-        try {
-            const months = [...new Set(data.map(item => item.fullDate.substring(0, 7)))];
-            
-            months.forEach((m, idx) => {
-                const btn = document.createElement('div');
-                btn.className = 'month-tab';
-                // 表示名: "2026-01" -> "1月"
-                const parts = m.split('-');
-                const mNum = parts.length > 1 ? parseInt(parts[1]) : '?';
-                btn.textContent = `${mNum}月`;
-                btn.onclick = () => {
-                    // タブ切り替え
-                    document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
-                    btn.classList.add('active');
-                    renderScheduleList(m);
-                };
-                if(idx === 0) {
-                    btn.classList.add('active');
-                    renderScheduleList(m);
-                }
-                tabsContainer.appendChild(btn);
-            });
-        } catch(e) {
-            console.error("Tabs Init Error", e);
-        }
+        months.forEach((m, idx) => {
+            const btn = document.createElement('div');
+            btn.className = 'month-tab';
+            const mNum = parseInt(m.split('-')[1]);
+            btn.textContent = `${mNum}月`;
+            btn.onclick = () => {
+                document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                renderScheduleList(m);
+            };
+            if(idx === 0) {
+                btn.classList.add('active');
+                renderScheduleList(m);
+            }
+            tabsContainer.appendChild(btn);
+        });
     }
 
     function renderScheduleList(targetMonth) {
         const list = document.getElementById('scheduleList');
         list.innerHTML = "";
-        
-        try {
-            // 選択された月のデータのみフィルタ
-            const filtered = globalScheduleData.filter(item => item.fullDate.startsWith(targetMonth));
-            
-            // その月で最も参加(ok)が多い数を探す
-            let maxOk = 0;
-            filtered.forEach(item => {
-                if(item.counts.ok > maxOk) maxOk = item.counts.ok;
-            });
+        const filtered = globalScheduleData.filter(item => item.fullDate.startsWith(targetMonth));
+        let maxOk = 0;
+        filtered.forEach(item => { if(item.counts.ok > maxOk) maxOk = item.counts.ok; });
 
-            filtered.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.className = 'schedule-item';
-                
-                // 最多人数ならハイライト
-                let crownHtml = "";
-                if (maxOk > 0 && item.counts.ok === maxOk) {
-                    li.classList.add('top-attendance');
-                    crownHtml = '<span class="crown-icon">👑</span>';
-                }
-
-                // クリック時にグローバルデータのインデックスではなく、フィルタ後のデータを使う必要があるため
-                // 直接オブジェクトを渡すか、フィルタ済みのインデックスを使う
-                li.onclick = () => showScheduleDetail(item);
-                
-                li.innerHTML = `
-                    <div class="schedule-date">${crownHtml}${item.date}</div>
-                    <div class="schedule-counts">
-                        <span class="count-ok"><span class="count-symbol">◯</span>${item.counts.ok}</span>
-                        <span class="count-maybe"><span class="count-symbol">△</span>${item.counts.maybe}</span>
-                        <span class="count-ng"><span class="count-symbol">✕</span>${item.counts.ng}</span>
-                    </div>
-                `;
-                list.appendChild(li);
-            });
-        } catch(e) {
-            console.error("Render List Error", e);
-        }
+        filtered.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.className = 'schedule-item';
+            let crownHtml = "";
+            if (maxOk > 0 && item.counts.ok === maxOk) {
+                li.classList.add('top-attendance');
+                crownHtml = '<span class="crown-icon">👑</span>';
+            }
+            li.onclick = () => showScheduleDetail(item);
+            li.innerHTML = `
+                <div class="schedule-date">${crownHtml}${item.date}</div>
+                <div class="schedule-counts">
+                    <span class="count-ok"><span class="count-symbol">◯</span>${item.counts.ok}</span>
+                    <span class="count-maybe"><span class="count-symbol">△</span>${item.counts.maybe}</span>
+                    <span class="count-ng"><span class="count-symbol">✕</span>${item.counts.ng}</span>
+                </div>
+            `;
+            list.appendChild(li);
+        });
     }
 
     function showScheduleDetail(itemData) {
@@ -1368,7 +1463,6 @@
         if (!itemData.details || itemData.details.length === 0) {
             list.innerHTML = '<li style="padding:20px; text-align:center; color:#888;">回答データなし</li>';
         } else {
-            // ok順、maybe順、ng順にソート
             const sortedDetails = itemData.details.sort((a, b) => {
                 const rank = { "ok": 1, "maybe": 2, "ng": 3 };
                 return rank[a.status] - rank[b.status];
@@ -1377,7 +1471,6 @@
             sortedDetails.forEach(member => {
                 const li = document.createElement('li');
                 li.className = 'member-item';
-                
                 const initial = member.name.charAt(0);
                 let statusIcon = '';
                 if(member.status === 'ok') statusIcon = '<span class="status-ok">◯</span>';
@@ -1403,7 +1496,7 @@
         }
     }
 
-    // ================== INPUT LOGIC (Existing) ==================
+    // ================== INPUT LOGIC ==================
     const patterns = [[1, 2, 3, 4, 5],[1, 5, 2, 3, 4],[1, 4, 2, 5, 3],[1, 3, 4, 5, 2],[2, 4, 3, 5, 1]];
 
     function initSelectors() {
@@ -1709,6 +1802,10 @@
             if(json.status === 'success') { 
                 rawAnalysisRankings = json.rankings; 
                 rawAnalysisMatches = json.matches;
+                // NEW: Load PIN Data from GAS
+                if(json.members) {
+                    rawMembersData = json.members;
+                }
                 processAnalysisData(); 
             }
         } catch(e) { console.error(e); }
