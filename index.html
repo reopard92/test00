@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 50</title>
+    <title>CODE NAME: 51</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -119,11 +119,16 @@
             position: absolute;
             top: 5px;
             right: 10px;
-            font-size: 0.6rem;
+            font-size: 0.7rem; /* Slightly larger for readability */
             letter-spacing: 1px;
             z-index: 5001;
             cursor: pointer;
             text-transform: uppercase;
+            font-family: 'Courier New', monospace;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .status-guest { color: #ff5252; font-weight: bold; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
         .status-user { color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
@@ -371,7 +376,7 @@
 
         .sector-filter::-webkit-scrollbar { display: none; }
 
-        /* MY PAGE STYLES (NEW) */
+        /* MY PAGE STYLES */
         .mypage-header {
             text-align: center;
             margin-bottom: 30px;
@@ -421,6 +426,40 @@
             cursor: pointer; transition: 0.3s; font-size: 0.8rem;
         }
         .btn-logout:hover { background: rgba(255,82,82,0.1); }
+        
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .collection-item {
+            aspect-ratio: 1 / 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .collection-item:hover {
+            transform: scale(1.05);
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0,255,255,0.3);
+        }
+        .collection-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .empty-slot {
+            font-size: 0.6rem;
+            color: #555;
+            text-align: center;
+        }
 
         /* SHOP STYLES */
         .holo-showcase {
@@ -494,6 +533,27 @@
             color: #ffd700;
             font-weight: bold;
             text-shadow: 0 0 10px rgba(255,215,0,0.6);
+        }
+        
+        /* Calc Animation Area */
+        .calc-display {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-top: 15px;
+            height: 20px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .calc-display.visible {
+            opacity: 1;
+        }
+        .calc-highlight {
+            color: #00ffff;
+            font-weight: bold;
+        }
+        .calc-minus {
+            color: #ff5252;
         }
         
         /* HOLD BUTTON */
@@ -1181,15 +1241,18 @@
         <div class="holo-showcase">
             <div class="holo-item">
                 <div class="holo-ring"></div>
-                <img src="./Gemini_Generated_Image_8zqd0z8zqd0z8zqd-Photoroom.jpg" alt="Mystery Item" class="holo-img">
+                <!-- Updated Image Path -->
+                <img src="./今田美桜_2601.png" alt="Mystery Item" class="holo-img">
             </div>
             
             <div class="item-info">
                 <div class="item-name">MYSTERY CAPSULE</div>
                 <div class="item-price">10,000 COINS</div>
+                <!-- Animation Display Area -->
+                <div id="calcDisplay" class="calc-display"></div>
             </div>
             
-            <button class="hold-btn" onmousedown="startHold(this)" ontouchstart="startHold(this)" onmouseup="endHold(this)" ontouchend="endHold(this)" onmouseleave="endHold(this)">
+            <button id="shopHoldBtn" class="hold-btn" onmousedown="startHold(this)" ontouchstart="startHold(this)" onmouseup="endHold(this)" ontouchend="endHold(this)" onmouseleave="endHold(this)">
                 <div class="hold-progress"></div>
                 <span class="hold-btn-text">HOLD TO BUY</span>
             </button>
@@ -1318,11 +1381,17 @@
     // --- SHOP LOGIC ---
     let holdTimer = null;
     const holdDuration = 1500; // 1.5s
+    const itemPrice = 10000;
 
     function startHold(btn) {
-        // Prevent default touch actions (scrolling etc)
+        // Prevent default touch actions
         if(event.type === 'touchstart') event.preventDefault();
         
+        if(!currentUser) {
+            alert("LOGIN REQUIRED");
+            return;
+        }
+
         btn.classList.add('holding');
         holdTimer = setTimeout(() => {
             completePurchase(btn);
@@ -1337,13 +1406,65 @@
     function completePurchase(btn) {
         clearTimeout(holdTimer);
         btn.classList.remove('holding');
-        // Effect
-        showToast("TRANSACTION COMPLETE");
-        // closeShop({target:{id:'shopModal'}}); // Optional: close modal
+        
+        const name = currentUser.name;
+        const pStats = playerStatsGlobal[name] || { wins: 0, games: 0 };
+        const totalEarned = (pStats.wins * 50) + (pStats.games * 10);
+        
+        const spentKey = `tennis_spent_coins_${name}`;
+        let spent = parseInt(localStorage.getItem(spentKey)) || 0;
+        const current = totalEarned - spent;
+
+        if (current < itemPrice) {
+            showToast("INSUFFICIENT FUNDS");
+            return;
+        }
+
+        // Calculation Animation
+        const disp = document.getElementById('calcDisplay');
+        disp.classList.add('visible');
+        disp.innerHTML = `Current: <span class="calc-highlight">${current.toLocaleString()}</span>`;
+        
+        setTimeout(() => {
+            disp.innerHTML = `Current: <span class="calc-highlight">${current.toLocaleString()}</span> <span class="calc-minus">- ${itemPrice.toLocaleString()}</span>`;
+            
+            setTimeout(() => {
+                // Execute Transaction
+                spent += itemPrice;
+                localStorage.setItem(spentKey, spent);
+                
+                // Add to Collection
+                const collectionKey = `tennis_user_collection_${name}`;
+                let collection = JSON.parse(localStorage.getItem(collectionKey)) || [];
+                collection.push({
+                    id: Date.now(),
+                    name: "MYSTERY CAPSULE",
+                    img: "./今田美桜_2601.png"
+                });
+                localStorage.setItem(collectionKey, JSON.stringify(collection));
+
+                const newBalance = totalEarned - spent;
+                disp.innerHTML = `New Balance: <span class="calc-highlight">${newBalance.toLocaleString()}</span>`;
+                
+                showToast("TRANSACTION COMPLETE");
+                updateUserDisplay(); // Refresh header
+                
+                // Hide calc after delay
+                setTimeout(() => {
+                    disp.classList.remove('visible');
+                    closeShop({target:{id:'shopModal'}});
+                }, 2000);
+                
+            }, 1000);
+        }, 800);
     }
 
     function openShop() {
         document.getElementById('shopModal').style.display = 'flex';
+        // Reset Calc Display
+        const disp = document.getElementById('calcDisplay');
+        disp.classList.remove('visible');
+        disp.innerHTML = "";
     }
 
     function closeShop(e) {
@@ -1399,6 +1520,8 @@
             if(document.getElementById('view-mypage').classList.contains('active')) {
                 renderMyPage();
             }
+            // Refresh analysis to ensure stats are loaded
+            fetchAnalysisData();
         } else {
             alert("ACCESS DENIED: INVALID PASSCODE");
         }
@@ -1421,7 +1544,15 @@
     function updateUserDisplay() {
         const disp = document.getElementById('currentUserDisplay');
         if (currentUser) {
-            disp.textContent = currentUser.name;
+            // Calculate coins
+            let coins = 0;
+            if (playerStatsGlobal && playerStatsGlobal[currentUser.name]) {
+                const pStats = playerStatsGlobal[currentUser.name];
+                const totalEarned = (pStats.wins * 50) + (pStats.games * 10);
+                const spent = parseInt(localStorage.getItem(`tennis_spent_coins_${currentUser.name}`)) || 0;
+                coins = totalEarned - spent;
+            }
+            disp.textContent = `${currentUser.name} : ${coins.toLocaleString()}`;
             disp.className = 'user-status-display status-user';
         } else {
             disp.textContent = 'GUEST';
@@ -1499,8 +1630,10 @@
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
         
-        // Dummy Coin Calculation: Wins * 50 + Games * 10
-        const coins = (pStats.wins * 50) + (pStats.games * 10);
+        // Coin Logic with Spending
+        const totalEarned = (pStats.wins * 50) + (pStats.games * 10);
+        const spent = parseInt(localStorage.getItem(`tennis_spent_coins_${name}`)) || 0;
+        const coins = totalEarned - spent;
         
         // Avatar Logic
         const storedAvatar = localStorage.getItem(`avatar_${name}`);
@@ -1510,6 +1643,20 @@
         if(storedAvatar) {
             avatarStyle = `background-image: url(${storedAvatar}); background-size: cover; background-position: center; color: transparent;`;
             avatarContent = '';
+        }
+        
+        // Collection Logic
+        const collection = JSON.parse(localStorage.getItem(`tennis_user_collection_${name}`)) || [];
+        let collectionHtml = "";
+        if(collection.length > 0) {
+            collection.forEach(item => {
+                collectionHtml += `
+                    <div class="collection-item">
+                        <img src="${item.img}" class="collection-img">
+                    </div>`;
+            });
+        } else {
+            collectionHtml = '<div style="grid-column:1/-1; text-align:center; color:#666; font-size:0.8rem; padding:20px;">NO ITEMS COLLECTED</div>';
         }
         
         const html = `
@@ -1532,6 +1679,11 @@
             <div class="mypage-coin-area">
                 <div class="coin-val">${coins.toLocaleString()}</div>
                 <div class="coin-label">CRYPTO COINS</div>
+            </div>
+            
+            <div class="section-title">COLLECTION</div>
+            <div class="collection-grid">
+                ${collectionHtml}
             </div>
             
             <div class="section-title">COMBAT STATS</div>
