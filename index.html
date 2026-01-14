@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 45</title>
+    <title>CODE NAME: 49</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* =========================================
-           GLOBAL THEME: DEEP SPACE (CODE NAME: 45)
+           GLOBAL THEME: DEEP SPACE (CODE NAME: 39)
            ========================================= */
         body {
             font-family: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
@@ -31,6 +31,8 @@
             min-height: 100vh;
             overflow-x: hidden;
             padding-bottom: 80px;
+            /* Prevent swipe navigation on iOS */
+            overscroll-behavior-x: none;
         }
         .container {
             max-width: 900px;
@@ -112,6 +114,20 @@
             font-size: 2rem; /* Restore simple icon size */
         }
 
+        /* --- USER STATUS DISPLAY (NEW) --- */
+        .user-status-display {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+            z-index: 5001;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .status-guest { color: #ff5252; font-weight: bold; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
+        .status-user { color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+
         /* --- SIDE MENU ANIMATION (FIXED) --- */
         .side-menu-overlay {
             position: fixed;
@@ -123,9 +139,10 @@
             backdrop-filter: blur(10px);
             z-index: 6000;
             
+            /* Changed from display:none to visibility for animation */
             visibility: hidden;
             opacity: 0;
-            display: flex; 
+            display: flex; /* Always flex, but hidden */
             justify-content: flex-end;
             
             transition: opacity 0.4s ease, visibility 0.4s ease;
@@ -144,13 +161,16 @@
             display: flex;
             flex-direction: column;
             
+            /* Slide Animation Setting */
             transform: translateX(100%);
+            /* Smooth organic easing */
             transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .side-menu-overlay.open .side-menu-content {
             transform: translateX(0);
         }
 
+        /* Stagger Animation for Menu Items */
         .menu-item {
             padding: 20px 30px;
             color: #fff;
@@ -160,6 +180,7 @@
             cursor: pointer;
             text-transform: uppercase;
             
+            /* Initial state for stagger */
             opacity: 0;
             transform: translateX(30px);
             transition: all 0.4s ease;
@@ -169,9 +190,10 @@
             opacity: 1;
             transform: translateX(0);
         }
+        /* Delays */
         .side-menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.2s; }
         .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.3s; }
-        .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.4s; } /* My Page */
+        .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.4s; }
 
         .menu-item:hover {
             background: rgba(0,255,255,0.1);
@@ -327,7 +349,7 @@
         .log-date { color: #fff; font-weight: bold; font-size: 1rem; }
         .log-content { display: none; padding: 15px; background: rgba(0, 0, 0, 0.3); }
         .log-content.open { display: block; animation: fadeIn 0.3s; }
-        #playerModal, #coinGameModal, #scheduleDetailModal, #loginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
+        #playerModal, #coinGameModal, #scheduleDetailModal, #loginModal, #shopModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: rgba(15, 20, 30, 0.95); border: 1px solid #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; }
         .close-btn { position: absolute; top: 15px; right: 15px; color: #fff; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
         .modal-title { color: #fff; font-weight: 300; text-align: center; font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 2px; }
@@ -348,6 +370,57 @@
         }
 
         .sector-filter::-webkit-scrollbar { display: none; }
+
+        /* MY PAGE STYLES (NEW) */
+        .mypage-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .mypage-avatar-large {
+            width: 80px; height: 80px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2.5rem;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+        .mypage-avatar-large:hover::after {
+            content: 'EDIT';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,255,255,0.5);
+            color: #000;
+            font-size: 0.6rem;
+            font-weight: bold;
+            padding: 2px 0;
+        }
+        .mypage-name { font-size: 1.5rem; color: #fff; letter-spacing: 2px; font-weight: bold; }
+        .mypage-title { color: #00ffff; font-size: 0.9rem; letter-spacing: 1px; margin-top: 5px; }
+        .mypage-coin-area {
+            background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05));
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .coin-val { font-size: 1.8rem; color: #ffd700; font-weight: bold; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        .coin-label { font-size: 0.7rem; color: #aaa; letter-spacing: 2px; }
+        .btn-logout {
+            background: transparent; color: #ff5252; border: 1px solid #ff5252;
+            padding: 8px 25px; margin-top: 30px; border-radius: 20px;
+            cursor: pointer; transition: 0.3s; font-size: 0.8rem;
+        }
+        .btn-logout:hover { background: rgba(255,82,82,0.1); }
 
         /* FOOTER */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.15); display: flex; justify-content: space-around; padding: 15px 0 30px 0; z-index: 1000; transition: transform 0.3s ease; }
@@ -556,26 +629,31 @@
         .weather-temp { font-size: 0.8rem; color: #fff; }
         .weather-rain { font-size: 0.7rem; color: #81d4fa; margin-top: 2px; }
         .weather-card.today { border-color: #00ffff; background: rgba(0, 255, 255, 0.05); }
-
-        /* MY PAGE STYLES */
-        .login-input-group { text-align:center; margin-bottom:20px; }
-        .login-input { 
-            background: rgba(0,0,0,0.5); border: 1px solid #00ffff; color: #00ffff; 
-            padding: 10px; font-size: 1.2rem; text-align: center; letter-spacing: 5px; width: 200px;
-            border-radius: 4px; outline: none;
-        }
-        .login-btn {
-            background: #00ffff; color: #000; font-weight: bold; border: none;
-            padding: 10px 30px; letter-spacing: 2px; cursor: pointer; border-radius: 2px;
-            box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: 0.3s;
-        }
-        .login-btn:hover { box-shadow: 0 0 25px rgba(0,255,255,0.8); background: #fff; }
-        .error-msg { color: #ff5252; font-size: 0.8rem; margin-top: 10px; min-height: 1.2em; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
         
-        .mypage-header { text-align: center; margin-bottom: 30px; }
-        .commander-title { font-size: 0.8rem; color: #888; letter-spacing: 3px; }
-        .commander-name { font-size: 2rem; color: #fff; font-weight: 300; text-shadow: 0 0 15px rgba(255,255,255,0.5); margin: 5px 0; }
-        .logout-btn { background: transparent; border: 1px solid rgba(255,50,50,0.5); color: #ff5252; padding: 5px 15px; font-size: 0.7rem; cursor: pointer; margin-top: 10px; }
+        /* LOGIN MODAL STYLES */
+        #loginPassInput {
+            width: 80%;
+            padding: 10px;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #00ffff;
+            color: #fff;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        #loginPassInput:focus { outline: none; box-shadow: 0 0 15px rgba(0,255,255,0.4); }
+        .btn-login {
+            background: #00ffff; color: #000; border: none; padding: 10px 40px; font-weight: bold; letter-spacing: 2px;
+            cursor: pointer; box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: 0.3s;
+            margin-bottom: 15px;
+        }
+        .btn-guest {
+            background: transparent; color: #ff5252; border: 1px solid #ff5252; padding: 5px 20px; font-size: 0.8rem;
+            cursor: pointer; transition: 0.3s;
+        }
+
 
         /* =========================================
            SMARTPHONE OPTIMIZATION
@@ -736,19 +814,20 @@
     <div class="side-menu-content">
         <div class="menu-item active" onclick="selectAppMode('tennis')">🎾 TENNIS</div>
         <div class="menu-item" onclick="selectAppMode('game')">🎮 GAME</div>
-        <div class="menu-item" onclick="openMyPage()">👤 MY PAGE</div>
+        <div class="menu-item" onclick="showMyPage()">👤 MY PAGE</div>
     </div>
 </div>
 
 <div class="container">
     <header class="app-header">
+        <div id="currentUserDisplay" class="user-status-display" onclick="showMyPage()"></div>
         <div class="header-btn left" onclick="manualReload()">↻</div>
         <h1 id="pageTitle">MATCH INPUT</h1>
         <div class="subtitle">DEEP SPACE INTEGRATED SYSTEM</div>
         <div class="header-btn right" id="menuToggleBtn" onclick="toggleSideMenu()">≡</div>
     </header>
     
-    <!-- TOP SECTION -->
+    <!-- TOP SECTION (NEW) -->
     <div id="view-top" class="view-section">
         <div class="section-title">WEATHER FORECAST</div>
         <div id="weather-forecast" class="weather-container">
@@ -773,17 +852,10 @@
 
     <!-- MY PAGE SECTION (NEW) -->
     <div id="view-mypage" class="view-section">
-        <div class="mypage-header">
-            <div class="commander-title">COMMANDER IDENTITY</div>
-            <div class="commander-name" id="myPageName">UNKNOWN</div>
-            <button class="logout-btn" onclick="logout()">TERMINATE SESSION</button>
+        <div id="myPageContent">
+            <!-- Content injected by JS -->
         </div>
-        
-        <div class="section-title">PERSONAL STATUS</div>
-        <div id="myPageStats"></div>
-        
-        <div class="section-title" style="margin-top:30px;">MEDAL COLLECTION</div>
-        <div id="myPageMedals" class="modal-medals"></div>
+        <input type="file" id="avatarInput" hidden accept="image/*" onchange="handleAvatarUpload(this)">
     </div>
 
     <div id="view-match" class="view-section active">
@@ -930,6 +1002,12 @@
                 <div class="game-card-title">COIN TOSS</div>
             </div>
 
+            <div class="game-card" onclick="openShop()">
+                <div class="game-status">OPEN</div>
+                <div class="game-icon">🛒</div>
+                <div class="game-card-title">ITEM SHOP</div>
+            </div>
+
             <div class="game-card locked">
                 <div class="game-status">OFFLINE</div>
                 <div class="game-icon">🔒</div>
@@ -947,28 +1025,6 @@
     <button class="nav-item" onclick="switchMainView('ranking')"><span class="nav-icon">👑</span>RANK</button>
     <button class="nav-item" onclick="switchMainView('schedule')"><span class="nav-icon">📅</span>SCHEDULE</button>
 </nav>
-
-<!-- LOGIN MODAL (NEW) -->
-<div id="loginModal">
-    <div class="modal-content" style="text-align: center;">
-        <button class="close-btn" onclick="closeLoginModal()">×</button>
-        <div class="modal-title">IDENTITY VERIFICATION</div>
-        <div style="color:#888; font-size:0.8rem; margin-bottom:20px;">BIO-METRIC SCAN REQUIRED</div>
-        
-        <div class="login-input-group">
-            <div style="font-size:0.7rem; color:#00ffff; margin-bottom:5px;">SELECT IDENTITY</div>
-            <select id="loginNameSelect" class="sector-select" style="margin-bottom:20px;">
-                <!-- Filled via JS -->
-            </select>
-            
-            <div style="font-size:0.7rem; color:#00ffff; margin-bottom:5px;">ENTER PASSCODE</div>
-            <input type="password" id="loginPinInput" class="login-input" maxlength="4" placeholder="****">
-            <div id="loginError" class="error-msg"></div>
-        </div>
-        
-        <button class="login-btn" onclick="attemptLogin()">VERIFY</button>
-    </div>
-</div>
 
 <div id="playerModal" onclick="closeModal(event)">
     <div class="modal-content">
@@ -1004,6 +1060,20 @@
     </div>
 </div>
 
+<div id="shopModal" onclick="closeShop(event)">
+    <div class="modal-content" style="max-width:400px; text-align:center;">
+        <button class="close-btn" onclick="closeShop(event)">×</button>
+        <div class="modal-title">ITEM SHOP</div>
+        <div class="shop-item-container">
+            <img src="./Gemini_Generated_Image_8zqd0z8zqd0z8zqd-Photoroom.jpg" alt="Item" style="width:100%; max-width:250px; border-radius:8px; margin-bottom:15px; border:1px solid #00ffff; box-shadow: 0 0 15px rgba(0,255,255,0.3);">
+            <div class="shop-price-tag">
+                <span style="font-size:1.5rem; color:#ffd700; font-weight:bold; text-shadow:0 0 10px rgba(255,215,0,0.6);">10,000 COINS</span>
+            </div>
+            <button class="btn-hero" style="margin-top:20px; width:100%; font-size:0.9rem;">PURCHASE</button>
+        </div>
+    </div>
+</div>
+
 <div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
     <div class="modal-content">
         <button class="close-btn" onclick="closeScheduleModal(event)">×</button>
@@ -1012,6 +1082,19 @@
             <div style="font-size:0.8rem; color:#888;">回答状況</div>
         </div>
         <ul class="detail-list" id="modalScheduleList"></ul>
+    </div>
+</div>
+
+<div id="loginModal">
+    <div class="modal-content" style="text-align:center; max-width:320px;">
+        <button class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</button>
+        <div class="modal-title">ACCESS LOGIN</div>
+        <div style="margin-bottom:20px; color:#aaa; font-size:0.8rem;">ENTER PASSCODE TO IDENTIFY</div>
+        <input type="number" id="loginPassInput" placeholder="PASSCODE">
+        <button class="btn-login" onclick="attemptLogin()">AUTHENTICATE</button>
+        <div style="margin-top:20px;">
+            <button class="btn-guest" onclick="enableGuestMode()">CONTINUE AS GUEST</button>
+        </div>
     </div>
 </div>
 
@@ -1031,9 +1114,13 @@
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtWaBkvdPNzkN1_7lmFRnAQLbnu6A40YUQdbzX6gTfIY5CznZs13GYxZw/exec";
     const SCHEDULE_GAS_URL = "https://script.google.com/macros/s/AKfycbxkywDklSyaMf93hYhG-ULAyAEQ1qHGgaYjNewTxX34pfySOZKYsbwehygCccEvnchB/exec";
     
+    // Auth Sheet Info
+    const AUTH_SHEET_ID = '18J_8wm-Qc3yRV-eEwdtB_55CYOAsVGy26AIU7aCvSQw';
+    const AUTH_SHEET_GID = '835965305';
+    
     const members = ["周平", "すが", "凌矢", "祐介", "志村", "カトケン", "小田"];
     const STORAGE_KEY = 'tennis_match_data_v7_holo';
-    const LOGIN_KEY = 'deep_space_auth_user_v1';
+    const LOGIN_KEY = 'tennis_user_auth';
     const CREW_RANKS = [
         { name: '候補生',     min: 0,   icon: '🌑' },
         { name: 'パイロット', min: 100,  icon: '🛸' },
@@ -1053,27 +1140,30 @@
     
     let rawAnalysisRankings = [];
     let rawAnalysisMatches = [];
-    let rawMembersData = []; // NEW: Store PINs
     let currentSector = 'ALL';
     
+    // スケジュールデータ保存用
     let globalScheduleData = [];
+    let currentUser = null;
 
     window.onload = function() {
+        initAuth(); // Initialize Authentication
         initSelectors();
-        initLoginSelect();
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
         fetchAnalysisData();
-        fetchScheduleData();
-        fetchWeather();
+        fetchScheduleData(); // Real Fetch
+        fetchWeather(); // Fetch Weather
         
+        // Restore last view from sessionStorage to keep page state on refresh
         const lastView = sessionStorage.getItem('lastView');
         if (lastView) {
             switchMainView(lastView);
         } else {
+            // Default to TOP
             switchMainView('top'); 
         }
 
@@ -1081,21 +1171,271 @@
             document.getElementById('loadingScreen').style.opacity = 0;
             setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
         }, 1000);
+        
+        // Swipe Logic
+        let touchStartX = 0;
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        document.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            // 右端(画面幅-100px以内)から左へスワイプでオープン
+            if(touchStartX > window.innerWidth - 100 && touchStartX - touchEndX > 50) {
+                document.getElementById('sideMenu').classList.add('open');
+                updateSideMenuActiveState();
+            }
+            // 右へスワイプでクローズ
+            if(touchEndX - touchStartX > 50) {
+                document.getElementById('sideMenu').classList.remove('open');
+            }
+        }, {passive: true});
     };
+
+    // --- AUTHENTICATION LOGIC ---
+    // JSONP callback needs to be global
+    window.onAuthDataLoaded = function(json) {
+        const pass = document.getElementById('loginPassInput').value;
+        const btn = document.querySelector('.btn-login');
+        
+        // Remove the script tag to clean up
+        const script = document.getElementById('authScript');
+        if(script) script.remove();
+
+        // Safety check for valid JSON structure
+        if (!json || !json.table || !json.table.rows) {
+            console.error("Auth Data Error:", json);
+            alert("ACCESS DENIED: DATA LOAD FAILED (Check Sheet Permissions)");
+            btn.textContent = "AUTHENTICATE";
+            btn.disabled = false;
+            return;
+        }
+
+        const rows = json.table.rows;
+        let foundUser = null;
+        
+        // Assume Col A (0) is Name, Col B (1) is Password
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row.c[0] || !row.c[1]) continue;
+            const name = row.c[0].v;
+            const dbPass = String(row.c[1].v); 
+            
+            if (String(pass) === dbPass) {
+                foundUser = { name: name };
+                break;
+            }
+        }
+
+        if (foundUser) {
+            currentUser = foundUser;
+            localStorage.setItem(LOGIN_KEY, JSON.stringify(currentUser));
+            updateUserDisplay();
+            document.getElementById('loginModal').style.display = 'none';
+            showToast(`WELCOME, ${currentUser.name}`);
+            
+            // If MyPage is currently shown, re-render it
+            if(document.getElementById('view-mypage').classList.contains('active')) {
+                renderMyPage();
+            }
+        } else {
+            alert("ACCESS DENIED: INVALID PASSCODE");
+        }
+        
+        btn.textContent = "AUTHENTICATE";
+        btn.disabled = false;
+    };
+
+    function initAuth() {
+        const storedUser = localStorage.getItem(LOGIN_KEY);
+        if (storedUser) {
+            currentUser = JSON.parse(storedUser);
+        } else {
+            // Do not show modal on load, just set null
+            currentUser = null;
+        }
+        updateUserDisplay();
+    }
+
+    function updateUserDisplay() {
+        const disp = document.getElementById('currentUserDisplay');
+        if (currentUser) {
+            disp.textContent = currentUser.name;
+            disp.className = 'user-status-display status-user';
+        } else {
+            disp.textContent = 'GUEST';
+            disp.className = 'user-status-display status-guest';
+        }
+    }
+
+    function attemptLogin() {
+        const pass = document.getElementById('loginPassInput').value;
+        if (!pass) return;
+        
+        const btn = document.querySelector('.btn-login');
+        btn.textContent = "VERIFYING...";
+        btn.disabled = true;
+
+        // Use JSONP to bypass CORS
+        const script = document.createElement('script');
+        script.id = 'authScript';
+        script.src = `https://docs.google.com/spreadsheets/d/${AUTH_SHEET_ID}/gviz/tq?tqx=responseHandler:onAuthDataLoaded&gid=${AUTH_SHEET_GID}`;
+        script.onerror = function() {
+            alert("AUTH ERROR: NETWORK OR SHEET ISSUE");
+            btn.textContent = "AUTHENTICATE";
+            btn.disabled = false;
+        };
+        document.body.appendChild(script);
+    }
+
+    function enableGuestMode() {
+        // Just close the modal, stay as guest (or whatever current state)
+        document.getElementById('loginModal').style.display = 'none';
+        if (!currentUser) {
+            showToast("GUEST MODE ACTIVE");
+        }
+    }
+
+    function handleLogout() {
+        if (confirm("LOGOUT / CHANGE USER?")) {
+            localStorage.removeItem(LOGIN_KEY);
+            currentUser = null;
+            location.reload();
+        }
+    }
+
+    function showMyPage() {
+        // Close side menu
+        document.getElementById('sideMenu').classList.remove('open');
+
+        if (currentUser) {
+            // Logged in: Show My Page View
+            switchMainView('mypage');
+            renderMyPage();
+        } else {
+            // Not logged in, show login modal
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+    }
+    
+    function renderMyPage() {
+        if (!currentUser) return;
+        
+        const name = currentUser.name;
+        // Get Stats from Global Data (if available)
+        const pStats = playerStatsGlobal[name] || { wins: 0, losses: 0, games: 0, mvpCount: 0, matches: 0 };
+        const max = playerStatsGlobal._max || { wins:100, games:2000 };
+        
+        const rankInfo = getRankInfo(pStats.games);
+        const nextRank = rankInfo.next;
+        let expText = "MAX RANK";
+        let barW = 100;
+        
+        if (nextRank) {
+            const range = nextRank.min - rankInfo.current.min;
+            const currentExp = pStats.games - rankInfo.current.min;
+            barW = Math.min((currentExp / range) * 100, 100);
+            expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
+        }
+        
+        // Dummy Coin Calculation: Wins * 50 + Games * 10
+        const coins = (pStats.wins * 50) + (pStats.games * 10);
+        
+        // Avatar Logic
+        const storedAvatar = localStorage.getItem(`avatar_${name}`);
+        let avatarStyle = '';
+        let avatarContent = name.charAt(0);
+        
+        if(storedAvatar) {
+            avatarStyle = `background-image: url(${storedAvatar}); background-size: cover; background-position: center; color: transparent;`;
+            avatarContent = '';
+        }
+        
+        const html = `
+            <div class="mypage-header">
+                <div class="mypage-avatar-large" style="${avatarStyle}" onclick="document.getElementById('avatarInput').click()">
+                    ${avatarContent}
+                </div>
+                <div class="mypage-name">${name}</div>
+                <div class="mypage-title">${rankInfo.current.icon} ${rankInfo.current.name}</div>
+            </div>
+            
+            <div class="rank-info-area">
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; color:#aaa;">
+                    <span>EXP: ${pStats.games}</span>
+                    <span>${expText}</span>
+                </div>
+                <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${barW}%"></div></div>
+            </div>
+            
+            <div class="mypage-coin-area">
+                <div class="coin-val">${coins.toLocaleString()}</div>
+                <div class="coin-label">CRYPTO COINS</div>
+            </div>
+            
+            <div class="section-title">COMBAT STATS</div>
+            <div class="dashboard-grid">
+                <div class="stat-card"><div class="stat-label">VICTORIES</div><div class="stat-value highlight">${pStats.wins}</div></div>
+                <div class="stat-card"><div class="stat-label">MATCHES</div><div class="stat-value">${pStats.matches}</div></div>
+                <div class="stat-card"><div class="stat-label">WIN RATE</div><div class="stat-value">${pStats.matches > 0 ? ((pStats.wins/pStats.matches)*100).toFixed(1) : 0}%</div></div>
+                <div class="stat-card"><div class="stat-label">MVP</div><div class="stat-value">${pStats.mvpCount}</div></div>
+            </div>
+            
+            <div style="text-align:center;">
+                <button class="btn-logout" onclick="handleLogout()">LOGOUT</button>
+            </div>
+        `;
+        
+        document.getElementById('myPageContent').innerHTML = html;
+        document.getElementById('pageTitle').textContent = "MY PAGE";
+    }
+    
+    function handleAvatarUpload(input) {
+        if (input.files && input.files[0] && currentUser) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                localStorage.setItem(`avatar_${currentUser.name}`, base64);
+                renderMyPage(); // Re-render to show new image
+                showToast("AVATAR UPDATED");
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
     // --- NAVIGATION LOGIC ---
     function toggleSideMenu() {
-        document.getElementById('sideMenu').classList.toggle('open');
+        const menu = document.getElementById('sideMenu');
+        menu.classList.toggle('open');
+        if(menu.classList.contains('open')) {
+            updateSideMenuActiveState();
+        }
+    }
+    
+    function updateSideMenuActiveState() {
+        const currentView = sessionStorage.getItem('lastView') || 'top';
+        const items = document.querySelectorAll('.side-menu-content .menu-item');
+        items.forEach(i => i.classList.remove('active'));
+        
+        if(currentView === 'mypage') {
+            items[2].classList.add('active'); // My Page
+        } else if (currentView === 'game') {
+            items[1].classList.add('active'); // Game
+        } else {
+            items[0].classList.add('active'); // Tennis (default for all tennis views)
+        }
     }
     
     function closeSideMenu(e) {
         if(e.target.id === 'sideMenu') {
             document.getElementById('sideMenu').classList.remove('open');
+            // document.getElementById('menuToggleBtn').classList.remove('active'); // Removed morph trigger
         }
     }
 
     function selectAppMode(mode) {
         document.getElementById('sideMenu').classList.remove('open');
+        // document.getElementById('menuToggleBtn').classList.remove('active'); // Removed morph trigger
         
         const bottomNav = document.getElementById('bottomNav');
         const subTitle = document.querySelector('.subtitle');
@@ -1105,11 +1445,13 @@
 
         if (mode === 'tennis') {
             items[0].classList.add('active');
+            // Show Tennis Views
             switchMainView('top'); 
             bottomNav.classList.remove('hidden');
             subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         } else if (mode === 'game') {
             items[1].classList.add('active');
+            // Show Game Portal
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('view-game').classList.add('active');
             bottomNav.classList.add('hidden');
@@ -1120,29 +1462,26 @@
     }
 
     function switchMainView(viewName) {
+        // Save current view for refresh
         sessionStorage.setItem('lastView', viewName);
 
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
         const navs = document.querySelectorAll('.nav-item');
+        
+        // Handle nav active states
         if(viewName === 'top') navs[0].classList.add('active');
         if(viewName === 'match') navs[1].classList.add('active');
         if(viewName === 'dashboard') navs[2].classList.add('active');
         if(viewName === 'ranking') navs[3].classList.add('active');
         if(viewName === 'schedule') navs[4].classList.add('active');
+        // mypage has no bottom nav button, so no active class needed there
         
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         
         const targetSection = document.getElementById(`view-${viewName}`);
         if(targetSection) targetSection.classList.add('active');
         
-        const titles = { 
-            'top': 'HOME', 
-            'match': 'MATCH INPUT', 
-            'dashboard': 'DASHBOARD', 
-            'ranking': 'RANKING', 
-            'schedule': 'MISSION SCHEDULE',
-            'mypage': 'MY QUARTERS'
-        };
+        const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'mypage': 'MY PAGE' };
         document.getElementById('pageTitle').textContent = titles[viewName] || 'TENNIS CHRONICLES';
     }
 
@@ -1150,107 +1489,9 @@
         location.reload();
     }
 
-    // --- LOGIN / MY PAGE LOGIC ---
-    function initLoginSelect() {
-        const sel = document.getElementById('loginNameSelect');
-        if(!sel) return;
-        sel.innerHTML = '';
-        members.forEach(m => {
-            const op = document.createElement('option');
-            op.value = m;
-            op.text = m;
-            sel.appendChild(op);
-        });
-    }
-
-    function openMyPage() {
-        document.getElementById('sideMenu').classList.remove('open');
-        const currentUser = localStorage.getItem(LOGIN_KEY);
-        
-        if (currentUser) {
-            // Already logged in
-            showMyPage(currentUser);
-        } else {
-            // Show Login Modal
-            document.getElementById('loginModal').style.display = 'flex';
-            document.getElementById('loginError').textContent = "";
-            document.getElementById('loginPinInput').value = "";
-        }
-    }
-
-    function closeLoginModal() {
-        document.getElementById('loginModal').style.display = 'none';
-    }
-
-    function attemptLogin() {
-        if (!rawMembersData || rawMembersData.length === 0) {
-            // Fallback if user hasn't updated GAS yet
-            document.getElementById('loginError').textContent = "ERROR: DB CONNECTION FAILED";
-            return;
-        }
-
-        const name = document.getElementById('loginNameSelect').value;
-        const pin = document.getElementById('loginPinInput').value;
-        
-        // Find member in loaded data
-        const member = rawMembersData.find(m => m.name === name);
-        
-        if (!member) {
-            document.getElementById('loginError').textContent = "USER DATA NOT FOUND";
-            return;
-        }
-
-        // Simple PIN verification (Note: PIN is loaded as string or number)
-        if (String(member.pin) === String(pin)) {
-            // Success
-            localStorage.setItem(LOGIN_KEY, name);
-            closeLoginModal();
-            showMyPage(name);
-            showToast(`WELCOME BACK, ${name}`);
-        } else {
-            document.getElementById('loginError').textContent = "ACCESS DENIED: INVALID PIN";
-        }
-    }
-
-    function logout() {
-        if(confirm("TERMINATE SESSION?")) {
-            localStorage.removeItem(LOGIN_KEY);
-            switchMainView('top');
-            showToast("SESSION ENDED");
-        }
-    }
-
-    function showMyPage(name) {
-        switchMainView('mypage');
-        document.getElementById('myPageName').textContent = name;
-        
-        // Render Stats
-        const p = playerStatsGlobal[name];
-        const statsDiv = document.getElementById('myPageStats');
-        const medalDiv = document.getElementById('myPageMedals');
-        
-        if (p) {
-            const max = playerStatsGlobal._max;
-            const rank = getRankInfo(p.games).current;
-            const winRate = (p.wins + p.losses) > 0 ? ((p.wins / (p.wins + p.losses)) * 100).toFixed(1) : 0;
-            
-            statsDiv.innerHTML = `
-                <div class="dashboard-grid">
-                    <div class="stat-card"><div class="stat-label">RANK</div><div class="stat-value" style="font-size:1.2rem;">${rank.icon} ${rank.name}</div></div>
-                    <div class="stat-card"><div class="stat-label">WIN RATE</div><div class="stat-value highlight">${winRate}%</div></div>
-                    <div class="stat-card"><div class="stat-label">WINS</div><div class="stat-value">${p.wins}</div></div>
-                    <div class="stat-card"><div class="stat-label">GAMES</div><div class="stat-value">${p.games}</div></div>
-                </div>
-            `;
-            medalDiv.innerHTML = getMedals(p, max) || '<div style="color:#666; font-size:0.8rem;">NO MEDALS ACQUIRED</div>';
-        } else {
-            statsDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">NO BATTLE DATA FOUND</div>';
-            medalDiv.innerHTML = '';
-        }
-    }
-
     // --- WEATHER LOGIC ---
     function fetchWeather() {
+        // Tokyo Coordinates
         const url = "https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo";
         
         fetch(url)
@@ -1267,6 +1508,8 @@
                 const rain = daily.precipitation_probability_max[i];
                 const code = daily.weathercode[i];
                 const icon = weatherCodeToIcon(code);
+                
+                // Highlight today
                 const isToday = i === 0 ? 'today' : '';
 
                 const div = document.createElement('div');
@@ -1287,6 +1530,7 @@
     }
 
     function weatherCodeToIcon(code) {
+        // WMO Weather interpretation codes (WW)
         if (code === 0) return "☀";
         if (code === 1 || code === 2 || code === 3) return "☁";
         if (code === 45 || code === 48) return "🌫";
@@ -1321,6 +1565,16 @@
             c.classList.remove('spinning'); 
             c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
         }, 1500);
+    }
+
+    function openShop() {
+        document.getElementById('shopModal').style.display = 'flex';
+    }
+
+    function closeShop(e) {
+        if(e.target.id === 'shopModal' || e.target.className === 'close-btn') {
+            document.getElementById('shopModal').style.display = 'none';
+        }
     }
 
     // ================== MAP LOGIC ==================
@@ -1385,13 +1639,14 @@
         document.getElementById('calcResult').innerText = '¥' + result.toLocaleString();
     }
 
-    // ================== SCHEDULE LOGIC ==================
+    // ================== SCHEDULE LOGIC (UPDATED for Real Data) ==================
     function fetchScheduleData() {
         const list = document.getElementById('scheduleList');
+        // GASからのレスポンスを待つ
         fetch(SCHEDULE_GAS_URL)
           .then(response => response.json())
           .then(data => {
-            globalScheduleData = data;
+            globalScheduleData = data; // 保存
             if(data.length === 0) {
                 list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">予定がありません</div>';
                 return;
@@ -1407,14 +1662,18 @@
     function initScheduleTabs(data) {
         const tabsContainer = document.getElementById('scheduleTabs');
         tabsContainer.innerHTML = "";
+        
+        // 存在する月を抽出 (yyyy-mm)
         const months = [...new Set(data.map(item => item.fullDate.substring(0, 7)))];
         
         months.forEach((m, idx) => {
             const btn = document.createElement('div');
             btn.className = 'month-tab';
+            // 表示名: "2026-01" -> "1月"
             const mNum = parseInt(m.split('-')[1]);
             btn.textContent = `${mNum}月`;
             btn.onclick = () => {
+                // タブ切り替え
                 document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
                 btn.classList.add('active');
                 renderScheduleList(m);
@@ -1430,19 +1689,31 @@
     function renderScheduleList(targetMonth) {
         const list = document.getElementById('scheduleList');
         list.innerHTML = "";
+        
+        // 選択された月のデータのみフィルタ
         const filtered = globalScheduleData.filter(item => item.fullDate.startsWith(targetMonth));
+        
+        // その月で最も参加(ok)が多い数を探す
         let maxOk = 0;
-        filtered.forEach(item => { if(item.counts.ok > maxOk) maxOk = item.counts.ok; });
+        filtered.forEach(item => {
+            if(item.counts.ok > maxOk) maxOk = item.counts.ok;
+        });
 
         filtered.forEach((item, index) => {
             const li = document.createElement('li');
             li.className = 'schedule-item';
+            
+            // 最多人数ならハイライト
             let crownHtml = "";
             if (maxOk > 0 && item.counts.ok === maxOk) {
                 li.classList.add('top-attendance');
                 crownHtml = '<span class="crown-icon">👑</span>';
             }
+
+            // クリック時にグローバルデータのインデックスではなく、フィルタ後のデータを使う必要があるため
+            // 直接オブジェクトを渡すか、フィルタ済みのインデックスを使う
             li.onclick = () => showScheduleDetail(item);
+            
             li.innerHTML = `
                 <div class="schedule-date">${crownHtml}${item.date}</div>
                 <div class="schedule-counts">
@@ -1463,6 +1734,7 @@
         if (!itemData.details || itemData.details.length === 0) {
             list.innerHTML = '<li style="padding:20px; text-align:center; color:#888;">回答データなし</li>';
         } else {
+            // ok順、maybe順、ng順にソート
             const sortedDetails = itemData.details.sort((a, b) => {
                 const rank = { "ok": 1, "maybe": 2, "ng": 3 };
                 return rank[a.status] - rank[b.status];
@@ -1471,6 +1743,7 @@
             sortedDetails.forEach(member => {
                 const li = document.createElement('li');
                 li.className = 'member-item';
+                
                 const initial = member.name.charAt(0);
                 let statusIcon = '';
                 if(member.status === 'ok') statusIcon = '<span class="status-ok">◯</span>';
@@ -1496,7 +1769,7 @@
         }
     }
 
-    // ================== INPUT LOGIC ==================
+    // ================== INPUT LOGIC (Existing) ==================
     const patterns = [[1, 2, 3, 4, 5],[1, 5, 2, 3, 4],[1, 4, 2, 5, 3],[1, 3, 4, 5, 2],[2, 4, 3, 5, 1]];
 
     function initSelectors() {
@@ -1802,10 +2075,6 @@
             if(json.status === 'success') { 
                 rawAnalysisRankings = json.rankings; 
                 rawAnalysisMatches = json.matches;
-                // NEW: Load PIN Data from GAS
-                if(json.members) {
-                    rawMembersData = json.members;
-                }
                 processAnalysisData(); 
             }
         } catch(e) { console.error(e); }
@@ -1911,6 +2180,11 @@
         renderAnalysisLogs(logs);
         renderAnalysisChart(sortedP);
         if(currentSector === 'ALL') { updateSchedule('r1'); updateSchedule('r2'); }
+        
+        // Refresh MyPage if active
+        if(document.getElementById('view-mypage').classList.contains('active')) {
+            renderMyPage();
+        }
     }
 
     function getRankInfo(games) {
