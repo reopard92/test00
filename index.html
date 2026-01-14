@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 49</title>
+    <title>CODE NAME: 50</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -421,6 +421,118 @@
             cursor: pointer; transition: 0.3s; font-size: 0.8rem;
         }
         .btn-logout:hover { background: rgba(255,82,82,0.1); }
+
+        /* SHOP STYLES */
+        .holo-showcase {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            perspective: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .holo-item {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            transform-style: preserve-3d;
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .holo-ring {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%) rotateX(75deg);
+            width: 160px;
+            height: 160px;
+            border: 2px solid rgba(0,255,255,0.4);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0,255,255,0.2), inset 0 0 20px rgba(0,255,255,0.2);
+            animation: ringSpin 10s linear infinite;
+        }
+        @keyframes ringSpin {
+            0% { transform: translateX(-50%) rotateX(75deg) rotateZ(0deg); }
+            100% { transform: translateX(-50%) rotateX(75deg) rotateZ(360deg); }
+        }
+        .holo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid rgba(0,255,255,0.6);
+            box-shadow: 0 0 25px rgba(0,255,255,0.4);
+            filter: drop-shadow(0 0 10px rgba(0,255,255,0.5));
+            /* Hologram scanline effect */
+            background: repeating-linear-gradient(
+                transparent 0%,
+                transparent 50%,
+                rgba(0, 255, 255, 0.1) 50%,
+                rgba(0, 255, 255, 0.1) 100%
+            );
+            background-size: 4px 4px;
+        }
+        .item-info {
+            text-align: center;
+            margin-top: 30px;
+            z-index: 10;
+        }
+        .item-name {
+            font-size: 1.1rem;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        .item-price {
+            font-size: 1.4rem;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255,215,0,0.6);
+        }
+        
+        /* HOLD BUTTON */
+        .hold-btn {
+            position: relative;
+            background: transparent;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 12px 40px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.2s;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 250px;
+        }
+        .hold-btn:active {
+            transform: scale(0.98);
+        }
+        .hold-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: rgba(0,255,255,0.3);
+            transition: width 0s linear; /* Reset immediately */
+        }
+        .hold-btn.holding .hold-progress {
+            width: 100%;
+            transition: width 1.5s linear; /* Match duration */
+        }
+        .hold-btn-text {
+            position: relative;
+            z-index: 2;
+        }
+
 
         /* FOOTER */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.15); display: flex; justify-content: space-around; padding: 15px 0 30px 0; z-index: 1000; transition: transform 0.3s ease; }
@@ -1061,15 +1173,26 @@
 </div>
 
 <div id="shopModal" onclick="closeShop(event)">
-    <div class="modal-content" style="max-width:400px; text-align:center;">
+    <div class="modal-content" style="max-width:320px; text-align:center; padding: 20px;">
         <button class="close-btn" onclick="closeShop(event)">×</button>
-        <div class="modal-title">ITEM SHOP</div>
-        <div class="shop-item-container">
-            <img src="./Gemini_Generated_Image_8zqd0z8zqd0z8zqd-Photoroom.jpg" alt="Item" style="width:100%; max-width:250px; border-radius:8px; margin-bottom:15px; border:1px solid #00ffff; box-shadow: 0 0 15px rgba(0,255,255,0.3);">
-            <div class="shop-price-tag">
-                <span style="font-size:1.5rem; color:#ffd700; font-weight:bold; text-shadow:0 0 10px rgba(255,215,0,0.6);">10,000 COINS</span>
+        <div class="modal-title" style="margin-bottom:20px;">ITEM SHOP</div>
+        
+        <!-- Hologram Showcase -->
+        <div class="holo-showcase">
+            <div class="holo-item">
+                <div class="holo-ring"></div>
+                <img src="./Gemini_Generated_Image_8zqd0z8zqd0z8zqd-Photoroom.jpg" alt="Mystery Item" class="holo-img">
             </div>
-            <button class="btn-hero" style="margin-top:20px; width:100%; font-size:0.9rem;">PURCHASE</button>
+            
+            <div class="item-info">
+                <div class="item-name">MYSTERY CAPSULE</div>
+                <div class="item-price">10,000 COINS</div>
+            </div>
+            
+            <button class="hold-btn" onmousedown="startHold(this)" ontouchstart="startHold(this)" onmouseup="endHold(this)" ontouchend="endHold(this)" onmouseleave="endHold(this)">
+                <div class="hold-progress"></div>
+                <span class="hold-btn-text">HOLD TO BUY</span>
+            </button>
         </div>
     </div>
 </div>
@@ -1191,6 +1314,44 @@
             }
         }, {passive: true});
     };
+
+    // --- SHOP LOGIC ---
+    let holdTimer = null;
+    const holdDuration = 1500; // 1.5s
+
+    function startHold(btn) {
+        // Prevent default touch actions (scrolling etc)
+        if(event.type === 'touchstart') event.preventDefault();
+        
+        btn.classList.add('holding');
+        holdTimer = setTimeout(() => {
+            completePurchase(btn);
+        }, holdDuration);
+    }
+
+    function endHold(btn) {
+        clearTimeout(holdTimer);
+        btn.classList.remove('holding');
+    }
+
+    function completePurchase(btn) {
+        clearTimeout(holdTimer);
+        btn.classList.remove('holding');
+        // Effect
+        showToast("TRANSACTION COMPLETE");
+        // closeShop({target:{id:'shopModal'}}); // Optional: close modal
+    }
+
+    function openShop() {
+        document.getElementById('shopModal').style.display = 'flex';
+    }
+
+    function closeShop(e) {
+        if(e.target.id === 'shopModal' || e.target.className === 'close-btn') {
+            document.getElementById('shopModal').style.display = 'none';
+        }
+    }
+
 
     // --- AUTHENTICATION LOGIC ---
     // JSONP callback needs to be global
@@ -1565,16 +1726,6 @@
             c.classList.remove('spinning'); 
             c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
         }, 1500);
-    }
-
-    function openShop() {
-        document.getElementById('shopModal').style.display = 'flex';
-    }
-
-    function closeShop(e) {
-        if(e.target.id === 'shopModal' || e.target.className === 'close-btn') {
-            document.getElementById('shopModal').style.display = 'none';
-        }
     }
 
     // ================== MAP LOGIC ==================
