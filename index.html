@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 51</title>
+    <title>CODE NAME: 54</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -593,6 +593,38 @@
             z-index: 2;
         }
 
+        /* LOGIN BONUS BUTTON (ADDED) */
+        .bonus-btn-area {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .bonus-btn {
+            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+            border: 1px solid #00ffff;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 198, 255, 0.4);
+            transition: 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        .bonus-btn:hover {
+            box-shadow: 0 0 25px rgba(0, 198, 255, 0.7);
+            transform: translateY(-2px);
+        }
+        .bonus-btn:disabled {
+            background: #333;
+            border-color: #555;
+            color: #777;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
 
         /* FOOTER */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.15); display: flex; justify-content: space-around; padding: 15px 0 30px 0; z-index: 1000; transition: transform 0.3s ease; }
@@ -1020,6 +1052,11 @@
                 WAITING FOR NAVI INPUT...
             </div>
         </div>
+        
+        <!-- LOGIN BONUS BUTTON (ADDED) -->
+        <div class="bonus-btn-area">
+            <button id="loginBonusBtn" class="bonus-btn" onclick="claimLoginBonus()">DAILY SUPPLY (LOGIN BONUS)</button>
+        </div>
     </div>
 
     <!-- MY PAGE SECTION (NEW) -->
@@ -1174,12 +1211,6 @@
                 <div class="game-card-title">COIN TOSS</div>
             </div>
 
-            <div class="game-card" onclick="openShop()">
-                <div class="game-status">OPEN</div>
-                <div class="game-icon">🛒</div>
-                <div class="game-card-title">ITEM SHOP</div>
-            </div>
-
             <div class="game-card locked">
                 <div class="game-status">OFFLINE</div>
                 <div class="game-icon">🔒</div>
@@ -1232,6 +1263,30 @@
     </div>
 </div>
 
+<div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeScheduleModal(event)">×</button>
+        <div class="detail-header">
+            <div class="detail-date" id="modalScheduleDate"></div>
+            <div style="font-size:0.8rem; color:#888;">回答状況</div>
+        </div>
+        <ul class="detail-list" id="modalScheduleList"></ul>
+    </div>
+</div>
+
+<div id="loginModal">
+    <div class="modal-content" style="text-align:center; max-width:320px;">
+        <button class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</button>
+        <div class="modal-title">ACCESS LOGIN</div>
+        <div style="margin-bottom:20px; color:#aaa; font-size:0.8rem;">ENTER PASSCODE TO IDENTIFY</div>
+        <input type="number" id="loginPassInput" placeholder="PASSCODE">
+        <button class="btn-login" onclick="attemptLogin()">AUTHENTICATE</button>
+        <div style="margin-top:20px;">
+            <button class="btn-guest" onclick="enableGuestMode()">CONTINUE AS GUEST</button>
+        </div>
+    </div>
+</div>
+
 <div id="shopModal" onclick="closeShop(event)">
     <div class="modal-content" style="max-width:320px; text-align:center; padding: 20px;">
         <button class="close-btn" onclick="closeShop(event)">×</button>
@@ -1256,30 +1311,6 @@
                 <div class="hold-progress"></div>
                 <span class="hold-btn-text">HOLD TO BUY</span>
             </button>
-        </div>
-    </div>
-</div>
-
-<div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
-    <div class="modal-content">
-        <button class="close-btn" onclick="closeScheduleModal(event)">×</button>
-        <div class="detail-header">
-            <div class="detail-date" id="modalScheduleDate"></div>
-            <div style="font-size:0.8rem; color:#888;">回答状況</div>
-        </div>
-        <ul class="detail-list" id="modalScheduleList"></ul>
-    </div>
-</div>
-
-<div id="loginModal">
-    <div class="modal-content" style="text-align:center; max-width:320px;">
-        <button class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</button>
-        <div class="modal-title">ACCESS LOGIN</div>
-        <div style="margin-bottom:20px; color:#aaa; font-size:0.8rem;">ENTER PASSCODE TO IDENTIFY</div>
-        <input type="number" id="loginPassInput" placeholder="PASSCODE">
-        <button class="btn-login" onclick="attemptLogin()">AUTHENTICATE</button>
-        <div style="margin-top:20px;">
-            <button class="btn-guest" onclick="enableGuestMode()">CONTINUE AS GUEST</button>
         </div>
     </div>
 </div>
@@ -1352,6 +1383,8 @@
             // Default to TOP
             switchMainView('top'); 
         }
+        
+        checkLoginBonusState(); // Initial check
 
         setTimeout(() => {
             document.getElementById('loadingScreen').style.opacity = 0;
@@ -1377,6 +1410,81 @@
             }
         }, {passive: true});
     };
+
+    // --- COIN HELPER ---
+    function getUserCoins(username) {
+        // Base calculation from stats
+        let earned = 0;
+        if (playerStatsGlobal && playerStatsGlobal[username]) {
+            const pStats = playerStatsGlobal[username];
+            earned = (pStats.wins * 50) + (pStats.games * 10);
+        }
+        
+        // Add Bonus from LocalStorage
+        const bonus = parseInt(localStorage.getItem(`tennis_bonus_coins_${username}`)) || 0;
+        
+        // Subtract Spent
+        const spent = parseInt(localStorage.getItem(`tennis_spent_coins_${username}`)) || 0;
+        
+        return earned + bonus - spent;
+    }
+
+    // --- LOGIN BONUS LOGIC ---
+    function checkLoginBonusState() {
+        const btn = document.getElementById('loginBonusBtn');
+        if(!btn) return;
+        
+        if (!currentUser) {
+            btn.disabled = false;
+            btn.textContent = "LOGIN REQUIRED FOR BONUS";
+            return;
+        }
+        
+        const lastDate = localStorage.getItem(`tennis_bonus_date_${currentUser.name}`);
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (lastDate === today) {
+            btn.disabled = true;
+            btn.textContent = "ALREADY RECEIVED TODAY";
+        } else {
+            btn.disabled = false;
+            btn.textContent = "DAILY SUPPLY (LOGIN BONUS)";
+        }
+    }
+
+    function claimLoginBonus() {
+        if (!currentUser) {
+            document.getElementById('loginModal').style.display = 'flex';
+            return;
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        const lastDate = localStorage.getItem(`tennis_bonus_date_${currentUser.name}`);
+        
+        if (lastDate === today) {
+            showToast("ALREADY RECEIVED");
+            checkLoginBonusState();
+            return;
+        }
+        
+        // Add Bonus
+        const key = `tennis_bonus_coins_${currentUser.name}`;
+        let currentBonus = parseInt(localStorage.getItem(key)) || 0;
+        currentBonus += 500;
+        localStorage.setItem(key, currentBonus);
+        
+        // Update Date
+        localStorage.setItem(`tennis_bonus_date_${currentUser.name}`, today);
+        
+        showToast("500 COINS ACQUIRED");
+        checkLoginBonusState();
+        updateUserDisplay();
+        
+        // If my page is open, refresh it
+        if(document.getElementById('view-mypage').classList.contains('active')) {
+            renderMyPage();
+        }
+    }
 
     // --- SHOP LOGIC ---
     let holdTimer = null;
@@ -1408,12 +1516,8 @@
         btn.classList.remove('holding');
         
         const name = currentUser.name;
-        const pStats = playerStatsGlobal[name] || { wins: 0, games: 0 };
-        const totalEarned = (pStats.wins * 50) + (pStats.games * 10);
-        
-        const spentKey = `tennis_spent_coins_${name}`;
-        let spent = parseInt(localStorage.getItem(spentKey)) || 0;
-        const current = totalEarned - spent;
+        // Use helper function for coin calculation
+        const current = getUserCoins(name);
 
         if (current < itemPrice) {
             showToast("INSUFFICIENT FUNDS");
@@ -1430,6 +1534,8 @@
             
             setTimeout(() => {
                 // Execute Transaction
+                const spentKey = `tennis_spent_coins_${name}`;
+                let spent = parseInt(localStorage.getItem(spentKey)) || 0;
                 spent += itemPrice;
                 localStorage.setItem(spentKey, spent);
                 
@@ -1443,7 +1549,7 @@
                 });
                 localStorage.setItem(collectionKey, JSON.stringify(collection));
 
-                const newBalance = totalEarned - spent;
+                const newBalance = getUserCoins(name);
                 disp.innerHTML = `New Balance: <span class="calc-highlight">${newBalance.toLocaleString()}</span>`;
                 
                 showToast("TRANSACTION COMPLETE");
@@ -1513,6 +1619,7 @@
             currentUser = foundUser;
             localStorage.setItem(LOGIN_KEY, JSON.stringify(currentUser));
             updateUserDisplay();
+            checkLoginBonusState(); // Check bonus state
             document.getElementById('loginModal').style.display = 'none';
             showToast(`WELCOME, ${currentUser.name}`);
             
@@ -1544,14 +1651,8 @@
     function updateUserDisplay() {
         const disp = document.getElementById('currentUserDisplay');
         if (currentUser) {
-            // Calculate coins
-            let coins = 0;
-            if (playerStatsGlobal && playerStatsGlobal[currentUser.name]) {
-                const pStats = playerStatsGlobal[currentUser.name];
-                const totalEarned = (pStats.wins * 50) + (pStats.games * 10);
-                const spent = parseInt(localStorage.getItem(`tennis_spent_coins_${currentUser.name}`)) || 0;
-                coins = totalEarned - spent;
-            }
+            // Calculate coins using helper
+            let coins = getUserCoins(currentUser.name);
             disp.textContent = `${currentUser.name} : ${coins.toLocaleString()}`;
             disp.className = 'user-status-display status-user';
         } else {
@@ -1630,10 +1731,8 @@
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
         
-        // Coin Logic with Spending
-        const totalEarned = (pStats.wins * 50) + (pStats.games * 10);
-        const spent = parseInt(localStorage.getItem(`tennis_spent_coins_${name}`)) || 0;
-        const coins = totalEarned - spent;
+        // Coin Logic using helper
+        const coins = getUserCoins(name);
         
         // Avatar Logic
         const storedAvatar = localStorage.getItem(`avatar_${name}`);
@@ -2379,6 +2478,10 @@
                 rawAnalysisRankings = json.rankings; 
                 rawAnalysisMatches = json.matches;
                 processAnalysisData(); 
+                
+                // 初回ロード完了後にヘッダーやマイページの表示を更新
+                updateUserDisplay();
+                checkLoginBonusState(); 
             }
         } catch(e) { console.error(e); }
     }
