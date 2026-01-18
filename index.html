@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 56</title>
+    <title>CODE NAME: 61</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -114,21 +114,16 @@
             font-size: 2rem; /* Restore simple icon size */
         }
 
-        /* --- USER STATUS DISPLAY (CODE NAME 51) --- */
+        /* --- USER STATUS DISPLAY (NEW) --- */
         .user-status-display {
             position: absolute;
             top: 5px;
             right: 10px;
-            font-size: 0.7rem; /* Slightly larger for readability */
+            font-size: 0.6rem;
             letter-spacing: 1px;
             z-index: 5001;
             cursor: pointer;
             text-transform: uppercase;
-            font-family: 'Courier New', monospace;
-            background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.1);
         }
         .status-guest { color: #ff5252; font-weight: bold; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
         .status-user { color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
@@ -354,9 +349,9 @@
         .log-date { color: #fff; font-weight: bold; font-size: 1rem; }
         .log-content { display: none; padding: 15px; background: rgba(0, 0, 0, 0.3); }
         .log-content.open { display: block; animation: fadeIn 0.3s; }
-        #playerModal, #coinGameModal, #scheduleDetailModal, #loginModal, #shopModal, #slotGameModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
+        #playerModal, #coinGameModal, #scheduleDetailModal, #loginModal, #shopModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: rgba(15, 20, 30, 0.95); border: 1px solid #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; }
-        .close-btn { position: absolute; top: 15px; right: 15px; color: #fff; background: none; border: none; font-size: 1.5rem; cursor: pointer; z-index: 100; }
+        .close-btn { position: absolute; top: 15px; right: 15px; color: #fff; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
         .modal-title { color: #fff; font-weight: 300; text-align: center; font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 2px; }
         .modal-medals { text-align: center; margin-bottom: 20px; font-size: 1.2rem; }
         .rank-info-area { background: rgba(255,255,255,0.03); padding: 15px; margin-bottom: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
@@ -376,7 +371,7 @@
 
         .sector-filter::-webkit-scrollbar { display: none; }
 
-        /* MY PAGE STYLES (CODE NAME 51) */
+        /* MY PAGE STYLES (NEW) */
         .mypage-header {
             text-align: center;
             margin-bottom: 30px;
@@ -426,40 +421,6 @@
             cursor: pointer; transition: 0.3s; font-size: 0.8rem;
         }
         .btn-logout:hover { background: rgba(255,82,82,0.1); }
-        
-        .collection-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .collection-item {
-            aspect-ratio: 1 / 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            transition: 0.3s;
-        }
-        .collection-item:hover {
-            transform: scale(1.05);
-            border-color: #00ffff;
-            box-shadow: 0 0 15px rgba(0,255,255,0.3);
-        }
-        .collection-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .empty-slot {
-            font-size: 0.6rem;
-            color: #555;
-            text-align: center;
-        }
 
         /* SHOP STYLES */
         .holo-showcase {
@@ -535,27 +496,6 @@
             text-shadow: 0 0 10px rgba(255,215,0,0.6);
         }
         
-        /* Calc Animation Area */
-        .calc-display {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: #ccc;
-            margin-top: 15px;
-            height: 20px;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        .calc-display.visible {
-            opacity: 1;
-        }
-        .calc-highlight {
-            color: #00ffff;
-            font-weight: bold;
-        }
-        .calc-minus {
-            color: #ff5252;
-        }
-        
         /* HOLD BUTTON */
         .hold-btn {
             position: relative;
@@ -593,208 +533,7 @@
             z-index: 2;
         }
 
-        /* LOGIN BONUS BUTTON (ADDED) */
-        .bonus-btn-area {
-            text-align: center;
-            margin: 15px 0;
-        }
-        .bonus-btn {
-            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
-            border: 1px solid #00ffff;
-            color: #fff;
-            padding: 12px 25px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 198, 255, 0.4);
-            transition: 0.3s;
-            width: 100%;
-            max-width: 300px;
-        }
-        .bonus-btn:hover {
-            box-shadow: 0 0 25px rgba(0, 198, 255, 0.7);
-            transform: translateY(-2px);
-        }
-        .bonus-btn:disabled {
-            background: #333;
-            border-color: #555;
-            color: #777;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
 
-        /* SLOT CSS - SCOPED */
-        .slot-game-wrapper {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #2c3e50; /* Fallback for slot bg */
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-            /* No body style pollution */
-        }
-        
-        /* Inner Container for Machine Layout */
-        .slot-machine-layout {
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
-            transform: scale(0.85); /* Slightly scaled down for modal */
-        }
-
-        /* SLOT BODY */
-        .slot-body {
-            background-color: #2ecc71; /* Green Court */
-            border: 8px solid #ecf0f1;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            width: 280px;
-            position: relative;
-        }
-        
-        .slot-body::before {
-            content: "";
-            position: absolute;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 2px solid rgba(255,255,255,0.3);
-            pointer-events: none;
-            border-radius: 12px;
-        }
-
-        .slot-title {
-            color: white;
-            margin: 0 0 20px 0;
-            font-size: 24px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-        }
-
-        /* REELS */
-        .reels-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            background: #f1c40f; 
-            padding: 10px;
-            border-radius: 10px;
-            border: 3px solid #d35400;
-        }
-
-        .reel {
-            width: 60px;
-            height: 80px;
-            background-color: white;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            font-size: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        /* SLOT BUTTONS */
-        .slot-btn-group {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .slot-stop-btn {
-            width: 60px;
-            padding: 8px 0;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            box-shadow: 0 4px #c0392b;
-            transition: transform 0.1s;
-        }
-
-        .slot-stop-btn:active {
-            transform: translateY(4px);
-            box-shadow: none;
-        }
-
-        .slot-stop-btn:disabled {
-            background-color: #95a5a6;
-            box-shadow: none;
-            cursor: not-allowed;
-            transform: translateY(4px);
-        }
-
-        /* LEVER */
-        .lever-box {
-            position: relative;
-            width: 40px;
-            height: 180px;
-            margin-top: 50px;
-            cursor: pointer;
-        }
-
-        .lever-base {
-            width: 20px;
-            height: 80px;
-            background: #7f8c8d;
-            border-radius: 10px;
-            position: absolute;
-            bottom: 0;
-            left: 10px;
-        }
-
-        .lever-arm {
-            width: 10px;
-            height: 100px;
-            background: linear-gradient(to right, #bdc3c7, #ecf0f1);
-            position: absolute;
-            bottom: 60px;
-            left: 15px;
-            transform-origin: bottom center;
-            transition: transform 0.5s ease;
-        }
-
-        .lever-knob {
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);
-            border-radius: 50%;
-            position: absolute;
-            top: -20px;
-            left: -10px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-        }
-
-        .lever-pulled {
-            animation: pullLeverAnim 0.6s ease;
-        }
-
-        @keyframes pullLeverAnim {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(180deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        /* RESULT TEXT */
-        #slotResult {
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-            min-height: 28px;
-            background: rgba(0,0,0,0.2);
-            padding: 5px;
-            border-radius: 5px;
-        }
-        
         /* FOOTER */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.15); display: flex; justify-content: space-around; padding: 15px 0 30px 0; z-index: 1000; transition: transform 0.3s ease; }
         .bottom-nav.hidden { transform: translateY(100%); }
@@ -1202,12 +941,12 @@
     
     <!-- TOP SECTION (NEW) -->
     <div id="view-top" class="view-section">
-        <div class="section-title">WEATHER FORECAST</div>
+        <div class="section-title">天気予報</div>
         <div id="weather-forecast" class="weather-container">
             <div class="weather-card"><div class="spinning">❖</div></div>
         </div>
 
-        <div class="section-title">COURT NAVIGATION</div>
+        <div class="section-title">コートナビゲーション</div>
         <div class="sector-filter-area" style="text-align:center; margin-bottom:20px;">
             <select id="mapSectorSelect" class="sector-select" onchange="renderMapInfo(this.value)">
                 <option value="-">SELECT SECTOR</option>
@@ -1222,9 +961,8 @@
             </div>
         </div>
         
-        <!-- LOGIN BONUS BUTTON (ADDED) -->
-        <div class="bonus-btn-area">
-            <button id="loginBonusBtn" class="bonus-btn" onclick="claimLoginBonus()">DAILY SUPPLY (LOGIN BONUS)</button>
+        <div style="text-align:center; margin-top:30px;">
+             <button id="dailyBonusBtn" class="btn-hero" onclick="getDailyBonus()">デイリーボーナス (500 COINS)</button>
         </div>
     </div>
 
@@ -1237,7 +975,6 @@
     </div>
 
     <div id="view-match" class="view-section active">
-        <!-- Match Content -->
         <div class="input-header-area">
             <div id="matchDate"></div>
             <select id="courtSelect" onchange="saveState()" disabled>
@@ -1299,7 +1036,6 @@
     </div>
 
     <div id="view-dashboard" class="view-section">
-        <!-- Dashboard Content -->
         <div class="section-title">活動状況サマリー</div>
         <div class="dashboard-grid">
             <div class="stat-card"><div class="stat-label">開催回数</div><div class="stat-value highlight" id="totalMissions">0</div></div>
@@ -1350,7 +1086,7 @@
     </div>
 
     <div id="view-schedule" class="view-section">
-        <div class="section-title">MISSION SCHEDULE</div>
+        <div class="section-title">日程候補日</div>
         <div style="text-align:center; margin: 15px 0 25px 0;">
             <a href="https://liff.line.me/2008858372-NgwrDQlQ" target="_blank" style="color:#00ffff; text-decoration:none; border-bottom:1px solid #00ffff; padding-bottom:3px; font-size:0.9rem; letter-spacing:1px;">日程調整記入はこちらから ↗</a>
         </div>
@@ -1380,12 +1116,6 @@
                 <div class="game-status live">LIVE</div>
                 <div class="game-icon">🪙</div>
                 <div class="game-card-title">COIN TOSS</div>
-            </div>
-            
-            <div class="game-card" onclick="openSlotGame()">
-                <div class="game-status live">LIVE</div>
-                <div class="game-icon">🎰</div>
-                <div class="game-card-title">SLOT MACHINE</div>
             </div>
 
             <div class="game-card" onclick="openShop()">
@@ -1446,47 +1176,6 @@
     </div>
 </div>
 
-<!-- SLOT GAME MODAL (SCOPED CSS) -->
-<div id="slotGameModal">
-    <div class="modal-content" style="max-width:360px; padding: 10px; background: rgba(0,0,0,0.9);">
-        <button class="close-btn" onclick="document.getElementById('slotGameModal').style.display='none'">×</button>
-        
-        <div class="slot-game-container">
-            <div class="slot-machine-container">
-                <!-- 本体 -->
-                <div class="slot-body">
-                    <h1 class="slot-title">🎾 Tennis Slot 🎾</h1>
-                    
-                    <!-- リール表示部 -->
-                    <div class="reels-container">
-                        <div class="reel" id="reel0">🎾</div>
-                        <div class="reel" id="reel1">🎾</div>
-                        <div class="reel" id="reel2">🎾</div>
-                    </div>
-            
-                    <!-- ストップボタン -->
-                    <div class="buttons-container">
-                        <button class="stop-btn" id="stop0" onclick="stopSlotReel(0)" disabled>STOP</button>
-                        <button class="stop-btn" id="stop1" onclick="stopSlotReel(1)" disabled>STOP</button>
-                        <button class="stop-btn" id="stop2" onclick="stopSlotReel(2)" disabled>STOP</button>
-                    </div>
-            
-                    <div id="slotResult">レバーを引いてスタート！ ▶</div>
-                </div>
-            
-                <!-- レバー -->
-                <div class="lever-container">
-                    <div class="lever-arm" id="lever" onclick="startSlotSpin()">
-                        <div class="lever-knob"></div>
-                    </div>
-                    <div class="lever-base"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Shop Modal -->
 <div id="shopModal" onclick="closeShop(event)">
     <div class="modal-content" style="max-width:320px; text-align:center; padding: 20px;">
         <button class="close-btn" onclick="closeShop(event)">×</button>
@@ -1494,24 +1183,17 @@
         
         <!-- Hologram Showcase -->
         <div class="holo-showcase">
-            <div class="shop-arrows">
-                <div class="shop-arrow left" onclick="prevItem()">＜</div>
-                <div class="shop-arrow right" onclick="nextItem()">＞</div>
-            </div>
-
             <div class="holo-item">
                 <div class="holo-ring"></div>
-                <img id="shopItemImg" src="" alt="Item" class="holo-img">
+                <img src="./Gemini_Generated_Image_8zqd0z8zqd0z8zqd-Photoroom.jpg" onerror="this.src='https://placehold.co/180x180/000/00ffff?text=ITEM'" alt="Mystery Item" class="holo-img">
             </div>
             
             <div class="item-info">
-                <div id="shopItemName" class="item-name"></div>
-                <div id="shopItemPrice" class="item-price"></div>
-                <!-- Animation Display Area -->
-                <div id="calcDisplay" class="calc-display"></div>
+                <div class="item-name">MYSTERY CAPSULE</div>
+                <div class="item-price">10,000 COINS</div>
             </div>
             
-            <button id="shopHoldBtn" class="hold-btn" onmousedown="startHold(this)" ontouchstart="startHold(this)" onmouseup="endHold(this)" ontouchend="endHold(this)" onmouseleave="endHold(this)">
+            <button class="hold-btn" onmousedown="startHold(this)" ontouchstart="startHold(this)" onmouseup="endHold(this)" ontouchend="endHold(this)" onmouseleave="endHold(this)">
                 <div class="hold-progress"></div>
                 <span class="hold-btn-text">HOLD TO BUY</span>
             </button>
@@ -1591,14 +1273,6 @@
     let globalScheduleData = [];
     let currentUser = null;
 
-    // SHOP ITEMS (Added)
-    const shopItems = [
-        { id: 1, name: "橋本環奈", price: 10000, img: "./橋本環奈_2601.png" },
-        { id: 2, name: "今田美桜", price: 10000, img: "./今田美桜_2601.png" },
-        { id: 3, name: "浜辺美波", price: 10000, img: "./浜辺美波_2601.png" }
-    ];
-    let currentShopIndex = 0;
-
     window.onload = function() {
         initAuth(); // Initialize Authentication
         initSelectors();
@@ -1619,8 +1293,6 @@
             // Default to TOP
             switchMainView('top'); 
         }
-        
-        checkLoginBonusState(); // Initial check
 
         setTimeout(() => {
             document.getElementById('loadingScreen').style.opacity = 0;
@@ -1647,193 +1319,14 @@
         }, {passive: true});
     };
 
-    // --- COIN HELPER ---
-    function getUserCoins(username) {
-        // Base calculation from stats
-        let earned = 0;
-        if (playerStatsGlobal && playerStatsGlobal[username]) {
-            const pStats = playerStatsGlobal[username];
-            earned = (pStats.wins * 50) + (pStats.games * 10);
-        }
-        
-        // Add Bonus from LocalStorage
-        const bonus = parseInt(localStorage.getItem(`tennis_bonus_coins_${username}`)) || 0;
-        
-        // Subtract Spent
-        const spent = parseInt(localStorage.getItem(`tennis_spent_coins_${username}`)) || 0;
-        
-        return earned + bonus - spent;
-    }
-
-    // --- LOGIN BONUS LOGIC ---
-    function checkLoginBonusState() {
-        const btn = document.getElementById('loginBonusBtn');
-        if(!btn) return;
-        
-        if (!currentUser) {
-            btn.disabled = false;
-            btn.textContent = "LOGIN REQUIRED FOR BONUS";
-            return;
-        }
-        
-        const lastDate = localStorage.getItem(`tennis_bonus_date_${currentUser.name}`);
-        const today = new Date().toISOString().split('T')[0];
-        
-        if (lastDate === today) {
-            btn.disabled = true;
-            btn.textContent = "ALREADY RECEIVED TODAY";
-        } else {
-            btn.disabled = false;
-            btn.textContent = "DAILY SUPPLY (LOGIN BONUS)";
-        }
-    }
-
-    function claimLoginBonus() {
-        if (!currentUser) {
-            document.getElementById('loginModal').style.display = 'flex';
-            return;
-        }
-
-        const today = new Date().toISOString().split('T')[0];
-        const lastDate = localStorage.getItem(`tennis_bonus_date_${currentUser.name}`);
-        
-        if (lastDate === today) {
-            showToast("ALREADY RECEIVED");
-            checkLoginBonusState();
-            return;
-        }
-        
-        // Add Bonus
-        const key = `tennis_bonus_coins_${currentUser.name}`;
-        let currentBonus = parseInt(localStorage.getItem(key)) || 0;
-        currentBonus += 500;
-        localStorage.setItem(key, currentBonus);
-        
-        // Update Date
-        localStorage.setItem(`tennis_bonus_date_${currentUser.name}`, today);
-        
-        showToast("500 COINS ACQUIRED");
-        checkLoginBonusState();
-        updateUserDisplay();
-        
-        // If my page is open, refresh it
-        if(document.getElementById('view-mypage').classList.contains('active')) {
-            renderMyPage();
-        }
-    }
-
-    // --- SLOT GAME LOGIC (Added) ---
-    const slotSymbols = ['🎾', '🏆', '👟', '🧢', '🥇'];
-    let slotReelIntervals = [null, null, null];
-    let slotReelStopped = [true, true, true];
-    let isSlotPlaying = false;
-    
-    function openSlotGame() {
-        document.getElementById('slotGameModal').style.display = 'flex';
-    }
-
-    function startSlotSpin() {
-        if (isSlotPlaying) return;
-
-        isSlotPlaying = true;
-        document.getElementById('slotResult').innerText = "ボタンで止めてね！";
-        slotReelStopped = [false, false, false];
-        const stopBtns = [document.getElementById('stop0'), document.getElementById('stop1'), document.getElementById('stop2')];
-        const reels = [document.getElementById('reel0'), document.getElementById('reel1'), document.getElementById('reel2')];
-
-        // Lever Animation
-        const lever = document.getElementById('lever');
-        lever.classList.add('lever-pulled');
-        setTimeout(() => lever.classList.remove('lever-pulled'), 600);
-
-        for (let i = 0; i < 3; i++) {
-            stopBtns[i].disabled = false;
-            if (slotReelIntervals[i]) clearInterval(slotReelIntervals[i]);
-            slotReelIntervals[i] = setInterval(() => {
-                reels[i].innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-            }, 80);
-        }
-    }
-
-    function stopSlotReel(index) {
-        if (slotReelStopped[index]) return;
-
-        clearInterval(slotReelIntervals[index]);
-        slotReelStopped[index] = true;
-        document.getElementById(`stop${index}`).disabled = true;
-
-        if (slotReelStopped.every(s => s === true)) {
-            checkSlotResult();
-        }
-    }
-
-    function checkSlotResult() {
-        const r0 = document.getElementById('reel0').innerText;
-        const r1 = document.getElementById('reel1').innerText;
-        const r2 = document.getElementById('reel2').innerText;
-        const resText = document.getElementById('slotResult');
-
-        if (r0 === r1 && r1 === r2) {
-            resText.innerText = "🎉 ゲームセット！勝利！ 🎉";
-            resText.style.color = "#f1c40f";
-        } else if (r0 === r1 || r1 === r2 || r0 === r2) {
-            resText.innerText = "惜しい！デュース！";
-            resText.style.color = "white";
-        } else {
-            resText.innerText = "ドンマイ！次は勝てる！";
-            resText.style.color = "white";
-        }
-        isSlotPlaying = false;
-    }
-
     // --- SHOP LOGIC ---
     let holdTimer = null;
     const holdDuration = 1500; // 1.5s
-    // const itemPrice = 10000; // Dynamic now
-
-    function openShop() {
-        document.getElementById('shopModal').style.display = 'flex';
-        // Reset Calc Display
-        const disp = document.getElementById('calcDisplay');
-        disp.classList.remove('visible');
-        disp.innerHTML = "";
-        
-        // Initial render
-        updateShopDisplay();
-    }
-
-    function closeShop(e) {
-        if(e.target.id === 'shopModal' || e.target.className === 'close-btn') {
-            document.getElementById('shopModal').style.display = 'none';
-        }
-    }
-    
-    function updateShopDisplay() {
-        const item = shopItems[currentShopIndex];
-        document.getElementById('shopItemImg').src = item.img;
-        document.getElementById('shopItemName').textContent = item.name;
-        document.getElementById('shopItemPrice').textContent = item.price.toLocaleString() + " COINS";
-    }
-
-    function nextItem() {
-        currentShopIndex = (currentShopIndex + 1) % shopItems.length;
-        updateShopDisplay();
-    }
-
-    function prevItem() {
-        currentShopIndex = (currentShopIndex - 1 + shopItems.length) % shopItems.length;
-        updateShopDisplay();
-    }
 
     function startHold(btn) {
-        // Prevent default touch actions
+        // Prevent default touch actions (scrolling etc)
         if(event.type === 'touchstart') event.preventDefault();
         
-        if(!currentUser) {
-            alert("LOGIN REQUIRED");
-            return;
-        }
-
         btn.classList.add('holding');
         holdTimer = setTimeout(() => {
             completePurchase(btn);
@@ -1848,57 +1341,19 @@
     function completePurchase(btn) {
         clearTimeout(holdTimer);
         btn.classList.remove('holding');
-        
-        const name = currentUser.name;
-        const current = getUserCoins(name);
-        const item = shopItems[currentShopIndex]; // Get current item
+        // Effect
+        showToast("TRANSACTION COMPLETE");
+        // closeShop({target:{id:'shopModal'}}); // Optional: close modal
+    }
 
-        if (current < item.price) {
-            showToast("INSUFFICIENT FUNDS");
-            return;
+    function openShop() {
+        document.getElementById('shopModal').style.display = 'flex';
+    }
+
+    function closeShop(e) {
+        if(e.target.id === 'shopModal' || e.target.className === 'close-btn') {
+            document.getElementById('shopModal').style.display = 'none';
         }
-
-        // Calculation Animation
-        const disp = document.getElementById('calcDisplay');
-        disp.classList.add('visible');
-        disp.innerHTML = `Current: <span class="calc-highlight">${current.toLocaleString()}</span>`;
-        
-        setTimeout(() => {
-            disp.innerHTML = `Current: <span class="calc-highlight">${current.toLocaleString()}</span> <span class="calc-minus">- ${item.price.toLocaleString()}</span>`;
-            
-            setTimeout(() => {
-                // Execute Transaction
-                const spentKey = `tennis_spent_coins_${name}`;
-                let spent = parseInt(localStorage.getItem(spentKey)) || 0;
-                spent += item.price;
-                localStorage.setItem(spentKey, spent);
-                
-                // Add to Collection
-                const collectionKey = `tennis_user_collection_${name}`;
-                let collection = JSON.parse(localStorage.getItem(collectionKey)) || [];
-                
-                // Check if already owned (Optional logic, currently allows duplicates or just adds)
-                collection.push({
-                    id: Date.now(),
-                    name: item.name,
-                    img: item.img
-                });
-                localStorage.setItem(collectionKey, JSON.stringify(collection));
-
-                const newBalance = getUserCoins(name);
-                disp.innerHTML = `New Balance: <span class="calc-highlight">${newBalance.toLocaleString()}</span>`;
-                
-                showToast("TRANSACTION COMPLETE");
-                updateUserDisplay(); // Refresh header
-                
-                // Hide calc after delay
-                setTimeout(() => {
-                    disp.classList.remove('visible');
-                    // closeShop({target:{id:'shopModal'}}); // Keep open for shopping
-                }, 2000);
-                
-            }, 1000);
-        }, 800);
     }
 
 
@@ -1941,7 +1396,6 @@
             currentUser = foundUser;
             localStorage.setItem(LOGIN_KEY, JSON.stringify(currentUser));
             updateUserDisplay();
-            checkLoginBonusState();
             document.getElementById('loginModal').style.display = 'none';
             showToast(`WELCOME, ${currentUser.name}`);
             
@@ -1949,8 +1403,6 @@
             if(document.getElementById('view-mypage').classList.contains('active')) {
                 renderMyPage();
             }
-            // Refresh analysis to ensure stats are loaded
-            fetchAnalysisData();
         } else {
             alert("ACCESS DENIED: INVALID PASSCODE");
         }
@@ -1970,17 +1422,34 @@
         updateUserDisplay();
     }
 
+    function getUserCoins(name) {
+        if (!name) return 0;
+        
+        // 1. 戦績からのコイン (既存ロジック: 勝利*50 + ゲーム*10)
+        let statsCoins = 0;
+        if (playerStatsGlobal && playerStatsGlobal[name]) {
+            const p = playerStatsGlobal[name];
+            statsCoins = (p.wins * 50) + (p.games * 10);
+        }
+        
+        // 2. ボーナスコイン (LocalStorage)
+        const bonusKey = `bonus_coins_${name}`;
+        const bonusCoins = parseInt(localStorage.getItem(bonusKey) || 0);
+        
+        return statsCoins + bonusCoins;
+    }
+
     function updateUserDisplay() {
         const disp = document.getElementById('currentUserDisplay');
         if (currentUser) {
-            // Calculate coins
-            let coins = getUserCoins(currentUser.name);
-            disp.textContent = `${currentUser.name} : ${coins.toLocaleString()}`;
+            const coins = getUserCoins(currentUser.name);
+            disp.textContent = `${currentUser.name} : ${coins.toLocaleString()}`; // 名前 : コイン
             disp.className = 'user-status-display status-user';
         } else {
             disp.textContent = 'GUEST';
             disp.className = 'user-status-display status-guest';
         }
+        checkDailyBonusState(); // ついでにボタン状態も更新
     }
 
     function attemptLogin() {
@@ -2019,6 +1488,60 @@
         }
     }
 
+    function getDailyBonus() {
+        if (!currentUser) {
+            showToast("ログインが必要です");
+            return;
+        }
+        const name = currentUser.name;
+        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const lastBonusKey = `last_bonus_date_${name}`;
+        const lastDate = localStorage.getItem(lastBonusKey);
+        
+        if (lastDate === today) {
+            showToast("本日は既に受取済みです");
+            return;
+        }
+        
+        // ボーナス付与
+        const bonusKey = `bonus_coins_${name}`;
+        const currentBonus = parseInt(localStorage.getItem(bonusKey) || 0);
+        localStorage.setItem(bonusKey, currentBonus + 500);
+        localStorage.setItem(lastBonusKey, today);
+        
+        showToast("デイリーボーナス 500コイン GET!");
+        
+        // UI更新
+        updateUserDisplay();
+        renderMyPage(); // もし開いていれば
+        checkDailyBonusState(); // ボタン状態更新
+    }
+
+    function checkDailyBonusState() {
+        const btn = document.getElementById('dailyBonusBtn');
+        if (!btn) return;
+        
+        if (!currentUser) {
+            btn.disabled = true;
+            btn.textContent = "ログインしてボーナスGET";
+            return;
+        }
+        
+        const name = currentUser.name;
+        const today = new Date().toISOString().slice(0, 10);
+        const lastDate = localStorage.getItem(`last_bonus_date_${name}`);
+        
+        if (lastDate === today) {
+            btn.disabled = true;
+            btn.textContent = "受取済み (NEXT: TOMORROW)";
+            btn.style.opacity = 0.5;
+        } else {
+            btn.disabled = false;
+            btn.textContent = "デイリーボーナス (500 COINS)";
+            btn.style.opacity = 1;
+        }
+    }
+
     function showMyPage() {
         // Close side menu
         document.getElementById('sideMenu').classList.remove('open');
@@ -2053,7 +1576,6 @@
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
         
-        // Coin Logic with Spending
         const coins = getUserCoins(name);
         
         // Avatar Logic
@@ -2064,20 +1586,6 @@
         if(storedAvatar) {
             avatarStyle = `background-image: url(${storedAvatar}); background-size: cover; background-position: center; color: transparent;`;
             avatarContent = '';
-        }
-        
-        // Collection Logic
-        const collection = JSON.parse(localStorage.getItem(`tennis_user_collection_${name}`)) || [];
-        let collectionHtml = "";
-        if(collection.length > 0) {
-            collection.forEach(item => {
-                collectionHtml += `
-                    <div class="collection-item">
-                        <img src="${item.img}" class="collection-img">
-                    </div>`;
-            });
-        } else {
-            collectionHtml = '<div style="grid-column:1/-1; text-align:center; color:#666; font-size:0.8rem; padding:20px;">NO ITEMS COLLECTED</div>';
         }
         
         const html = `
@@ -2100,11 +1608,6 @@
             <div class="mypage-coin-area">
                 <div class="coin-val">${coins.toLocaleString()}</div>
                 <div class="coin-label">CRYPTO COINS</div>
-            </div>
-            
-            <div class="section-title">COLLECTION</div>
-            <div class="collection-grid">
-                ${collectionHtml}
             </div>
             
             <div class="section-title">COMBAT STATS</div>
@@ -2800,10 +2303,6 @@
                 rawAnalysisRankings = json.rankings; 
                 rawAnalysisMatches = json.matches;
                 processAnalysisData(); 
-                
-                // 初回ロード完了後にヘッダーやマイページの表示を更新
-                updateUserDisplay();
-                checkLoginBonusState(); 
             }
         } catch(e) { console.error(e); }
     }
@@ -2913,6 +2412,7 @@
         if(document.getElementById('view-mypage').classList.contains('active')) {
             renderMyPage();
         }
+        updateUserDisplay(); // Refresh coin display after stats loaded
     }
 
     function getRankInfo(games) {
