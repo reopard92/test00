@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 64</title>
+    <title>CODE NAME: 65</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -190,11 +190,10 @@
             opacity: 1;
             transform: translateX(0);
         }
-        /* Delays */
+        /* Delays - Reduced count since prediction was removed */
         .side-menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.2s; }
         .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.3s; }
         .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.4s; }
-        .side-menu-overlay.open .menu-item:nth-child(4) { transition-delay: 0.5s; }
 
         .menu-item:hover {
             background: rgba(0,255,255,0.1);
@@ -334,6 +333,23 @@
         .game-status.live { background: #00ffff; color: #000; font-weight: bold; }
         
         /* PREDICTION STYLES */
+        .prediction-timer {
+            font-family: 'Courier New', monospace;
+            font-size: 2.5rem;
+            color: #00ffff;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 0 15px rgba(0,255,255,0.5);
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+        .prediction-timer.urgent {
+            color: #ff5252;
+            text-shadow: 0 0 15px rgba(255,82,82,0.6);
+            animation: pulseTimer 1s infinite;
+        }
+        @keyframes pulseTimer { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
         .prediction-tabs { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
         .p-tab { 
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); 
@@ -978,7 +994,7 @@
 <div id="sideMenu" class="side-menu-overlay" onclick="closeSideMenu(event)">
     <div class="side-menu-content">
         <div class="menu-item active" onclick="selectAppMode('tennis')">🎾 TENNIS</div>
-        <div class="menu-item" onclick="selectAppMode('prediction')">🔮 PREDICTION</div>
+        <!-- Prediction removed from menu -->
         <div class="menu-item" onclick="selectAppMode('game')">🎮 GAME</div>
         <div class="menu-item" onclick="showMyPage()">👤 MY PAGE</div>
     </div>
@@ -1031,6 +1047,9 @@
     <!-- PREDICTION SECTION (NEW) -->
     <div id="view-prediction" class="view-section">
         <div class="section-title">WINNER PREDICTION</div>
+        
+        <div id="predictionTimer" class="prediction-timer">--:--</div>
+        
         <div class="prediction-tabs">
             <div class="p-tab active" onclick="switchPredictionRound(1)">ROUND 1</div>
             <div class="p-tab" onclick="switchPredictionRound(2)">ROUND 2</div>
@@ -1355,6 +1374,8 @@
     let currentPredictionRound = 1;
     let predictionMatches = []; // List of pairs for TOTO
     let userSelections = {}; // { matchId: "pairA" or "pairB" }
+    let predictionTimerInterval = null;
+    const PREDICTION_TIME_LIMIT_MS = 10 * 60 * 1000; // 10 minutes
 
     window.onload = function() {
         initAuth(); // Initialize Authentication
@@ -1757,12 +1778,11 @@
         const items = document.querySelectorAll('.side-menu-content .menu-item');
         items.forEach(i => i.classList.remove('active'));
         
+        // Menu order changed: Tennis(0), Game(1), MyPage(2)
         if(currentView === 'mypage') {
-            items[3].classList.add('active'); // My Page
-        } else if (currentView === 'game') {
-            items[2].classList.add('active'); // Game
-        } else if (currentView === 'prediction') {
-            items[1].classList.add('active'); // Prediction
+            items[2].classList.add('active'); // My Page
+        } else if (currentView === 'game' || currentView === 'prediction') {
+            items[1].classList.add('active'); // Game & Prediction
         } else {
             items[0].classList.add('active'); // Tennis
         }
@@ -1777,7 +1797,6 @@
 
     function selectAppMode(mode) {
         document.getElementById('sideMenu').classList.remove('open');
-        // document.getElementById('menuToggleBtn').classList.remove('active'); // Removed morph trigger
         
         const bottomNav = document.getElementById('bottomNav');
         const subTitle = document.querySelector('.subtitle');
@@ -1785,20 +1804,23 @@
         const items = document.querySelectorAll('.side-menu-content .menu-item');
         items.forEach(item => item.classList.remove('active'));
 
+        // Clear Timer if navigating away
+        if(predictionTimerInterval) clearInterval(predictionTimerInterval);
+
         if (mode === 'tennis') {
             items[0].classList.add('active');
             switchMainView('top'); 
             bottomNav.classList.remove('hidden');
             subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         } else if (mode === 'prediction') {
-            items[1].classList.add('active');
+            items[1].classList.add('active'); // Parent is Game
             switchMainView('prediction');
             bottomNav.classList.add('hidden');
             document.getElementById('pageTitle').textContent = "WINNER PREDICTION";
             subTitle.textContent = "PREDICT THE OUTCOME";
             renderPredictionView(); // Load prediction data
         } else if (mode === 'game') {
-            items[2].classList.add('active');
+            items[1].classList.add('active');
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('view-game').classList.add('active');
             bottomNav.classList.add('hidden');
@@ -1811,6 +1833,9 @@
     function switchMainView(viewName) {
         // Save current view for refresh
         sessionStorage.setItem('lastView', viewName);
+        
+        // Clear Timer if navigating away
+        if(viewName !== 'prediction' && predictionTimerInterval) clearInterval(predictionTimerInterval);
 
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
         const navs = document.querySelectorAll('.nav-item');
@@ -1848,13 +1873,24 @@
     }
 
     function renderPredictionView() {
-        // GAS側が未実装のため、デモとして「管理者のINPUT画面のステート」を参照して構築するロジック（暫定）
-        // 本来は fetchAnalysisData (または専用API) から { setupMatches: [...] } を受け取る
-        
         const rawJson = localStorage.getItem(STORAGE_KEY);
         if (!rawJson) {
             document.getElementById('predictionListArea').innerHTML = '<div style="text-align:center; padding:30px; color:#666;">データ待機中...<br>(管理者が送信すると表示されます)</div>';
+            document.getElementById('predictionTimer').innerText = "--:--";
             return;
+        }
+
+        // Start Timer Logic
+        const startTimeStr = localStorage.getItem('prediction_start_time');
+        if (startTimeStr) {
+            const startTime = parseInt(startTimeStr);
+            updatePredictionTimer(startTime); // Initial Call
+            if(predictionTimerInterval) clearInterval(predictionTimerInterval);
+            predictionTimerInterval = setInterval(() => {
+                updatePredictionTimer(startTime);
+            }, 1000);
+        } else {
+            document.getElementById('predictionTimer').innerText = "--:--";
         }
 
         try {
@@ -1897,6 +1933,47 @@
             console.error(e);
         }
     }
+    
+    function updatePredictionTimer(startTime) {
+        const now = Date.now();
+        const elapsed = now - startTime;
+        const remaining = PREDICTION_TIME_LIMIT_MS - elapsed;
+        
+        const timerDiv = document.getElementById('predictionTimer');
+        
+        if (remaining <= 0) {
+            timerDiv.innerText = "TIME UP";
+            timerDiv.classList.add('urgent');
+            
+            // Force re-render to lock if not already locked by submission
+            // Note: We don't save lock state here to allow viewing, just disable interaction in UI
+            const statusDiv = document.getElementById('betStatus');
+            const betBtn = document.getElementById('betBtn');
+            if (betBtn && !betBtn.disabled) {
+                const lockKey = `prediction_locked_${currentUser ? currentUser.name : 'guest'}_r${currentPredictionRound}`;
+                const isLocked = localStorage.getItem(lockKey);
+                if(!isLocked) {
+                    statusDiv.innerHTML = `<span class="locked-msg" style="border-color:#ff5252; color:#ff5252;">TIME UP</span><br>受付終了`;
+                    betBtn.disabled = true;
+                    betBtn.textContent = "受付終了";
+                    betBtn.style.background = "#333";
+                }
+            }
+            if(predictionTimerInterval) clearInterval(predictionTimerInterval);
+            return;
+        }
+        
+        const min = Math.floor(remaining / 60000);
+        const sec = Math.floor((remaining % 60000) / 1000);
+        
+        timerDiv.innerText = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        
+        if (remaining < 60000) { // Less than 1 min
+            timerDiv.classList.add('urgent');
+        } else {
+            timerDiv.classList.remove('urgent');
+        }
+    }
 
     function renderPredictionMatches() {
         const container = document.getElementById('predictionListArea');
@@ -1911,7 +1988,15 @@
         
         // Check Lock Status
         const lockKey = `prediction_locked_${currentUser ? currentUser.name : 'guest'}_r${currentPredictionRound}`;
-        const isLocked = localStorage.getItem(lockKey);
+        let isLocked = localStorage.getItem(lockKey);
+        
+        // Check Time Status
+        const startTimeStr = localStorage.getItem('prediction_start_time');
+        let isTimeUp = false;
+        if(startTimeStr) {
+            const remaining = PREDICTION_TIME_LIMIT_MS - (Date.now() - parseInt(startTimeStr));
+            if(remaining <= 0) isTimeUp = true;
+        }
         
         const statusDiv = document.getElementById('betStatus');
         const betBtn = document.getElementById('betBtn');
@@ -1921,6 +2006,12 @@
             betBtn.disabled = true;
             betBtn.textContent = "BET CONFIRMED";
             betBtn.style.background = "#333";
+        } else if (isTimeUp) {
+            statusDiv.innerHTML = `<span class="locked-msg" style="border-color:#ff5252; color:#ff5252;">TIME UP</span><br>受付終了`;
+            betBtn.disabled = true;
+            betBtn.textContent = "受付終了";
+            betBtn.style.background = "#333";
+            isLocked = true; // Treat as locked for interactions
         } else {
             statusDiv.textContent = "UNLOCKED: SELECTIONS OPEN";
             betBtn.disabled = false;
@@ -1966,6 +2057,17 @@
 
     function submitPrediction() {
         if (!currentUser) { showToast("ログインが必要です"); return; }
+        
+        // Time Check
+        const startTimeStr = localStorage.getItem('prediction_start_time');
+        if(startTimeStr) {
+            const remaining = PREDICTION_TIME_LIMIT_MS - (Date.now() - parseInt(startTimeStr));
+            if(remaining <= 0) {
+                alert("受付時間を終了しました");
+                renderPredictionMatches();
+                return;
+            }
+        }
         
         const targetMatches = predictionMatches.filter(m => m.round === currentPredictionRound);
         // Validate all selected
@@ -2616,8 +2718,10 @@
         // Determine Mode
         const mode = isResultData ? "result" : "setup";
         
-        // Mocking GAS interaction for Setup mode (since GAS endpoint logic can't be changed here)
-        // Ideally: fetch(GAS_WEB_APP_URL, { body: JSON.stringify({ mode: mode, ... }) })
+        // Save Timestamp locally to simulate server sync for Prediction Timer
+        if (mode === 'setup') {
+            localStorage.setItem('prediction_start_time', Date.now());
+        }
         
         fetch(GAS_WEB_APP_URL, {
             method: 'POST', mode: 'no-cors',
