@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 61</title>
+    <title>CODE NAME: 62</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -1971,7 +1971,17 @@
                 const li = document.createElement('li');
                 li.className = 'member-item';
                 
-                const initial = member.name.charAt(0);
+                // アバター画像の取得処理を追加
+                const storedAvatar = localStorage.getItem(`avatar_${member.name}`);
+                let avatarStyle = '';
+                let avatarContent = member.name.charAt(0);
+
+                if (storedAvatar) {
+                    // 画像がある場合は背景に設定し、テキストを透明にする
+                    avatarStyle = `background-image: url(${storedAvatar}); background-size: cover; background-position: center; color: transparent; border: 1px solid #00ffff;`;
+                    avatarContent = ''; 
+                }
+                
                 let statusIcon = '';
                 if(member.status === 'ok') statusIcon = '<span class="status-ok">◯</span>';
                 else if(member.status === 'maybe') statusIcon = '<span class="status-maybe">△</span>';
@@ -1979,7 +1989,7 @@
 
                 li.innerHTML = `
                     <div class="member-info">
-                        <div class="member-avatar">${initial}</div>
+                        <div class="member-avatar" style="${avatarStyle}">${avatarContent}</div>
                         <div class="member-name">${member.name}</div>
                     </div>
                     <div class="member-status">${statusIcon}</div>
