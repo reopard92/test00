@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 70</title>
+    <title>CODE NAME: 75</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -2115,13 +2115,13 @@
         }
         
         // 2. Check if already claimed
-        const claimKey = `prediction_claimed_${currentUser.name}_r${currentPredictionRound}_${dateStr}`; // Using matchDate string
+        const claimKey = `prediction_claimed_${currentUser.name}_r${currentPredictionRound}_${dateStr}`; 
         if (localStorage.getItem(claimKey)) {
             showToast("既に報酬を受け取っています");
             return;
         }
 
-        // 3. Get Actual Results from SERVER DATA (rawAnalysisMatches) instead of DOM
+        // 3. Get Actual Results from SERVER DATA (rawAnalysisMatches)
         if (!rawAnalysisMatches || rawAnalysisMatches.length === 0) {
             showToast("サーバーデータの読み込み中...再度お試しください");
             fetchAnalysisData(); // Retry fetch
@@ -2132,22 +2132,34 @@
         let correctCount = 0;
         let finishedMatchesCount = 0;
         
-        // Filter matches for today and current round from the server data
-        // rawAnalysisMatches structure: [Date, Court, Round, MatchNo, pA1, pA2, sA, sB, pB1, pB2]
-        // Note: row[0] (Date) might have a leading single quote due to GAS saving method
-        
+        // --- Date Normalization Fix ---
         const targetMatches = rawAnalysisMatches.filter(row => {
-            const rowDate = String(row[0]).replace(/^'/, ''); // Remove leading quote if present
-            return rowDate === todayDate && parseInt(row[2]) === currentPredictionRound;
+            let rowDateStr = String(row[0]).replace(/^'/, ''); // Remove leading quote
+            
+            // Normalize separators
+            rowDateStr = rowDateStr.replace(/\//g, '-');
+            
+            // Handle ISO string or long formats
+            if (rowDateStr.length > 10) {
+                if (rowDateStr.match(/^\d{4}-\d{2}-\d{2}/)) {
+                    rowDateStr = rowDateStr.slice(0, 10);
+                }
+            }
+
+            return rowDateStr === todayDate && parseInt(row[2]) === currentPredictionRound;
         });
 
-        // Map server results to a simpler object for checking
-        // We need to ensure we match MatchNo correctly
+        // Debug: Check matches found
+        if (targetMatches.length === 0) {
+            showToast("本日の試合データが見つかりません");
+            return;
+        }
+
         const serverResults = {};
         targetMatches.forEach(row => {
-            const matchNo = parseInt(row[3]); // MatchNo
-            const sA = parseInt(row[6]); // ScoreA
-            const sB = parseInt(row[7]); // ScoreB
+            const matchNo = parseInt(row[3]); 
+            const sA = parseInt(row[6]); 
+            const sB = parseInt(row[7]); 
             
             if (!isNaN(sA) && !isNaN(sB)) {
                 let winner = 'DRAW';
@@ -2176,14 +2188,13 @@
         // 4. Give Reward
         const rewardPerWin = 500;
         const totalReward = correctCount * rewardPerWin;
-        const bonus = (correctCount === 5) ? 1000 : 0; // Perfect Bonus
+        const bonus = (correctCount === 5) ? 1000 : 0; 
         const finalReward = totalReward + bonus;
 
         const bonusKey = `bonus_coins_${currentUser.name}`;
         const currentBonus = parseInt(localStorage.getItem(bonusKey) || 0);
         localStorage.setItem(bonusKey, currentBonus + finalReward);
         
-        // Mark as claimed
         localStorage.setItem(claimKey, "true");
         
         let msg = `${correctCount}問正解！\n報酬: ${totalReward}コイン`;
@@ -2751,20 +2762,15 @@
         
         // Determine Mode and Target URL
         const mode = isResultData ? "result" : "setup";
-        
-        // --- HYBRID ROUTING LOGIC ---
-        // Setup data goes to TOTO_GAS_URL
-        // Result data goes to GAS_WEB_APP_URL
         const targetUrl = (mode === 'setup') ? TOTO_GAS_URL : GAS_WEB_APP_URL;
         
         fetch(targetUrl, {
             method: 'POST', mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ date, court, rankings, matches, mode, timestamp: Date.now() }) // Added timestamp
+            body: JSON.stringify({ date, court, rankings, matches, mode, timestamp: Date.now() })
         }).then(() => { 
             const msg = mode === "setup" ? "PREDICTION SETUP SENT" : "RESULTS SENT";
             showToast(msg); 
-            // Refresh logic:
             if(mode === 'setup') fetchPredictionData();
             else fetchAnalysisData();
         })
@@ -2824,11 +2830,21 @@
             if(rawName.includes("undefined") || rawName.trim() === "") return;
             const court = row[1];
             if (currentSector !== 'ALL' && court !== currentSector) return;
-            const dObj = new Date(row[0]);
+            
+            // --- Date Fix ---
+            let rowDateStr = String(row[0]).replace(/^'/, '').replace(/\//g, '-');
+            if (rowDateStr.length > 10 && rowDateStr.match(/^\d{4}-\d{2}-\d{2}/)) {
+                rowDateStr = rowDateStr.slice(0, 10);
+            }
+            
+            const dObj = new Date(rowDateStr); // Use normalized string
+            if(isNaN(dObj.getTime())) return; // Skip invalid dates
+            
             const y = dObj.getFullYear();
             const m = ('0' + (dObj.getMonth() + 1)).slice(-2);
             const day = ('0' + dObj.getDate()).slice(-2);
             const d = `${y}-${m}-${day}`;
+            
             const rk = row[2];
             const nm = rawName.split(' (')[0];
             const w = parseInt(row[4]), l = parseInt(row[5]), g = parseInt(row[7]);
