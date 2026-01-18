@@ -1042,7 +1042,7 @@
 
         <div class="bet-area">
             <div id="betStatus" class="bet-status">UNLOCKED: SELECTIONS OPEN</div>
-            <button id="betBtn" class="btn-send" onclick="submitPrediction()" style="margin-top:0;">BET 2,000 COINS</button>
+            <button id="betBtn" class="btn-send" onclick="submitPrediction()" style="margin-top:0;">BET 0 COINS (TEST)</button>
             <button id="checkResultBtn" class="btn-ctrl" onclick="checkPredictionResult()" style="margin-top:20px; width:auto; border-radius:4px; padding:10px 20px;">結果を確認＆報酬受取</button>
         </div>
     </div>
@@ -1924,7 +1924,7 @@
         } else {
             statusDiv.textContent = "UNLOCKED: SELECTIONS OPEN";
             betBtn.disabled = false;
-            betBtn.textContent = "BET 2,000 COINS";
+            betBtn.textContent = "BET 0 COINS (TEST)";
             betBtn.style.background = ""; // reset
         }
 
@@ -1976,8 +1976,8 @@
             return;
         }
 
-        if (confirm("2,000コインを支払って予想を確定しますか？\n（確定後は変更できません）")) {
-            if (spendCoins(2000)) {
+        if (confirm("0コインを支払って予想を確定しますか？\n（確定後は変更できません）")) {
+            if (spendCoins(0)) {
                 const lockKey = `prediction_locked_${currentUser.name}_r${currentPredictionRound}`;
                 localStorage.setItem(lockKey, "true");
                 renderPredictionMatches();
@@ -2303,17 +2303,7 @@
                 const li = document.createElement('li');
                 li.className = 'member-item';
                 
-                // アバター画像の取得処理を追加
-                const storedAvatar = localStorage.getItem(`avatar_${member.name}`);
-                let avatarStyle = '';
-                let avatarContent = member.name.charAt(0);
-
-                if (storedAvatar) {
-                    // 画像がある場合は背景に設定し、テキストを透明にする
-                    avatarStyle = `background-image: url(${storedAvatar}); background-size: cover; background-position: center; color: transparent; border: 1px solid #00ffff;`;
-                    avatarContent = ''; 
-                }
-                
+                const initial = member.name.charAt(0);
                 let statusIcon = '';
                 if(member.status === 'ok') statusIcon = '<span class="status-ok">◯</span>';
                 else if(member.status === 'maybe') statusIcon = '<span class="status-maybe">△</span>';
@@ -2321,7 +2311,7 @@
 
                 li.innerHTML = `
                     <div class="member-info">
-                        <div class="member-avatar" style="${avatarStyle}">${avatarContent}</div>
+                        <div class="member-avatar">${initial}</div>
                         <div class="member-name">${member.name}</div>
                     </div>
                     <div class="member-status">${statusIcon}</div>
@@ -2783,7 +2773,6 @@
         if(document.getElementById('view-mypage').classList.contains('active')) {
             renderMyPage();
         }
-        updateUserDisplay(); // Refresh coin display after stats loaded
     }
 
     function getRankInfo(games) {
