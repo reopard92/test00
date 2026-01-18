@@ -1336,6 +1336,7 @@
     }
 
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtWaBkvdPNzkN1_7lmFRnAQLbnu6A40YUQdbzX6gTfIY5CznZs13GYxZw/exec";
+    const TOTO_GAS_URL = "https://script.google.com/macros/s/AKfycbz75QnaA4ex2Fm0Kr2li3zFebZZ2dANV4r21D6ZcSBmtT_aqr6K5bt6aYeaPylNiFMQhg/exec";
     const SCHEDULE_GAS_URL = "https://script.google.com/macros/s/AKfycbxkywDklSyaMf93hYhG-ULAyAEQ1qHGgaYjNewTxX34pfySOZKYsbwehygCccEvnchB/exec";
     
     // Auth Sheet Info
@@ -1386,9 +1387,11 @@
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
-        fetchAnalysisData();
-        fetchScheduleData(); // Real Fetch
-        fetchWeather(); // Fetch Weather
+        
+        fetchAnalysisData(); // Main Stats
+        fetchPredictionData(); // Prediction Data (New)
+        fetchScheduleData(); // Schedule
+        fetchWeather(); // Weather
         
         // Restore last view from sessionStorage to keep page state on refresh
         const lastView = sessionStorage.getItem('lastView');
@@ -1873,6 +1876,22 @@
         renderPredictionMatches();
     }
 
+    async function fetchPredictionData() {
+        try {
+            const res = await fetch(TOTO_GAS_URL);
+            const json = await res.json();
+            
+            if (json.currentSetup) {
+                globalPredictionSetup = json.currentSetup;
+                
+                // If prediction view is active, update it
+                if (document.getElementById('view-prediction').classList.contains('active')) {
+                    renderPredictionView();
+                }
+            }
+        } catch(e) { console.error("TOTO Data Fetch Error", e); }
+    }
+
     function renderPredictionView() {
         // GASからデータが来ていなければ待機画面
         if (!globalPredictionSetup) {
@@ -1896,8 +1915,6 @@
         try {
             // Generate matches from GAS setup data
             let matches = [];
-            // GAS returns 'matches' array which contains objects with pA1, pA2...
-            // We need to transform this into prediction format
             
             const setupMatches = globalPredictionSetup.matches || [];
             
@@ -1942,7 +1959,6 @@
             timerDiv.classList.add('urgent');
             
             // Force re-render to lock if not already locked by submission
-            // Note: We don't save lock state here to allow viewing, just disable interaction in UI
             const statusDiv = document.getElementById('betStatus');
             const betBtn = document.getElementById('betBtn');
             if (betBtn && !betBtn.disabled) {
@@ -2652,7 +2668,6 @@
     }
 
     function sendToSpreadsheet() {
-        if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("ここに")) { alert("GAS_WEB_APP_URL Error"); return; }
         const btn = document.getElementById('sendButton'); btn.disabled = true; btn.textContent = "SENDING...";
         const date = document.getElementById('matchDate').textContent;
         const court = document.getElementById('courtSelect').value === '-' ? 'コート未定' : document.getElementById('courtSelect').value;
@@ -2709,17 +2724,24 @@
 
         if(!isResultData && !hasSetupData) { showToast("NO DATA"); btn.disabled=false; btn.textContent="TRANSMIT DATA"; return; }
         
-        // Determine Mode
+        // Determine Mode and Target URL
         const mode = isResultData ? "result" : "setup";
         
-        fetch(GAS_WEB_APP_URL, {
+        // --- HYBRID ROUTING LOGIC ---
+        // Setup data goes to TOTO_GAS_URL
+        // Result data goes to GAS_WEB_APP_URL
+        const targetUrl = (mode === 'setup') ? TOTO_GAS_URL : GAS_WEB_APP_URL;
+        
+        fetch(targetUrl, {
             method: 'POST', mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ date, court, rankings, matches, mode, timestamp: Date.now() }) // Added timestamp
         }).then(() => { 
             const msg = mode === "setup" ? "PREDICTION SETUP SENT" : "RESULTS SENT";
             showToast(msg); 
-            fetchAnalysisData(); 
+            // Refresh logic:
+            if(mode === 'setup') fetchPredictionData();
+            else fetchAnalysisData();
         })
         .catch(e => { console.error(e); showToast("FAILED"); })
         .finally(() => { 
@@ -2756,16 +2778,6 @@
             if(json.status === 'success') { 
                 rawAnalysisRankings = json.rankings; 
                 rawAnalysisMatches = json.matches;
-                
-                // NEW: Capture setup data if available from GAS
-                if (json.currentSetup || json.setup) {
-                    globalPredictionSetup = json.currentSetup || json.setup;
-                    // If prediction view is active, update it immediately
-                    if (document.getElementById('view-prediction').classList.contains('active')) {
-                        renderPredictionView();
-                    }
-                }
-                
                 processAnalysisData(); 
             }
         } catch(e) { console.error(e); }
@@ -2981,6 +2993,24 @@
     }
 
     function closeModal(e) { if(e.target.id==='playerModal'||e.target.className==='close-btn') document.getElementById('playerModal').style.display='none'; }
+    
+    // --- NEW: Fetch Prediction Data Separately ---
+    async function fetchPredictionData() {
+        try {
+            // New TOTO endpoint
+            const res = await fetch(TOTO_GAS_URL);
+            const json = await res.json();
+            
+            if (json.currentSetup) {
+                globalPredictionSetup = json.currentSetup;
+                
+                // If prediction view is active, update it
+                if (document.getElementById('view-prediction').classList.contains('active')) {
+                    renderPredictionView();
+                }
+            }
+        } catch(e) { console.error("TOTO Data Fetch Error", e); }
+    }
 </script>
 
 </body>
