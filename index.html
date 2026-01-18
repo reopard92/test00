@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 68</title>
+    <title>CODE NAME: 70</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -1878,6 +1878,7 @@
 
     async function fetchPredictionData() {
         try {
+            // New TOTO endpoint
             const res = await fetch(TOTO_GAS_URL);
             const json = await res.json();
             
@@ -1953,6 +1954,7 @@
         const remaining = PREDICTION_TIME_LIMIT_MS - elapsed;
         
         const timerDiv = document.getElementById('predictionTimer');
+        const dateStr = document.getElementById('matchDate').textContent;
         
         if (remaining <= 0) {
             timerDiv.innerText = "TIME UP";
@@ -1962,7 +1964,7 @@
             const statusDiv = document.getElementById('betStatus');
             const betBtn = document.getElementById('betBtn');
             if (betBtn && !betBtn.disabled) {
-                const lockKey = `prediction_locked_${currentUser ? currentUser.name : 'guest'}_r${currentPredictionRound}`;
+                const lockKey = `prediction_locked_${currentUser ? currentUser.name : 'guest'}_r${currentPredictionRound}_${dateStr}`;
                 const isLocked = localStorage.getItem(lockKey);
                 if(!isLocked) {
                     statusDiv.innerHTML = `<span class="locked-msg" style="border-color:#ff5252; color:#ff5252;">TIME UP</span><br>受付終了`;
@@ -1998,8 +2000,9 @@
             return;
         }
         
-        // Check Lock Status
-        const lockKey = `prediction_locked_${currentUser ? currentUser.name : 'guest'}_r${currentPredictionRound}`;
+        // Check Lock Status with Date
+        const dateStr = document.getElementById('matchDate').textContent;
+        const lockKey = `prediction_locked_${currentUser ? currentUser.name : 'guest'}_r${currentPredictionRound}_${dateStr}`;
         let isLocked = localStorage.getItem(lockKey);
         
         // Check Time Status
@@ -2090,7 +2093,8 @@
 
         if (confirm("0コインを支払って予想を確定しますか？\n（確定後は変更できません）")) {
             if (spendCoins(0)) {
-                const lockKey = `prediction_locked_${currentUser.name}_r${currentPredictionRound}`;
+                const dateStr = document.getElementById('matchDate').textContent;
+                const lockKey = `prediction_locked_${currentUser.name}_r${currentPredictionRound}_${dateStr}`;
                 localStorage.setItem(lockKey, "true");
                 renderPredictionMatches();
                 showToast("BET ACCEPTED");
@@ -2101,15 +2105,17 @@
     function checkPredictionResult() {
         if (!currentUser) { showToast("ログインが必要です"); return; }
         
+        const dateStr = document.getElementById('matchDate').textContent;
+
         // 1. Check if user participated
-        const lockKey = `prediction_locked_${currentUser.name}_r${currentPredictionRound}`;
+        const lockKey = `prediction_locked_${currentUser.name}_r${currentPredictionRound}_${dateStr}`;
         if (!localStorage.getItem(lockKey)) {
             showToast("このラウンドには参加していません");
             return;
         }
         
         // 2. Check if already claimed
-        const claimKey = `prediction_claimed_${currentUser.name}_r${currentPredictionRound}_${new Date().toISOString().slice(0,10)}`; // Simple daily key
+        const claimKey = `prediction_claimed_${currentUser.name}_r${currentPredictionRound}_${dateStr}`; // Using matchDate string
         if (localStorage.getItem(claimKey)) {
             showToast("既に報酬を受け取っています");
             return;
@@ -3012,114 +3018,6 @@
     }
 
     function closeModal(e) { if(e.target.id==='playerModal'||e.target.className==='close-btn') document.getElementById('playerModal').style.display='none'; }
-    
-    // --- NEW: Fetch Prediction Data Separately ---
-    async function fetchPredictionData() {
-        try {
-            // New TOTO endpoint
-            const res = await fetch(TOTO_GAS_URL);
-            const json = await res.json();
-            
-            if (json.currentSetup) {
-                globalPredictionSetup = json.currentSetup;
-                
-                // If prediction view is active, update it
-                if (document.getElementById('view-prediction').classList.contains('active')) {
-                    renderPredictionView();
-                }
-            }
-        } catch(e) { console.error("TOTO Data Fetch Error", e); }
-    }
-
-    // --- CHECK PREDICTION RESULT (UPDATED) ---
-    function checkPredictionResult() {
-        if (!currentUser) { showToast("ログインが必要です"); return; }
-        
-        // 1. Check if user participated
-        const lockKey = `prediction_locked_${currentUser.name}_r${currentPredictionRound}`;
-        if (!localStorage.getItem(lockKey)) {
-            showToast("このラウンドには参加していません");
-            return;
-        }
-        
-        // 2. Check if already claimed
-        const claimKey = `prediction_claimed_${currentUser.name}_r${currentPredictionRound}_${new Date().toISOString().slice(0,10)}`; // Simple daily key
-        if (localStorage.getItem(claimKey)) {
-            showToast("既に報酬を受け取っています");
-            return;
-        }
-
-        // 3. Get Actual Results from SERVER DATA (rawAnalysisMatches) instead of DOM
-        if (!rawAnalysisMatches || rawAnalysisMatches.length === 0) {
-            showToast("サーバーデータの読み込み中...再度お試しください");
-            fetchAnalysisData(); // Retry fetch
-            return;
-        }
-
-        const todayDate = document.getElementById('matchDate').textContent;
-        let correctCount = 0;
-        let finishedMatchesCount = 0;
-        
-        // Filter matches for today and current round from the server data
-        // rawAnalysisMatches structure: [Date, Court, Round, MatchNo, pA1, pA2, sA, sB, pB1, pB2]
-        // Note: row[0] (Date) might have a leading single quote due to GAS saving method
-        
-        const targetMatches = rawAnalysisMatches.filter(row => {
-            const rowDate = String(row[0]).replace(/^'/, ''); // Remove leading quote if present
-            return rowDate === todayDate && parseInt(row[2]) === currentPredictionRound;
-        });
-
-        // Map server results to a simpler object for checking
-        // We need to ensure we match MatchNo correctly
-        const serverResults = {};
-        targetMatches.forEach(row => {
-            const matchNo = parseInt(row[3]); // MatchNo
-            const sA = parseInt(row[6]); // ScoreA
-            const sB = parseInt(row[7]); // ScoreB
-            
-            if (!isNaN(sA) && !isNaN(sB)) {
-                let winner = 'DRAW';
-                if (sA > sB) winner = 'A';
-                if (sB > sA) winner = 'B';
-                serverResults[matchNo] = winner;
-                finishedMatchesCount++;
-            }
-        });
-
-        if (finishedMatchesCount < 5) {
-            showToast(`結果待ち: 現在 ${finishedMatchesCount}/5 試合終了`);
-            return;
-        }
-
-        for (let i = 1; i <= 5; i++) {
-            const matchId = `${currentPredictionRound}_${i}`;
-            const userPick = userSelections[matchId];
-            const actualWinner = serverResults[i];
-            
-            if (userPick && actualWinner && userPick === actualWinner) {
-                correctCount++;
-            }
-        }
-
-        // 4. Give Reward
-        const rewardPerWin = 500;
-        const totalReward = correctCount * rewardPerWin;
-        const bonus = (correctCount === 5) ? 1000 : 0; // Perfect Bonus
-        const finalReward = totalReward + bonus;
-
-        const bonusKey = `bonus_coins_${currentUser.name}`;
-        const currentBonus = parseInt(localStorage.getItem(bonusKey) || 0);
-        localStorage.setItem(bonusKey, currentBonus + finalReward);
-        
-        // Mark as claimed
-        localStorage.setItem(claimKey, "true");
-        
-        let msg = `${correctCount}問正解！\n報酬: ${totalReward}コイン`;
-        if (bonus > 0) msg += `\nパーフェクトボーナス: +${bonus}コイン！`;
-        
-        alert(msg);
-        updateUserDisplay();
-    }
 </script>
 
 </body>
