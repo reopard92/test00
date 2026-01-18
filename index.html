@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 65</title>
+    <title>CODE NAME: 66</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -190,7 +190,7 @@
             opacity: 1;
             transform: translateX(0);
         }
-        /* Delays - Reduced count since prediction was removed */
+        /* Delays */
         .side-menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.2s; }
         .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.3s; }
         .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.4s; }
@@ -1376,6 +1376,7 @@
     let userSelections = {}; // { matchId: "pairA" or "pairB" }
     let predictionTimerInterval = null;
     const PREDICTION_TIME_LIMIT_MS = 10 * 60 * 1000; // 10 minutes
+    let globalPredictionSetup = null;
 
     window.onload = function() {
         initAuth(); // Initialize Authentication
@@ -1873,17 +1874,16 @@
     }
 
     function renderPredictionView() {
-        const rawJson = localStorage.getItem(STORAGE_KEY);
-        if (!rawJson) {
+        // GASからデータが来ていなければ待機画面
+        if (!globalPredictionSetup) {
             document.getElementById('predictionListArea').innerHTML = '<div style="text-align:center; padding:30px; color:#666;">データ待機中...<br>(管理者が送信すると表示されます)</div>';
             document.getElementById('predictionTimer').innerText = "--:--";
             return;
         }
 
-        // Start Timer Logic
-        const startTimeStr = localStorage.getItem('prediction_start_time');
-        if (startTimeStr) {
-            const startTime = parseInt(startTimeStr);
+        // Start Timer Logic using GAS timestamp
+        const startTime = globalPredictionSetup.timestamp;
+        if (startTime) {
             updatePredictionTimer(startTime); // Initial Call
             if(predictionTimerInterval) clearInterval(predictionTimerInterval);
             predictionTimerInterval = setInterval(() => {
@@ -1894,31 +1894,27 @@
         }
 
         try {
-            const data = JSON.parse(rawJson);
+            // Generate matches from GAS setup data
             let matches = [];
+            // GAS returns 'matches' array which contains objects with pA1, pA2...
+            // We need to transform this into prediction format
             
-            // Generate matches from saved Input state
-            ['r1', 'r2'].forEach((r, rIdx) => {
-                if (data.rounds && data.rounds[r]) {
-                    const rd = data.rounds[r];
-                    const pl = rd.players;
-                    
-                    // Check if players are set
-                    const isSet = Object.values(pl).every(p => p !== "-");
-                    if (isSet) {
-                         patterns.forEach((pat, idx) => {
-                             matches.push({
-                                 round: rIdx + 1,
-                                 id: `${rIdx+1}_${idx+1}`,
-                                 no: idx + 1,
-                                 pairA: `${pl[`p${pat[0]}`]} & ${pl[`p${pat[1]}`]}`,
-                                 pairB: `${pl[`p${pat[2]}`]} & ${pl[`p${pat[3]}`]}`,
-                                 oddsA: getWinProbability(pl[`p${pat[0]}`], pl[`p${pat[1]}`]), // Mock Odds
-                                 oddsB: getWinProbability(pl[`p${pat[2]}`], pl[`p${pat[3]}`])
-                             });
-                         });
-                    }
-                }
+            const setupMatches = globalPredictionSetup.matches || [];
+            
+            setupMatches.forEach(m => {
+                // Calculate Mock Odds on the fly since setup might not have them
+                const oddsA = getWinProbability(m.pA1, m.pA2);
+                const oddsB = getWinProbability(m.pB1, m.pB2);
+                
+                matches.push({
+                    round: parseInt(m.round),
+                    id: `${m.round}_${m.no}`, // e.g. 1_1
+                    no: m.no,
+                    pairA: `${m.pA1} & ${m.pA2}`,
+                    pairB: `${m.pB1} & ${m.pB2}`,
+                    oddsA: oddsA,
+                    oddsB: oddsB
+                });
             });
             
             predictionMatches = matches;
@@ -1930,7 +1926,7 @@
             renderPredictionMatches();
             
         } catch (e) {
-            console.error(e);
+            console.error("Prediction Render Error:", e);
         }
     }
     
@@ -1991,10 +1987,9 @@
         let isLocked = localStorage.getItem(lockKey);
         
         // Check Time Status
-        const startTimeStr = localStorage.getItem('prediction_start_time');
         let isTimeUp = false;
-        if(startTimeStr) {
-            const remaining = PREDICTION_TIME_LIMIT_MS - (Date.now() - parseInt(startTimeStr));
+        if(globalPredictionSetup && globalPredictionSetup.timestamp) {
+            const remaining = PREDICTION_TIME_LIMIT_MS - (Date.now() - globalPredictionSetup.timestamp);
             if(remaining <= 0) isTimeUp = true;
         }
         
@@ -2059,9 +2054,8 @@
         if (!currentUser) { showToast("ログインが必要です"); return; }
         
         // Time Check
-        const startTimeStr = localStorage.getItem('prediction_start_time');
-        if(startTimeStr) {
-            const remaining = PREDICTION_TIME_LIMIT_MS - (Date.now() - parseInt(startTimeStr));
+        if(globalPredictionSetup && globalPredictionSetup.timestamp) {
+            const remaining = PREDICTION_TIME_LIMIT_MS - (Date.now() - globalPredictionSetup.timestamp);
             if(remaining <= 0) {
                 alert("受付時間を終了しました");
                 renderPredictionMatches();
@@ -2718,15 +2712,10 @@
         // Determine Mode
         const mode = isResultData ? "result" : "setup";
         
-        // Save Timestamp locally to simulate server sync for Prediction Timer
-        if (mode === 'setup') {
-            localStorage.setItem('prediction_start_time', Date.now());
-        }
-        
         fetch(GAS_WEB_APP_URL, {
             method: 'POST', mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ date, court, rankings, matches, mode }) // Added mode
+            body: JSON.stringify({ date, court, rankings, matches, mode, timestamp: Date.now() }) // Added timestamp
         }).then(() => { 
             const msg = mode === "setup" ? "PREDICTION SETUP SENT" : "RESULTS SENT";
             showToast(msg); 
@@ -2767,6 +2756,16 @@
             if(json.status === 'success') { 
                 rawAnalysisRankings = json.rankings; 
                 rawAnalysisMatches = json.matches;
+                
+                // NEW: Capture setup data if available from GAS
+                if (json.currentSetup || json.setup) {
+                    globalPredictionSetup = json.currentSetup || json.setup;
+                    // If prediction view is active, update it immediately
+                    if (document.getElementById('view-prediction').classList.contains('active')) {
+                        renderPredictionView();
+                    }
+                }
+                
                 processAnalysisData(); 
             }
         } catch(e) { console.error(e); }
