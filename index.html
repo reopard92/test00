@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 63</title>
+    <title>CODE NAME: 64</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -194,6 +194,7 @@
         .side-menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.2s; }
         .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.3s; }
         .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.4s; }
+        .side-menu-overlay.open .menu-item:nth-child(4) { transition-delay: 0.5s; }
 
         .menu-item:hover {
             background: rgba(0,255,255,0.1);
@@ -331,6 +332,58 @@
             font-size: 0.5rem; padding: 2px 25px; transform: rotate(45deg); width: 80px; text-align: center;
         }
         .game-status.live { background: #00ffff; color: #000; font-weight: bold; }
+        
+        /* PREDICTION STYLES */
+        .prediction-tabs { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
+        .p-tab { 
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); 
+            padding: 8px 20px; color: #888; cursor: pointer; font-size: 0.9rem;
+        }
+        .p-tab.active { background: #00ffff; color: #000; font-weight: bold; border-color: #00ffff; }
+        
+        .match-card {
+            background: rgba(30, 35, 45, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin-bottom: 15px;
+            padding: 15px;
+            position: relative;
+        }
+        .match-no { font-size: 0.7rem; color: #00ffff; letter-spacing: 2px; margin-bottom: 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+        .pair-container { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .pair-btn {
+            flex: 1;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        .pair-btn:hover { background: rgba(255,255,255,0.1); }
+        .pair-btn.selected {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0,255,255,0.2);
+        }
+        .pair-btn.winner-result {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+        }
+        .pair-btn.loser-result {
+            opacity: 0.4;
+        }
+        .pair-names { font-size: 0.9rem; color: #fff; font-weight: bold; }
+        .vs-text { font-size: 0.8rem; color: #555; font-style: italic; }
+        
+        .bet-area { text-align: center; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .bet-status { font-size: 0.9rem; color: #aaa; margin-bottom: 15px; }
+        .locked-msg { color: #00ffff; font-weight: bold; border: 1px solid #00ffff; padding: 10px; display: inline-block; margin-bottom: 15px; }
         
         /* ANALYSIS STYLES */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
@@ -925,6 +978,7 @@
 <div id="sideMenu" class="side-menu-overlay" onclick="closeSideMenu(event)">
     <div class="side-menu-content">
         <div class="menu-item active" onclick="selectAppMode('tennis')">🎾 TENNIS</div>
+        <div class="menu-item" onclick="selectAppMode('prediction')">🔮 PREDICTION</div>
         <div class="menu-item" onclick="selectAppMode('game')">🎮 GAME</div>
         <div class="menu-item" onclick="showMyPage()">👤 MY PAGE</div>
     </div>
@@ -939,7 +993,7 @@
         <div class="header-btn right" id="menuToggleBtn" onclick="toggleSideMenu()">≡</div>
     </header>
     
-    <!-- TOP SECTION (NEW) -->
+    <!-- TOP SECTION -->
     <div id="view-top" class="view-section">
         <div class="section-title">天気予報</div>
         <div id="weather-forecast" class="weather-container">
@@ -966,7 +1020,7 @@
         </div>
     </div>
 
-    <!-- MY PAGE SECTION (NEW) -->
+    <!-- MY PAGE SECTION -->
     <div id="view-mypage" class="view-section">
         <div id="myPageContent">
             <!-- Content injected by JS -->
@@ -974,6 +1028,26 @@
         <input type="file" id="avatarInput" hidden accept="image/*" onchange="handleAvatarUpload(this)">
     </div>
 
+    <!-- PREDICTION SECTION (NEW) -->
+    <div id="view-prediction" class="view-section">
+        <div class="section-title">WINNER PREDICTION</div>
+        <div class="prediction-tabs">
+            <div class="p-tab active" onclick="switchPredictionRound(1)">ROUND 1</div>
+            <div class="p-tab" onclick="switchPredictionRound(2)">ROUND 2</div>
+        </div>
+        
+        <div id="predictionListArea">
+            <div style="text-align:center; padding:30px; color:#666;">LOADING MATCH DATA...</div>
+        </div>
+
+        <div class="bet-area">
+            <div id="betStatus" class="bet-status">UNLOCKED: SELECTIONS OPEN</div>
+            <button id="betBtn" class="btn-send" onclick="submitPrediction()" style="margin-top:0;">BET 2,000 COINS</button>
+            <button id="checkResultBtn" class="btn-ctrl" onclick="checkPredictionResult()" style="margin-top:20px; width:auto; border-radius:4px; padding:10px 20px;">結果を確認＆報酬受取</button>
+        </div>
+    </div>
+
+    <!-- MATCH INPUT SECTION -->
     <div id="view-match" class="view-section active">
         <div class="input-header-area">
             <div id="matchDate"></div>
@@ -1035,6 +1109,7 @@
         <button id="sendButton" class="btn-send" onclick="sendToSpreadsheet()" disabled>TRANSMIT DATA</button>
     </div>
 
+    <!-- DASHBOARD SECTION -->
     <div id="view-dashboard" class="view-section">
         <div class="section-title">活動状況サマリー</div>
         <div class="dashboard-grid">
@@ -1051,6 +1126,7 @@
         <div id="logsContainer"></div>
     </div>
 
+    <!-- RANKING SECTION -->
     <div id="view-ranking" class="view-section">
         <div class="section-title">通算個人ランキング</div>
         <div class="sector-filter-area" style="text-align:center; margin-bottom:20px;">
@@ -1085,6 +1161,7 @@
         </div>
     </div>
 
+    <!-- SCHEDULE SECTION -->
     <div id="view-schedule" class="view-section">
         <div class="section-title">日程候補日</div>
         <div style="text-align:center; margin: 15px 0 25px 0;">
@@ -1096,6 +1173,7 @@
         </div>
     </div>
 
+    <!-- GAME PORTAL SECTION -->
     <div id="view-game" class="view-section">
         <div class="game-hero">
             <div class="game-tag">DEV PHASE 1</div>
@@ -1123,11 +1201,11 @@
                 <div class="game-icon">🛒</div>
                 <div class="game-card-title">ITEM SHOP</div>
             </div>
-
-            <div class="game-card locked">
-                <div class="game-status">OFFLINE</div>
-                <div class="game-icon">🔒</div>
-                <div class="game-card-title">COMING SOON</div>
+            
+            <div class="game-card" onclick="selectAppMode('prediction')">
+                <div class="game-status live">NEW</div>
+                <div class="game-icon">🔮</div>
+                <div class="game-card-title">PREDICTION</div>
             </div>
         </div>
     </div>
@@ -1272,6 +1350,11 @@
     // スケジュールデータ保存用
     let globalScheduleData = [];
     let currentUser = null;
+
+    // PREDICTION STATE
+    let currentPredictionRound = 1;
+    let predictionMatches = []; // List of pairs for TOTO
+    let userSelections = {}; // { matchId: "pairA" or "pairB" }
 
     window.onload = function() {
         initAuth(); // Initialize Authentication
@@ -1436,7 +1519,27 @@
         const bonusKey = `bonus_coins_${name}`;
         const bonusCoins = parseInt(localStorage.getItem(bonusKey) || 0);
         
-        return statsCoins + bonusCoins;
+        // 3. 消費コイン (LocalStorage)
+        const spentKey = `spent_coins_${name}`;
+        const spentCoins = parseInt(localStorage.getItem(spentKey) || 0);
+        
+        return Math.max(0, statsCoins + bonusCoins - spentCoins);
+    }
+    
+    function spendCoins(amount) {
+        if (!currentUser) return false;
+        const name = currentUser.name;
+        const current = getUserCoins(name);
+        if(current < amount) {
+            showToast("コインが不足しています");
+            return false;
+        }
+        
+        const spentKey = `spent_coins_${name}`;
+        const spentTotal = parseInt(localStorage.getItem(spentKey) || 0);
+        localStorage.setItem(spentKey, spentTotal + amount);
+        updateUserDisplay();
+        return true;
     }
 
     function updateUserDisplay() {
@@ -1655,11 +1758,13 @@
         items.forEach(i => i.classList.remove('active'));
         
         if(currentView === 'mypage') {
-            items[2].classList.add('active'); // My Page
+            items[3].classList.add('active'); // My Page
         } else if (currentView === 'game') {
-            items[1].classList.add('active'); // Game
+            items[2].classList.add('active'); // Game
+        } else if (currentView === 'prediction') {
+            items[1].classList.add('active'); // Prediction
         } else {
-            items[0].classList.add('active'); // Tennis (default for all tennis views)
+            items[0].classList.add('active'); // Tennis
         }
     }
     
@@ -1682,13 +1787,18 @@
 
         if (mode === 'tennis') {
             items[0].classList.add('active');
-            // Show Tennis Views
             switchMainView('top'); 
             bottomNav.classList.remove('hidden');
             subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
-        } else if (mode === 'game') {
+        } else if (mode === 'prediction') {
             items[1].classList.add('active');
-            // Show Game Portal
+            switchMainView('prediction');
+            bottomNav.classList.add('hidden');
+            document.getElementById('pageTitle').textContent = "WINNER PREDICTION";
+            subTitle.textContent = "PREDICT THE OUTCOME";
+            renderPredictionView(); // Load prediction data
+        } else if (mode === 'game') {
+            items[2].classList.add('active');
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('view-game').classList.add('active');
             bottomNav.classList.add('hidden');
@@ -1711,20 +1821,242 @@
         if(viewName === 'dashboard') navs[2].classList.add('active');
         if(viewName === 'ranking') navs[3].classList.add('active');
         if(viewName === 'schedule') navs[4].classList.add('active');
-        // mypage has no bottom nav button, so no active class needed there
         
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         
         const targetSection = document.getElementById(`view-${viewName}`);
         if(targetSection) targetSection.classList.add('active');
         
-        const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'mypage': 'MY PAGE' };
+        const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'mypage': 'MY PAGE', 'prediction': 'PREDICTION' };
         document.getElementById('pageTitle').textContent = titles[viewName] || 'TENNIS CHRONICLES';
+        
+        if (viewName === 'prediction') {
+            renderPredictionView();
+        }
     }
 
     function manualReload() {
         location.reload();
     }
+
+    // --- PREDICTION LOGIC ---
+    function switchPredictionRound(r) {
+        currentPredictionRound = r;
+        document.querySelectorAll('.p-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.p-tab')[r-1].classList.add('active');
+        renderPredictionMatches();
+    }
+
+    function renderPredictionView() {
+        // GAS側が未実装のため、デモとして「管理者のINPUT画面のステート」を参照して構築するロジック（暫定）
+        // 本来は fetchAnalysisData (または専用API) から { setupMatches: [...] } を受け取る
+        
+        const rawJson = localStorage.getItem(STORAGE_KEY);
+        if (!rawJson) {
+            document.getElementById('predictionListArea').innerHTML = '<div style="text-align:center; padding:30px; color:#666;">データ待機中...<br>(管理者が送信すると表示されます)</div>';
+            return;
+        }
+
+        try {
+            const data = JSON.parse(rawJson);
+            let matches = [];
+            
+            // Generate matches from saved Input state
+            ['r1', 'r2'].forEach((r, rIdx) => {
+                if (data.rounds && data.rounds[r]) {
+                    const rd = data.rounds[r];
+                    const pl = rd.players;
+                    
+                    // Check if players are set
+                    const isSet = Object.values(pl).every(p => p !== "-");
+                    if (isSet) {
+                         patterns.forEach((pat, idx) => {
+                             matches.push({
+                                 round: rIdx + 1,
+                                 id: `${rIdx+1}_${idx+1}`,
+                                 no: idx + 1,
+                                 pairA: `${pl[`p${pat[0]}`]} & ${pl[`p${pat[1]}`]}`,
+                                 pairB: `${pl[`p${pat[2]}`]} & ${pl[`p${pat[3]}`]}`,
+                                 oddsA: getWinProbability(pl[`p${pat[0]}`], pl[`p${pat[1]}`]), // Mock Odds
+                                 oddsB: getWinProbability(pl[`p${pat[2]}`], pl[`p${pat[3]}`])
+                             });
+                         });
+                    }
+                }
+            });
+            
+            predictionMatches = matches;
+            
+            // Load saved selections
+            const savedSel = localStorage.getItem(`prediction_selection_${currentUser ? currentUser.name : 'guest'}`);
+            if(savedSel) userSelections = JSON.parse(savedSel);
+
+            renderPredictionMatches();
+            
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function renderPredictionMatches() {
+        const container = document.getElementById('predictionListArea');
+        container.innerHTML = "";
+        
+        const targetMatches = predictionMatches.filter(m => m.round === currentPredictionRound);
+        
+        if (targetMatches.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:30px; color:#666;">対戦カード未定<br>管理者の入力を待っています</div>';
+            return;
+        }
+        
+        // Check Lock Status
+        const lockKey = `prediction_locked_${currentUser ? currentUser.name : 'guest'}_r${currentPredictionRound}`;
+        const isLocked = localStorage.getItem(lockKey);
+        
+        const statusDiv = document.getElementById('betStatus');
+        const betBtn = document.getElementById('betBtn');
+        
+        if(isLocked) {
+            statusDiv.innerHTML = `<span class="locked-msg">LOCKED</span><br>予想完了（変更不可）`;
+            betBtn.disabled = true;
+            betBtn.textContent = "BET CONFIRMED";
+            betBtn.style.background = "#333";
+        } else {
+            statusDiv.textContent = "UNLOCKED: SELECTIONS OPEN";
+            betBtn.disabled = false;
+            betBtn.textContent = "BET 2,000 COINS";
+            betBtn.style.background = ""; // reset
+        }
+
+        targetMatches.forEach(m => {
+            const div = document.createElement('div');
+            div.className = 'match-card';
+            
+            const sel = userSelections[m.id];
+            const clsA = sel === 'A' ? 'selected' : '';
+            const clsB = sel === 'B' ? 'selected' : '';
+            
+            const clickAction = isLocked ? '' : `onclick="selectWinner('${m.id}', 'A')"`;
+            const clickActionB = isLocked ? '' : `onclick="selectWinner('${m.id}', 'B')"`;
+
+            div.innerHTML = `
+                <div class="match-no">MATCH ${m.no}</div>
+                <div class="pair-container">
+                    <div class="pair-btn ${clsA}" ${clickAction}>
+                        <div class="pair-names">${m.pairA}</div>
+                        <div style="font-size:0.7rem; color:#00ffff;">WIN ${m.oddsA}%</div>
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="pair-btn ${clsB}" ${clickActionB}>
+                        <div class="pair-names">${m.pairB}</div>
+                        <div style="font-size:0.7rem; color:#00ffff;">WIN ${m.oddsB}%</div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function selectWinner(matchId, side) {
+        userSelections[matchId] = side;
+        // Save temp
+        localStorage.setItem(`prediction_selection_${currentUser ? currentUser.name : 'guest'}`, JSON.stringify(userSelections));
+        renderPredictionMatches(); // Re-render to update UI
+    }
+
+    function submitPrediction() {
+        if (!currentUser) { showToast("ログインが必要です"); return; }
+        
+        const targetMatches = predictionMatches.filter(m => m.round === currentPredictionRound);
+        // Validate all selected
+        const allSelected = targetMatches.every(m => userSelections[m.id]);
+        
+        if (!allSelected) {
+            alert("全ての試合の予想を選択してください");
+            return;
+        }
+
+        if (confirm("2,000コインを支払って予想を確定しますか？\n（確定後は変更できません）")) {
+            if (spendCoins(2000)) {
+                const lockKey = `prediction_locked_${currentUser.name}_r${currentPredictionRound}`;
+                localStorage.setItem(lockKey, "true");
+                renderPredictionMatches();
+                showToast("BET ACCEPTED");
+            }
+        }
+    }
+
+    function checkPredictionResult() {
+        if (!currentUser) { showToast("ログインが必要です"); return; }
+        
+        // 1. Check if user participated
+        const lockKey = `prediction_locked_${currentUser.name}_r${currentPredictionRound}`;
+        if (!localStorage.getItem(lockKey)) {
+            showToast("このラウンドには参加していません");
+            return;
+        }
+        
+        // 2. Check if already claimed
+        const claimKey = `prediction_claimed_${currentUser.name}_r${currentPredictionRound}_${new Date().toISOString().slice(0,10)}`; // Simple daily key
+        if (localStorage.getItem(claimKey)) {
+            showToast("既に報酬を受け取っています");
+            return;
+        }
+
+        // 3. Get Actual Results (From DOM or LocalStorage/Server)
+        // ここではデモとしてINPUT画面の確定済みスコアを参照する
+        const rName = currentPredictionRound === 1 ? 'r1' : 'r2';
+        const tbody = document.getElementById(`${rName}_matchTableBody`);
+        if (!tbody || tbody.rows.length === 0) {
+            showToast("まだ試合結果が出ていません");
+            return;
+        }
+
+        let correctCount = 0;
+        let finishedMatches = 0;
+
+        for (let i = 0; i < tbody.rows.length; i++) {
+            const row = tbody.rows[i];
+            const sA = row.querySelector('select[data-type="scoreA"]').value;
+            const sB = row.querySelector('select[data-type="scoreB"]').value;
+            
+            if (sA !== "-" && sB !== "-") {
+                finishedMatches++;
+                const actualWinner = parseInt(sA) > parseInt(sB) ? 'A' : (parseInt(sB) > parseInt(sA) ? 'B' : 'DRAW');
+                const matchId = `${currentPredictionRound}_${i+1}`;
+                const userPick = userSelections[matchId];
+                
+                if (userPick === actualWinner) {
+                    correctCount++;
+                }
+            }
+        }
+
+        if (finishedMatches < 5) {
+            showToast("全試合終了後に確認してください");
+            return;
+        }
+
+        // 4. Give Reward
+        const rewardPerWin = 500;
+        const totalReward = correctCount * rewardPerWin;
+        const bonus = (correctCount === 5) ? 1000 : 0; // Perfect Bonus
+        const finalReward = totalReward + bonus;
+
+        const bonusKey = `bonus_coins_${currentUser.name}`;
+        const currentBonus = parseInt(localStorage.getItem(bonusKey) || 0);
+        localStorage.setItem(bonusKey, currentBonus + finalReward);
+        
+        // Mark as claimed
+        localStorage.setItem(claimKey, "true");
+        
+        let msg = `${correctCount}問正解！\n報酬: ${totalReward}コイン`;
+        if (bonus > 0) msg += `\nパーフェクトボーナス: +${bonus}コイン！`;
+        
+        alert(msg);
+        updateUserDisplay();
+    }
+
 
     // --- WEATHER LOGIC ---
     function fetchWeather() {
@@ -2239,6 +2571,9 @@
         const date = document.getElementById('matchDate').textContent;
         const court = document.getElementById('courtSelect').value === '-' ? 'コート未定' : document.getElementById('courtSelect').value;
         let rankings = [];
+        let isResultData = false;
+        let hasSetupData = false;
+
         ['r1', 'r2'].forEach(r => {
             const rows = document.getElementById(`${r}_rankingTableBody`).querySelectorAll('tr');
             const roundName = r==='r1' ? '1回戦' : '2回戦';
@@ -2253,6 +2588,7 @@
                 }
             });
         });
+        
         let matches = [];
         ['r1', 'r2'].forEach(r => {
             const rows = document.getElementById(`${r}_matchTableBody`).rows;
@@ -2261,22 +2597,47 @@
                 if(row.dataset.pA1) {
                     const sA = row.querySelector('select[data-type="scoreA"]').value;
                     const sB = row.querySelector('select[data-type="scoreB"]').value;
+                    
+                    // Case 1: Result Data (Has Scores)
                     if(sA!=="-" && sB!=="-") {
                         matches.push({
                             round: r==='r1'?1:2, no: i+1,
                             pA1: row.dataset.pA1, pA2: row.dataset.pA2, scoreA: sA, scoreB: sB,
                             pB1: row.dataset.pB1, pB2: row.dataset.pB2
                         });
+                        isResultData = true;
+                    } 
+                    // Case 2: Setup Data (Has Players but No Scores) - For Prediction Setup
+                    else if (row.dataset.pA1 !== "-" && row.dataset.pA1 !== undefined) {
+                         matches.push({
+                            type: 'setup',
+                            round: r==='r1'?1:2, no: i+1,
+                            pA1: row.dataset.pA1, pA2: row.dataset.pA2, 
+                            pB1: row.dataset.pB1, pB2: row.dataset.pB2
+                        });
+                        hasSetupData = true;
                     }
                 }
             }
         });
-        if(rankings.length===0) { showToast("NO DATA"); btn.disabled=false; btn.textContent="TRANSMIT DATA"; return; }
+
+        if(!isResultData && !hasSetupData) { showToast("NO DATA"); btn.disabled=false; btn.textContent="TRANSMIT DATA"; return; }
+        
+        // Determine Mode
+        const mode = isResultData ? "result" : "setup";
+        
+        // Mocking GAS interaction for Setup mode (since GAS endpoint logic can't be changed here)
+        // Ideally: fetch(GAS_WEB_APP_URL, { body: JSON.stringify({ mode: mode, ... }) })
+        
         fetch(GAS_WEB_APP_URL, {
             method: 'POST', mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ date, court, rankings, matches })
-        }).then(() => { showToast("SENT SUCCESSFULLY"); fetchAnalysisData(); })
+            body: JSON.stringify({ date, court, rankings, matches, mode }) // Added mode
+        }).then(() => { 
+            const msg = mode === "setup" ? "PREDICTION SETUP SENT" : "RESULTS SENT";
+            showToast(msg); 
+            fetchAnalysisData(); 
+        })
         .catch(e => { console.error(e); showToast("FAILED"); })
         .finally(() => { 
             btn.textContent="TRANSMIT DATA"; 
