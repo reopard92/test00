@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 62</title>
+    <title>CODE NAME: 63</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -1425,11 +1425,11 @@
     function getUserCoins(name) {
         if (!name) return 0;
         
-        // 1. 戦績からのコイン (既存ロジック: 勝利*50 + ゲーム*10)
+        // 1. 戦績からのコイン (新ロジック: ゲーム数 * 100)
         let statsCoins = 0;
         if (playerStatsGlobal && playerStatsGlobal[name]) {
             const p = playerStatsGlobal[name];
-            statsCoins = (p.wins * 50) + (p.games * 10);
+            statsCoins = p.games * 100;
         }
         
         // 2. ボーナスコイン (LocalStorage)
