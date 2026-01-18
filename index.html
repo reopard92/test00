@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 75</title>
+    <title>CODE NAME: 76</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -1878,8 +1878,8 @@
 
     async function fetchPredictionData() {
         try {
-            // New TOTO endpoint
-            const res = await fetch(TOTO_GAS_URL);
+            // New TOTO endpoint with cache busting
+            const res = await fetch(TOTO_GAS_URL + '?t=' + Date.now());
             const json = await res.json();
             
             if (json.currentSetup) {
@@ -1937,9 +1937,11 @@
             
             predictionMatches = matches;
             
-            // Load saved selections
-            const savedSel = localStorage.getItem(`prediction_selection_${currentUser ? currentUser.name : 'guest'}`);
+            // Load saved selections with DATE specific key
+            const dateStr = document.getElementById('matchDate').textContent;
+            const savedSel = localStorage.getItem(`prediction_selection_${currentUser ? currentUser.name : 'guest'}_${dateStr}`);
             if(savedSel) userSelections = JSON.parse(savedSel);
+            else userSelections = {}; // Clear for new date
 
             renderPredictionMatches();
             
@@ -2064,8 +2066,9 @@
 
     function selectWinner(matchId, side) {
         userSelections[matchId] = side;
-        // Save temp
-        localStorage.setItem(`prediction_selection_${currentUser ? currentUser.name : 'guest'}`, JSON.stringify(userSelections));
+        // Save temp with DATE specific key
+        const dateStr = document.getElementById('matchDate').textContent;
+        localStorage.setItem(`prediction_selection_${currentUser ? currentUser.name : 'guest'}_${dateStr}`, JSON.stringify(userSelections));
         renderPredictionMatches(); // Re-render to update UI
     }
 
@@ -3034,6 +3037,24 @@
     }
 
     function closeModal(e) { if(e.target.id==='playerModal'||e.target.className==='close-btn') document.getElementById('playerModal').style.display='none'; }
+    
+    // --- NEW: Fetch Prediction Data Separately ---
+    async function fetchPredictionData() {
+        try {
+            // New TOTO endpoint with cache busting
+            const res = await fetch(TOTO_GAS_URL + '?t=' + Date.now());
+            const json = await res.json();
+            
+            if (json.currentSetup) {
+                globalPredictionSetup = json.currentSetup;
+                
+                // If prediction view is active, update it
+                if (document.getElementById('view-prediction').classList.contains('active')) {
+                    renderPredictionView();
+                }
+            }
+        } catch(e) { console.error("TOTO Data Fetch Error", e); }
+    }
 </script>
 
 </body>
