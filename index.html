@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 91</title>
+    <title>CODE NAME: 92</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -260,17 +260,29 @@
         .game-status { position: absolute; top: 10px; right: -25px; background: #333; color: #888; font-size: 0.5rem; padding: 2px 25px; transform: rotate(45deg); width: 80px; text-align: center; }
         .game-status.live { background: #00ffff; color: #000; font-weight: bold; }
         
-        /* SLOT MACHINE STYLES */
-        .slot-container { display: flex; justify-content: center; gap: 10px; margin: 20px 0; perspective: 1000px; }
-        .slot-reel { width: 60px; height: 80px; background: #111; border: 2px solid #00ffff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 0 0 15px rgba(0,255,255,0.2); overflow: hidden; position: relative; }
-        .slot-reel.spinning { animation: reelShake 0.1s infinite; }
-        .slot-reel.spinning::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg, rgba(0,0,0,0.8), transparent, rgba(0,0,0,0.8)); }
-        @keyframes reelShake { 0% { transform: translateY(0); } 25% { transform: translateY(-2px); } 75% { transform: translateY(2px); } 100% { transform: translateY(0); } }
-        .slot-msg { text-align: center; height: 30px; font-weight: bold; margin-bottom: 10px; color: #00ffff; text-shadow: 0 0 5px #00ffff; }
-        .slot-btn { width: 100%; max-width: 200px; margin: 0 auto; display: block; padding: 15px; font-size: 1.2rem; background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; border: none; border-radius: 50px; font-weight: bold; box-shadow: 0 0 20px rgba(255, 87, 34, 0.6); transition: 0.2s; cursor: pointer; }
-        .slot-btn:active { transform: scale(0.95); box-shadow: 0 0 10px rgba(255, 87, 34, 0.8); }
-        .slot-btn:disabled { background: #333; box-shadow: none; cursor: not-allowed; opacity: 0.5; }
-
+        .prediction-timer { font-family: 'Courier New', monospace; font-size: 2.5rem; color: #00ffff; text-align: center; margin: 20px 0; text-shadow: 0 0 15px rgba(0,255,255,0.5); letter-spacing: 3px; font-weight: bold; }
+        .prediction-timer.urgent { color: #ff5252; text-shadow: 0 0 15px rgba(255,82,82,0.6); animation: pulseTimer 1s infinite; }
+        @keyframes pulseTimer { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        .prediction-tabs { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
+        .p-tab { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 20px; color: #888; cursor: pointer; font-size: 0.9rem; }
+        .p-tab.active { background: #00ffff; color: #000; font-weight: bold; border-color: #00ffff; }
+        
+        .match-card { background: rgba(30, 35, 45, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 15px; padding: 15px; position: relative; }
+        .match-no { font-size: 0.7rem; color: #00ffff; letter-spacing: 2px; margin-bottom: 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+        .pair-container { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .pair-btn { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 15px 5px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; }
+        .pair-btn:hover { background: rgba(255,255,255,0.1); }
+        .pair-btn.selected { border-color: #00ffff; background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 15px rgba(0,255,255,0.2); }
+        .pair-btn.winner-result { background: rgba(0, 255, 0, 0.2); border-color: #00ff00; }
+        .pair-btn.loser-result { opacity: 0.4; }
+        .pair-names { font-size: 0.9rem; color: #fff; font-weight: bold; }
+        .vs-text { font-size: 0.8rem; color: #555; font-style: italic; }
+        
+        .bet-area { text-align: center; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .bet-status { font-size: 0.9rem; color: #aaa; margin-bottom: 15px; }
+        .locked-msg { color: #00ffff; font-weight: bold; border: 1px solid #00ffff; padding: 10px; display: inline-block; margin-bottom: 15px; }
+        
         /* ANALYSIS STYLES */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: rgba(20, 20, 30, 0.4); padding: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
@@ -369,6 +381,17 @@
         .info-val { color: #fff; font-size: 0.9rem; flex: 1; word-break: break-all; }
         .empty-map-state { text-align: center; padding: 60px 0; color: #666; font-family: 'Courier New', monospace; letter-spacing: 2px; border: 1px dashed rgba(255,255,255,0.1); }
         
+        /* SLOT MACHINE STYLES */
+        .slot-container { display: flex; justify-content: center; gap: 10px; margin: 20px 0; perspective: 1000px; }
+        .slot-reel { width: 60px; height: 80px; background: #111; border: 2px solid #00ffff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 0 0 15px rgba(0,255,255,0.2); overflow: hidden; position: relative; }
+        .slot-reel.spinning { animation: reelShake 0.1s infinite; }
+        .slot-reel.spinning::after { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg, rgba(0,0,0,0.8), transparent, rgba(0,0,0,0.8)); }
+        @keyframes reelShake { 0% { transform: translateY(0); } 25% { transform: translateY(-2px); } 75% { transform: translateY(2px); } 100% { transform: translateY(0); } }
+        .slot-msg { text-align: center; height: 30px; font-weight: bold; margin-bottom: 10px; color: #00ffff; text-shadow: 0 0 5px #00ffff; }
+        .slot-btn { width: 100%; max-width: 200px; margin: 0 auto; display: block; padding: 15px; font-size: 1.2rem; background: linear-gradient(135deg, #ff9800, #ff5722); color: #fff; border: none; border-radius: 50px; font-weight: bold; box-shadow: 0 0 20px rgba(255, 87, 34, 0.6); transition: 0.2s; cursor: pointer; }
+        .slot-btn:active { transform: scale(0.95); box-shadow: 0 0 10px rgba(255, 87, 34, 0.8); }
+        .slot-btn:disabled { background: #333; box-shadow: none; cursor: not-allowed; opacity: 0.5; }
+
         /* LOGIN MODAL STYLES */
         #loginPassInput { width: 80%; padding: 10px; text-align: center; background: rgba(0,0,0,0.5); border: 1px solid #00ffff; color: #fff; font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 20px; border-radius: 4px; }
         #loginPassInput:focus { outline: none; box-shadow: 0 0 15px rgba(0,255,255,0.4); }
@@ -473,8 +496,27 @@
     </div>
 
     <!-- PREDICTION SECTION (NEW) -->
-    <!-- PREDICTION REMOVED/HIDDEN AS PER REQUEST -->
-    
+    <div id="view-prediction" class="view-section">
+        <div class="section-title">WINNER PREDICTION</div>
+        
+        <div id="predictionTimer" class="prediction-timer">--:--</div>
+        
+        <div class="prediction-tabs">
+            <div class="p-tab active" onclick="switchPredictionRound(1)">ROUND 1</div>
+            <div class="p-tab" onclick="switchPredictionRound(2)">ROUND 2</div>
+        </div>
+        
+        <div id="predictionListArea">
+            <div style="text-align:center; padding:30px; color:#666;">LOADING MATCH DATA...</div>
+        </div>
+
+        <div class="bet-area">
+            <div id="betStatus" class="bet-status">UNLOCKED: SELECTIONS OPEN</div>
+            <button id="betBtn" class="btn-send" onclick="submitPrediction()" style="margin-top:0;">BET 0 COINS (TEST)</button>
+            <button id="checkResultBtn" class="btn-ctrl" onclick="checkPredictionResult()" style="margin-top:20px; width:auto; border-radius:4px; padding:10px 20px;">結果を確認＆報酬受取</button>
+        </div>
+    </div>
+
     <!-- MATCH INPUT SECTION -->
     <div id="view-match" class="view-section active">
         <div class="input-header-area">
@@ -621,7 +663,12 @@
                 <div class="game-card-title">ITEM SHOP</div>
             </div>
             
-            <!-- PREDICTION (REMOVED UI) -->
+            <!-- PREDICTION (LOCKED) -->
+            <div class="game-card locked"> 
+                <div class="game-status">LOCKED</div>
+                <div class="game-icon">🔮</div>
+                <div class="game-card-title">PREDICTION</div>
+            </div>
 
             <!-- SLOT MACHINE (NEW) -->
             <div class="game-card" onclick="openSlotGame()">
@@ -744,7 +791,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = JSON.parse(__firebase_config);
@@ -1418,6 +1465,47 @@
             });
         });
         if (!loadState()) { /* updateSchedule('r1'); updateSchedule('r2'); */ } 
+    }
+
+    window.updateSchedule = function(rp) {
+        const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
+        updatePlayerOptions(rp);
+        const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
+        const currentScores = [];
+        const oldTbody = document.getElementById(`${rp}_matchTableBody`);
+        if (oldTbody) {
+            for (let i = 0; i < oldTbody.rows.length; i++) {
+                const sA = oldTbody.rows[i].querySelector('select[data-type="scoreA"]');
+                const sB = oldTbody.rows[i].querySelector('select[data-type="scoreB"]');
+                currentScores.push({ a: sA ? sA.value : "-", b: sB ? sB.value : "-" });
+            }
+        }
+        const tb = document.getElementById(`${rp}_matchTableBody`); tb.innerHTML = "";
+        patterns.forEach((pat, idx) => {
+            const row = document.createElement("tr");
+            row.dataset.pA1=pl[pat[0]]; row.dataset.pA2=pl[pat[1]]; row.dataset.pB1=pl[pat[2]]; row.dataset.pB2=pl[pat[3]];
+            const cNo = document.createElement("td"); cNo.textContent=`MATCH ${idx+1}`; row.appendChild(cNo);
+            const cTA = document.createElement("td"); cTA.textContent=`${pl[pat[0]]} & ${pl[pat[1]]}`; row.appendChild(cTA);
+            const cSA = document.createElement("td"); cSA.className="score-cell";
+            const sA = createScoreSelect(); sA.setAttribute('data-type','scoreA'); 
+            if(currentScores[idx]) sA.value = currentScores[idx].a;
+            cSA.appendChild(sA); row.appendChild(cSA);
+            const probA = getWinProbability(pl[pat[0]], pl[pat[1]]);
+            const cVs = document.createElement("td"); cVs.className="vs"; 
+            cVs.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; width:100%;"><div style="font-size:0.6rem; color:#aaa; margin-bottom:2px;">WIN PROBABILITY</div><div style="display:flex; width:80%; height:4px; background:#333; border-radius:2px; overflow:hidden;"><div style="width:${probA}%; background:#00ffff; box-shadow:0 0 5px #00ffff;"></div><div style="width:${100-probA}%; background:#555;"></div></div><div style="display:flex; justify-content:space-between; width:80%; font-size:0.6rem; margin-top:2px;"><span style="color:#00ffff;">${probA}%</span><span style="color:#888;">${100-probA}%</span></div></div>`;
+            row.appendChild(cVs);
+            const cSB = document.createElement("td"); cSB.className="score-cell";
+            const sB = createScoreSelect(); sB.setAttribute('data-type','scoreB'); 
+            if(currentScores[idx]) sB.value = currentScores[idx].b;
+            cSB.appendChild(sB); row.appendChild(cSB);
+            const cTB = document.createElement("td"); cTB.textContent=`${pl[pat[2]]} & ${pl[pat[3]]}`; row.appendChild(cTB);
+            const cR = document.createElement("td"); cR.className="rest-highlight"; cR.textContent=pl[pat[4]]; row.appendChild(cR);
+            sA.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
+            sB.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
+            tb.appendChild(row);
+            checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
+        });
+        updateInputRanking(rp); saveState();
     }
 
     window.toggleEditMode = function() {
