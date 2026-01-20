@@ -817,10 +817,15 @@
 
     // --- FIREBASE AUTH & INIT ---
     const initAuthFirebase = async () => {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-            await signInAnonymously(auth);
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        } catch (e) {
+            console.error("Auth Error:", e);
+            showToast("AUTH FAILED: " + e.message);
         }
     };
     initAuthFirebase();
@@ -835,7 +840,7 @@
 
     // --- INITIALIZATION ---
     window.onload = function() {
-        // Failsafe: Force hide loading screen after 4 seconds
+        // Failsafe: Force hide loading screen after 3 seconds
         setTimeout(() => {
             const ls = document.getElementById('loadingScreen');
             if (ls && ls.style.display !== 'none') {
@@ -843,7 +848,7 @@
                 setTimeout(() => { ls.style.display = 'none'; }, 500);
                 console.warn("Loading screen forcibly removed by failsafe.");
             }
-        }, 4000);
+        }, 3000);
 
         try {
             initAuth(); 
@@ -854,7 +859,7 @@
             const dd = String(today.getDate()).padStart(2, '0');
             document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
             
-            fetchAnalysisData(); 
+            fetchAnalysisData(); // Main Stats from GAS
             
             // Restore last view from sessionStorage
             const lastView = sessionStorage.getItem('lastView');
@@ -972,6 +977,7 @@
 
 
     // --- AUTHENTICATION LOGIC ---
+    // JSONP callback needs to be global window property
     window.onAuthDataLoaded = function(json) {
         const pass = document.getElementById('loginPassInput').value;
         const btn = document.querySelector('.btn-login');
@@ -1347,24 +1353,6 @@
         if(e.target.id === 'slotGameModal' || e.target.className === 'close-btn') {
             if(!isSpinning) {
                 document.getElementById('slotGameModal').style.display = 'none';
-                // SETTLEMENT logic moved to Firebase
-                // Note: We don't send bulk transaction here for simplicity in Firebase
-                // Actually, sendCoinTransaction sends individual transaction.
-                // If we want session based, we accumulate locally and send one trans here.
-                // But for free Firebase, individual is fine for now. 
-                // Wait, previous advice was session based.
-                // Let's implement session send.
-                if(sessionSlotNet !== 0) {
-                     // We already updated local balance in spinSlot/checkSlotResult visually
-                     // Now we sync to DB.
-                     // IMPORTANT: spinSlot logic below updates globalCoinBalances locally.
-                     // But sendCoinTransaction ALSO updates locally.
-                     // We need to decouple.
-                     // Let's just send transaction at the end.
-                     // But wait, user might close tab.
-                     // For stability with Firebase, let's just save every spin/win result immediately.
-                     // It's fast enough.
-                }
             }
         }
     }
@@ -1460,12 +1448,12 @@
                 el.value = "-";
             });
         });
-        if (!loadState()) { updateSchedule('r1'); updateSchedule('r2'); } 
+        if (!loadState()) { /* updateSchedule('r1'); updateSchedule('r2'); */ } 
     }
-    
-    // updateSchedule function added back
-    function updateSchedule(rp) {
+
+    window.updateSchedule = function(rp) {
         const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
+        updatePlayerOptions(rp);
         const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
         const currentScores = [];
         const oldTbody = document.getElementById(`${rp}_matchTableBody`);
@@ -1896,10 +1884,6 @@
         renderAnalysisPairs(pairStats);
         renderAnalysisLogs(logs);
         renderAnalysisChart(sortedP);
-        if(currentSector === 'ALL') { 
-            // Removed updateSchedule() call from here as it is static now
-            // But we need to make sure updateSchedule is defined if used elsewhere
-        }
         
         // Refresh MyPage if active
         if(document.getElementById('view-mypage').classList.contains('active')) {
