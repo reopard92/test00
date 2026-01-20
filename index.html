@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 89</title>
+    <title>CODE NAME: 95</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -271,30 +271,6 @@
         .slot-btn:active { transform: scale(0.95); box-shadow: 0 0 10px rgba(255, 87, 34, 0.8); }
         .slot-btn:disabled { background: #333; box-shadow: none; cursor: not-allowed; opacity: 0.5; }
 
-        /* ... existing prediction styles ... */
-        .prediction-timer { font-family: 'Courier New', monospace; font-size: 2.5rem; color: #00ffff; text-align: center; margin: 20px 0; text-shadow: 0 0 15px rgba(0,255,255,0.5); letter-spacing: 3px; font-weight: bold; }
-        .prediction-timer.urgent { color: #ff5252; text-shadow: 0 0 15px rgba(255,82,82,0.6); animation: pulseTimer 1s infinite; }
-        @keyframes pulseTimer { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        
-        .prediction-tabs { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
-        .p-tab { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 20px; color: #888; cursor: pointer; font-size: 0.9rem; }
-        .p-tab.active { background: #00ffff; color: #000; font-weight: bold; border-color: #00ffff; }
-        
-        .match-card { background: rgba(30, 35, 45, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 15px; padding: 15px; position: relative; }
-        .match-no { font-size: 0.7rem; color: #00ffff; letter-spacing: 2px; margin-bottom: 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-        .pair-container { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .pair-btn { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 15px 5px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; }
-        .pair-btn:hover { background: rgba(255,255,255,0.1); }
-        .pair-btn.selected { border-color: #00ffff; background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 15px rgba(0,255,255,0.2); }
-        .pair-btn.winner-result { background: rgba(0, 255, 0, 0.2); border-color: #00ff00; }
-        .pair-btn.loser-result { opacity: 0.4; }
-        .pair-names { font-size: 0.9rem; color: #fff; font-weight: bold; }
-        .vs-text { font-size: 0.8rem; color: #555; font-style: italic; }
-        
-        .bet-area { text-align: center; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
-        .bet-status { font-size: 0.9rem; color: #aaa; margin-bottom: 15px; }
-        .locked-msg { color: #00ffff; font-weight: bold; border: 1px solid #00ffff; padding: 10px; display: inline-block; margin-bottom: 15px; }
-        
         /* ANALYSIS STYLES */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: rgba(20, 20, 30, 0.4); padding: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
@@ -345,6 +321,10 @@
         .coin-label { font-size: 0.7rem; color: #aaa; letter-spacing: 2px; }
         .btn-logout { background: transparent; color: #ff5252; border: 1px solid #ff5252; padding: 8px 25px; margin-top: 30px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-size: 0.8rem; }
         .btn-logout:hover { background: rgba(255,82,82,0.1); }
+        .collection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 20px; }
+        .collection-item { background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 6px; padding: 5px; text-align: center; }
+        .collection-item img { width: 100%; border-radius: 4px; display: block; margin-bottom: 5px; }
+        .collection-name { font-size: 0.7rem; color: #00ffff; }
 
         /* SHOP STYLES */
         .holo-showcase { position: relative; width: 100%; height: 350px; perspective: 1000px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -449,7 +429,6 @@
 <div id="sideMenu" class="side-menu-overlay" onclick="closeSideMenu(event)">
     <div class="side-menu-content">
         <div class="menu-item active" onclick="selectAppMode('tennis')">🎾 TENNIS</div>
-        <!-- Prediction removed from menu -->
         <div class="menu-item" onclick="selectAppMode('game')">🎮 GAME</div>
         <div class="menu-item" onclick="showMyPage()">👤 MY PAGE</div>
     </div>
@@ -466,7 +445,7 @@
     
     <!-- TOP SECTION -->
     <div id="view-top" class="view-section">
-        <!-- WEATHER REMOVED FOR LIGHTWEIGHT -->
+        <!-- WEATHER REMOVED -->
 
         <div class="section-title">コートナビゲーション</div>
         <div class="sector-filter-area" style="text-align:center; margin-bottom:20px;">
@@ -495,29 +474,7 @@
         </div>
         <input type="file" id="avatarInput" hidden accept="image/*" onchange="handleAvatarUpload(this)">
     </div>
-
-    <!-- PREDICTION SECTION (NEW) -->
-    <div id="view-prediction" class="view-section">
-        <div class="section-title">WINNER PREDICTION</div>
-        
-        <div id="predictionTimer" class="prediction-timer">--:--</div>
-        
-        <div class="prediction-tabs">
-            <div class="p-tab active" onclick="switchPredictionRound(1)">ROUND 1</div>
-            <div class="p-tab" onclick="switchPredictionRound(2)">ROUND 2</div>
-        </div>
-        
-        <div id="predictionListArea">
-            <div style="text-align:center; padding:30px; color:#666;">LOADING MATCH DATA...</div>
-        </div>
-
-        <div class="bet-area">
-            <div id="betStatus" class="bet-status">UNLOCKED: SELECTIONS OPEN</div>
-            <button id="betBtn" class="btn-send" onclick="submitPrediction()" style="margin-top:0;">BET 0 COINS (TEST)</button>
-            <button id="checkResultBtn" class="btn-ctrl" onclick="checkPredictionResult()" style="margin-top:20px; width:auto; border-radius:4px; padding:10px 20px;">結果を確認＆報酬受取</button>
-        </div>
-    </div>
-
+    
     <!-- MATCH INPUT SECTION -->
     <div id="view-match" class="view-section active">
         <div class="input-header-area">
@@ -632,9 +589,6 @@
         </div>
     </div>
 
-    <!-- SCHEDULE SECTION (REMOVED CONTENT FOR LIGHTWEIGHT) -->
-    <!-- This section is just a placeholder or redirects -->
-
     <!-- GAME PORTAL SECTION -->
     <div id="view-game" class="view-section">
         <div class="game-hero">
@@ -662,13 +616,6 @@
                 <div class="game-status">OPEN</div>
                 <div class="game-icon">🛒</div>
                 <div class="game-card-title">ITEM SHOP</div>
-            </div>
-            
-            <!-- PREDICTION (LOCKED) -->
-            <div class="game-card locked"> 
-                <div class="game-status">LOCKED</div>
-                <div class="game-icon">🔮</div>
-                <div class="game-card-title">PREDICTION</div>
             </div>
 
             <!-- SLOT MACHINE (NEW) -->
@@ -724,7 +671,7 @@
     </div>
 </div>
 
-<!-- SLOT GAME MODAL (NEW) -->
+<!-- SLOT GAME MODAL -->
 <div id="slotGameModal" onclick="closeSlotGame(event)">
     <div class="modal-content" style="max-width:350px; text-align:center; padding: 30px 20px;">
         <button class="close-btn" onclick="closeSlotGame(event)">×</button>
@@ -759,11 +706,11 @@
         <div class="holo-showcase">
             <div class="holo-item">
                 <div class="holo-ring"></div>
-                <img src="./Gemini_Generated_Image_8zqd0z8zqd0z8zqd-Photoroom.jpg" onerror="this.src='https://placehold.co/180x180/000/00ffff?text=ITEM'" alt="Mystery Item" class="holo-img">
+                <img src="./今田美桜.jpg" onerror="this.src='https://placehold.co/180x180/000/00ffff?text=CARD'" alt="今田美桜" class="holo-img">
             </div>
             
             <div class="item-info">
-                <div class="item-name">MYSTERY CAPSULE</div>
+                <div class="item-name">今田美桜</div>
                 <div class="item-price">10,000 COINS</div>
             </div>
             
@@ -837,7 +784,7 @@
     let globalCoinBalances = {};
 
     window.onload = function() {
-        initAuth(); // Initialize Authentication
+        initAuth(); 
         initSelectors();
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -845,15 +792,13 @@
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
         
-        fetchAnalysisData(); // Main Stats
-        fetchCoinData(); // Fetch Coins from Spreadsheet
+        fetchAnalysisData(); 
+        fetchCoinData();
         
-        // Restore last view from sessionStorage to keep page state on refresh
         const lastView = sessionStorage.getItem('lastView');
         if (lastView) {
             switchMainView(lastView);
         } else {
-            // Default to TOP
             switchMainView('top'); 
         }
 
@@ -862,7 +807,6 @@
             setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
         }, 1000);
         
-        // Swipe Logic
         let touchStartX = 0;
         document.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
@@ -870,19 +814,17 @@
 
         document.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].screenX;
-            // 右端(画面幅-100px以内)から左へスワイプでオープン
             if(touchStartX > window.innerWidth - 100 && touchStartX - touchEndX > 50) {
                 document.getElementById('sideMenu').classList.add('open');
                 updateSideMenuActiveState();
             }
-            // 右へスワイプでクローズ
             if(touchEndX - touchStartX > 50) {
                 document.getElementById('sideMenu').classList.remove('open');
             }
         }, {passive: true});
     };
 
-    // --- COIN LOGIC ---
+    // --- COIN LOGIC (GAS) ---
     async function fetchCoinData() {
         try {
             const res = await fetch(COIN_MANAGER_URL);
@@ -898,6 +840,7 @@
         globalCoinBalances[name] += amount;
         updateUserDisplay();
         
+        // GAS Endpoint Call
         fetch(COIN_MANAGER_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -929,54 +872,39 @@
         clearTimeout(holdTimer);
         btn.classList.remove('holding');
         if(spendCoins(10000)) { // 10000 coin item
+             // Save ownership locally
+             localStorage.setItem(`has_imada_card_${currentUser.name}`, 'true');
              showToast("TRANSACTION COMPLETE");
         }
     }
 
-    function openShop() {
-        document.getElementById('shopModal').style.display = 'flex';
-    }
-
-    function closeShop(e) {
-        if(e.target.id === 'shopModal' || e.target.className === 'close-btn') {
-            document.getElementById('shopModal').style.display = 'none';
-        }
-    }
+    function openShop() { document.getElementById('shopModal').style.display = 'flex'; }
+    function closeShop(e) { if(e.target.id === 'shopModal' || e.target.className === 'close-btn') document.getElementById('shopModal').style.display = 'none'; }
 
 
     // --- AUTHENTICATION LOGIC ---
-    // JSONP callback needs to be global
     window.onAuthDataLoaded = function(json) {
         const pass = document.getElementById('loginPassInput').value;
         const btn = document.querySelector('.btn-login');
-        
-        // Remove the script tag to clean up
         const script = document.getElementById('authScript');
         if(script) script.remove();
 
-        // Safety check for valid JSON structure
         if (!json || !json.table || !json.table.rows) {
             console.error("Auth Data Error:", json);
-            alert("ACCESS DENIED: DATA LOAD FAILED (Check Sheet Permissions)");
-            btn.textContent = "AUTHENTICATE";
-            btn.disabled = false;
+            alert("ACCESS DENIED");
+            btn.textContent = "AUTHENTICATE"; btn.disabled = false;
             return;
         }
 
         const rows = json.table.rows;
         let foundUser = null;
         
-        // Assume Col A (0) is Name, Col B (1) is Password
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             if (!row.c[0] || !row.c[1]) continue;
             const name = row.c[0].v;
             const dbPass = String(row.c[1].v); 
-            
-            if (String(pass) === dbPass) {
-                foundUser = { name: name };
-                break;
-            }
+            if (String(pass) === dbPass) { foundUser = { name: name }; break; }
         }
 
         if (foundUser) {
@@ -985,43 +913,27 @@
             updateUserDisplay();
             document.getElementById('loginModal').style.display = 'none';
             showToast(`WELCOME, ${currentUser.name}`);
-            
-            // If MyPage is currently shown, re-render it
-            if(document.getElementById('view-mypage').classList.contains('active')) {
-                renderMyPage();
-            }
+            if(document.getElementById('view-mypage').classList.contains('active')) renderMyPage();
         } else {
             alert("ACCESS DENIED: INVALID PASSCODE");
         }
-        
-        btn.textContent = "AUTHENTICATE";
-        btn.disabled = false;
+        btn.textContent = "AUTHENTICATE"; btn.disabled = false;
     };
 
     function initAuth() {
         const storedUser = localStorage.getItem(LOGIN_KEY);
-        if (storedUser) {
-            currentUser = JSON.parse(storedUser);
-        } else {
-            // Do not show modal on load, just set null
-            currentUser = null;
-        }
+        if (storedUser) currentUser = JSON.parse(storedUser);
+        else currentUser = null;
         updateUserDisplay();
     }
 
     function getUserCoins(name) {
         if (!name) return 0;
-        
-        // 1. 戦績からのコイン (新ロジック: ゲーム数 * 100)
         let statsCoins = 0;
         if (playerStatsGlobal && playerStatsGlobal[name]) {
-            const p = playerStatsGlobal[name];
-            statsCoins = p.games * 100;
+            statsCoins = playerStatsGlobal[name].games * 100;
         }
-        
-        // 2. 変動コイン (Spreadsheet)
         let variableCoins = globalCoinBalances[name] || 0;
-        
         return Math.max(0, statsCoins + variableCoins);
     }
     
@@ -1034,7 +946,7 @@
             return false;
         }
         
-        sendCoinTransaction(name, -amount, "Shop/Bet");
+        sendCoinTransaction(name, -amount, "Shop/Bet/Slot");
         return true;
     }
 
@@ -1042,41 +954,30 @@
         const disp = document.getElementById('currentUserDisplay');
         if (currentUser) {
             const coins = getUserCoins(currentUser.name);
-            disp.textContent = `${currentUser.name} : ${coins.toLocaleString()}`; // 名前 : コイン
+            disp.textContent = `${currentUser.name} : ${coins.toLocaleString()}`;
             disp.className = 'user-status-display status-user';
         } else {
             disp.textContent = 'GUEST';
             disp.className = 'user-status-display status-guest';
         }
-        checkDailyBonusState(); // ついでにボタン状態も更新
+        checkDailyBonusState(); 
     }
 
     function attemptLogin() {
         const pass = document.getElementById('loginPassInput').value;
         if (!pass) return;
-        
         const btn = document.querySelector('.btn-login');
-        btn.textContent = "VERIFYING...";
-        btn.disabled = true;
-
-        // Use JSONP to bypass CORS
+        btn.textContent = "VERIFYING..."; btn.disabled = true;
         const script = document.createElement('script');
         script.id = 'authScript';
         script.src = `https://docs.google.com/spreadsheets/d/${AUTH_SHEET_ID}/gviz/tq?tqx=responseHandler:onAuthDataLoaded&gid=${AUTH_SHEET_GID}`;
-        script.onerror = function() {
-            alert("AUTH ERROR: NETWORK OR SHEET ISSUE");
-            btn.textContent = "AUTHENTICATE";
-            btn.disabled = false;
-        };
+        script.onerror = function() { alert("AUTH ERROR"); btn.textContent = "AUTHENTICATE"; btn.disabled = false; };
         document.body.appendChild(script);
     }
 
     function enableGuestMode() {
-        // Just close the modal, stay as guest (or whatever current state)
         document.getElementById('loginModal').style.display = 'none';
-        if (!currentUser) {
-            showToast("GUEST MODE ACTIVE");
-        }
+        if (!currentUser) showToast("GUEST MODE ACTIVE");
     }
 
     function handleLogout() {
@@ -1088,103 +989,76 @@
     }
 
     function getDailyBonus() {
-        if (!currentUser) {
-            showToast("ログインが必要です");
-            return;
-        }
+        if (!currentUser) { showToast("ログインが必要です"); return; }
         const name = currentUser.name;
-        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const today = new Date().toISOString().slice(0, 10);
         const lastBonusKey = `last_bonus_date_${name}`;
         const lastDate = localStorage.getItem(lastBonusKey);
         
-        if (lastDate === today) {
-            showToast("本日は既に受取済みです");
-            return;
-        }
+        if (lastDate === today) { showToast("本日は既に受取済みです"); return; }
         
-        // ボーナス付与 (Server)
         sendCoinTransaction(name, 500, "Daily Bonus");
         localStorage.setItem(lastBonusKey, today);
-        
         showToast("デイリーボーナス 500コイン GET!");
-        
-        // UI更新
-        updateUserDisplay();
-        renderMyPage(); // もし開いていれば
-        checkDailyBonusState(); // ボタン状態更新
+        checkDailyBonusState();
     }
 
     function checkDailyBonusState() {
         const btn = document.getElementById('dailyBonusBtn');
         if (!btn) return;
-        
         if (!currentUser) {
-            btn.disabled = true;
-            btn.textContent = "ログインしてボーナスGET";
-            return;
+            btn.disabled = true; btn.textContent = "ログインしてボーナスGET"; return;
         }
-        
         const name = currentUser.name;
         const today = new Date().toISOString().slice(0, 10);
         const lastDate = localStorage.getItem(`last_bonus_date_${name}`);
-        
         if (lastDate === today) {
-            btn.disabled = true;
-            btn.textContent = "受取済み (NEXT: TOMORROW)";
-            btn.style.opacity = 0.5;
+            btn.disabled = true; btn.textContent = "受取済み (NEXT: TOMORROW)"; btn.style.opacity = 0.5;
         } else {
-            btn.disabled = false;
-            btn.textContent = "デイリーボーナス (500 COINS)";
-            btn.style.opacity = 1;
+            btn.disabled = false; btn.textContent = "デイリーボーナス (500 COINS)"; btn.style.opacity = 1;
         }
     }
 
     function showMyPage() {
-        // Close side menu
         document.getElementById('sideMenu').classList.remove('open');
-
-        if (currentUser) {
-            // Logged in: Show My Page View
-            switchMainView('mypage');
-            renderMyPage();
-        } else {
-            // Not logged in, show login modal
-            document.getElementById('loginModal').style.display = 'flex';
-        }
+        if (currentUser) { switchMainView('mypage'); renderMyPage(); } 
+        else { document.getElementById('loginModal').style.display = 'flex'; }
     }
     
     function renderMyPage() {
         if (!currentUser) return;
-        
         const name = currentUser.name;
-        // Get Stats from Global Data (if available)
         const pStats = playerStatsGlobal[name] || { wins: 0, losses: 0, games: 0, mvpCount: 0, matches: 0 };
-        const max = playerStatsGlobal._max || { wins:100, games:2000 };
-        
         const rankInfo = getRankInfo(pStats.games);
         const nextRank = rankInfo.next;
         let expText = "MAX RANK";
         let barW = 100;
-        
         if (nextRank) {
             const range = nextRank.min - rankInfo.current.min;
             const currentExp = pStats.games - rankInfo.current.min;
             barW = Math.min((currentExp / range) * 100, 100);
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
-        
         const coins = getUserCoins(name);
-        
-        // Avatar Logic
         const storedAvatar = localStorage.getItem(`avatar_${name}`);
-        let avatarStyle = '';
-        let avatarContent = name.charAt(0);
+        let avatarStyle = ''; let avatarContent = name.charAt(0);
+        if(storedAvatar) { avatarStyle = `background-image: url(${storedAvatar}); background-size: cover; background-position: center; color: transparent;`; avatarContent = ''; }
         
-        if(storedAvatar) {
-            avatarStyle = `background-image: url(${storedAvatar}); background-size: cover; background-position: center; color: transparent;`;
-            avatarContent = '';
+        // Collection Check
+        const hasImada = localStorage.getItem(`has_imada_card_${name}`);
+        let collectionHtml = '';
+        if (hasImada) {
+            collectionHtml = `
+                <div class="section-title" style="margin-top:20px;">COLLECTION</div>
+                <div class="collection-grid">
+                    <div class="collection-item">
+                        <img src="./今田美桜.jpg" onerror="this.src='https://placehold.co/100x140/333/00ffff?text=CARD'" alt="Card">
+                        <div class="collection-name">今田美桜</div>
+                    </div>
+                </div>
+            `;
         }
-        
+
         const html = `
             <div class="mypage-header">
                 <div class="mypage-avatar-large" style="${avatarStyle}" onclick="document.getElementById('avatarInput').click()">
@@ -1193,20 +1067,13 @@
                 <div class="mypage-name">${name}</div>
                 <div class="mypage-title">${rankInfo.current.icon} ${rankInfo.current.name}</div>
             </div>
-            
             <div class="rank-info-area">
                 <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; color:#aaa;">
-                    <span>EXP: ${pStats.games}</span>
-                    <span>${expText}</span>
+                    <span>EXP: ${pStats.games}</span><span>${expText}</span>
                 </div>
                 <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${barW}%"></div></div>
             </div>
-            
-            <div class="mypage-coin-area">
-                <div class="coin-val">${coins.toLocaleString()}</div>
-                <div class="coin-label">CRYPTO COINS</div>
-            </div>
-            
+            <div class="mypage-coin-area"><div class="coin-val">${coins.toLocaleString()}</div><div class="coin-label">CRYPTO COINS</div></div>
             <div class="section-title">COMBAT STATS</div>
             <div class="dashboard-grid">
                 <div class="stat-card"><div class="stat-label">VICTORIES</div><div class="stat-value highlight">${pStats.wins}</div></div>
@@ -1214,12 +1081,9 @@
                 <div class="stat-card"><div class="stat-label">WIN RATE</div><div class="stat-value">${pStats.matches > 0 ? ((pStats.wins/pStats.matches)*100).toFixed(1) : 0}%</div></div>
                 <div class="stat-card"><div class="stat-label">MVP</div><div class="stat-value">${pStats.mvpCount}</div></div>
             </div>
-            
-            <div style="text-align:center;">
-                <button class="btn-logout" onclick="handleLogout()">LOGOUT</button>
-            </div>
+            ${collectionHtml}
+            <div style="text-align:center; margin-top:30px;"><button class="btn-logout" onclick="handleLogout()">LOGOUT</button></div>
         `;
-        
         document.getElementById('myPageContent').innerHTML = html;
         document.getElementById('pageTitle').textContent = "MY PAGE";
     }
@@ -1230,8 +1094,7 @@
             reader.onload = function(e) {
                 const base64 = e.target.result;
                 localStorage.setItem(`avatar_${currentUser.name}`, base64);
-                renderMyPage(); // Re-render to show new image
-                showToast("AVATAR UPDATED");
+                renderMyPage(); showToast("AVATAR UPDATED");
             }
             reader.readAsDataURL(input.files[0]);
         }
@@ -1241,60 +1104,37 @@
     function toggleSideMenu() {
         const menu = document.getElementById('sideMenu');
         menu.classList.toggle('open');
-        if(menu.classList.contains('open')) {
-            updateSideMenuActiveState();
-        }
+        if(menu.classList.contains('open')) updateSideMenuActiveState();
     }
     
     function updateSideMenuActiveState() {
         const currentView = sessionStorage.getItem('lastView') || 'top';
         const items = document.querySelectorAll('.side-menu-content .menu-item');
         items.forEach(i => i.classList.remove('active'));
-        
-        // Menu order changed: Tennis(0), Game(1), MyPage(2)
-        if(currentView === 'mypage') {
-            items[2].classList.add('active'); // My Page
-        } else if (currentView === 'game' || currentView === 'prediction') {
-            items[1].classList.add('active'); // Game & Prediction
-        } else {
-            items[0].classList.add('active'); // Tennis
-        }
+        if(currentView === 'mypage') items[2].classList.add('active'); 
+        else if (currentView === 'game' || currentView === 'prediction') items[1].classList.add('active'); 
+        else items[0].classList.add('active'); 
     }
     
     function closeSideMenu(e) {
-        if(e.target.id === 'sideMenu') {
-            document.getElementById('sideMenu').classList.remove('open');
-            // document.getElementById('menuToggleBtn').classList.remove('active'); // Removed morph trigger
-        }
+        if(e.target.id === 'sideMenu') document.getElementById('sideMenu').classList.remove('open');
     }
 
     function selectAppMode(mode) {
         document.getElementById('sideMenu').classList.remove('open');
-        
         const bottomNav = document.getElementById('bottomNav');
         const subTitle = document.querySelector('.subtitle');
-
         const items = document.querySelectorAll('.side-menu-content .menu-item');
         items.forEach(item => item.classList.remove('active'));
 
         if (mode === 'tennis') {
-            items[0].classList.add('active');
-            switchMainView('top'); 
-            bottomNav.classList.remove('hidden');
-            subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
-        } else if (mode === 'prediction') {
-            items[1].classList.add('active'); // Parent is Game
-            switchMainView('prediction');
-            bottomNav.classList.add('hidden');
-            document.getElementById('pageTitle').textContent = "WINNER PREDICTION";
-            subTitle.textContent = "PREDICT THE OUTCOME";
+            items[0].classList.add('active'); switchMainView('top'); 
+            bottomNav.classList.remove('hidden'); subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         } else if (mode === 'game') {
             items[1].classList.add('active');
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('view-game').classList.add('active');
-            bottomNav.classList.add('hidden');
-            document.getElementById('pageTitle').textContent = "GAME ARCHIVE";
-            subTitle.textContent = "TACTICAL SIMULATION MODULES";
+            bottomNav.classList.add('hidden'); document.getElementById('pageTitle').textContent = "GAME ARCHIVE"; subTitle.textContent = "TACTICAL SIMULATION MODULES";
             sessionStorage.setItem('lastView', 'game');
         }
     }
@@ -1302,41 +1142,42 @@
     function switchMainView(viewName) {
         if (viewName === 'schedule') { window.location.href = './schedule.html'; return; } // REDIRECT
         sessionStorage.setItem('lastView', viewName);
-        
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
         const navs = document.querySelectorAll('.nav-item');
-        
-        // Handle nav active states
         if(viewName === 'top') navs[0].classList.add('active');
         if(viewName === 'match') navs[1].classList.add('active');
         if(viewName === 'dashboard') navs[2].classList.add('active');
         if(viewName === 'ranking') navs[3].classList.add('active');
         
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-        
         const targetSection = document.getElementById(`view-${viewName}`);
         if(targetSection) targetSection.classList.add('active');
-        
         const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'mypage': 'MY PAGE', 'prediction': 'PREDICTION' };
         document.getElementById('pageTitle').textContent = titles[viewName] || 'TENNIS CHRONICLES';
     }
 
-    function manualReload() {
-        location.reload();
-    }
+    function manualReload() { location.reload(); }
 
     // --- SLOT GAME LOGIC ---
     const slotSymbols = ['🍒', '🔔', '💎', '7️⃣', '❌', '🌙'];
     let isSpinning = false;
+    let sessionSlotNet = 0; 
     
     function openSlotGame() {
         document.getElementById('slotGameModal').style.display = 'flex';
         resetSlot();
+        sessionSlotNet = 0; 
     }
     
     function closeSlotGame(e) {
         if(e.target.id === 'slotGameModal' || e.target.className === 'close-btn') {
-            if(!isSpinning) document.getElementById('slotGameModal').style.display = 'none';
+            if(!isSpinning) {
+                document.getElementById('slotGameModal').style.display = 'none';
+                if(sessionSlotNet !== 0) {
+                    sendCoinTransaction(currentUser.name, sessionSlotNet, "Slot Session");
+                    showToast(`SESSION CLOSED: ${sessionSlotNet > 0 ? '+' : ''}${sessionSlotNet}`);
+                }
+            }
         }
     }
     
@@ -1350,8 +1191,30 @@
         if(isSpinning) return;
         
         if(!spendCoins(100)) {
-            return; // Not enough coins
+            return; 
         }
+        
+        // We handle spending visually here, and via transaction send in spendCoins.
+        // wait, spendCoins already sends transaction.
+        // For slots we wanted session based.
+        // Let's modify logic: spinSlot handles local decrements, closeSlotGame sends bulk.
+        // Revert spendCoins call above? No, spendCoins logic is generic.
+        // Let's do manual check for slots to keep spendCoins for instant purchases.
+        
+        // Manual check for Slot Session Mode
+        const name = currentUser ? currentUser.name : null;
+        if (!name) { showToast("Login Required"); return; }
+        const current = getUserCoins(name);
+        
+        // Note: getUserCoins fetches from globalCoinBalances.
+        // We need to update globalCoinBalances locally to reflect session state.
+        
+        if(current < 100) { showToast("Not enough coins"); return; }
+
+        if (!globalCoinBalances[name]) globalCoinBalances[name] = 0;
+        globalCoinBalances[name] -= 100;
+        sessionSlotNet -= 100;
+        updateUserDisplay();
         
         isSpinning = true;
         const btn = document.getElementById('spinBtn');
@@ -1361,22 +1224,17 @@
         const reels = ['reel1', 'reel2', 'reel3'];
         const results = [];
         
-        // Spin animation
         reels.forEach((id, index) => {
             const el = document.getElementById(id);
             el.classList.add('spinning');
             
-            // Random rolling
             const interval = setInterval(() => {
                 el.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
             }, 100);
             
-            // Stop delay (staggered)
             setTimeout(() => {
                 clearInterval(interval);
                 el.classList.remove('spinning');
-                // Determine final symbol (weighted random could be implemented here)
-                // For now simple random
                 const finalSymbol = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
                 el.textContent = finalSymbol;
                 results.push(finalSymbol);
@@ -1396,22 +1254,18 @@
         let reward = 0;
         let msg = "NO LUCK...";
         
-        if (r1 === '7️⃣' && r2 === '7️⃣' && r3 === '7️⃣') {
-            reward = 7777; msg = "JACKPOT!!!";
-        } else if (r1 === '💎' && r2 === '💎' && r3 === '💎') {
-            reward = 1000; msg = "BIG WIN!!";
-        } else if (r1 === '🔔' && r2 === '🔔' && r3 === '🔔') {
-            reward = 500; msg = "NICE WIN!";
-        } else if (r1 === '🍒' && r2 === '🍒' && r3 === '🍒') {
-            reward = 300; msg = "SMALL WIN";
-        } else if (r1 === '7️⃣' || r2 === '7️⃣' || r3 === '7️⃣') {
-            reward = 50; msg = "REPLAY (7)";
-        }
+        if (r1 === '7️⃣' && r2 === '7️⃣' && r3 === '7️⃣') { reward = 7777; msg = "JACKPOT!!!"; } 
+        else if (r1 === '💎' && r2 === '💎' && r3 === '💎') { reward = 1000; msg = "BIG WIN!!"; } 
+        else if (r1 === '🔔' && r2 === '🔔' && r3 === '🔔') { reward = 500; msg = "NICE WIN!"; } 
+        else if (r1 === '🍒' && r2 === '🍒' && r3 === '🍒') { reward = 300; msg = "SMALL WIN"; } 
+        else if (r1 === '7️⃣' || r2 === '7️⃣' || r3 === '7️⃣') { reward = 50; msg = "REPLAY (7)"; }
         
         document.getElementById('slotMsg').textContent = msg + (reward > 0 ? ` +${reward}` : "");
         
         if (reward > 0) {
-            sendCoinTransaction(currentUser.name, reward, "Slot Win");
+            globalCoinBalances[currentUser.name] += reward;
+            sessionSlotNet += reward;
+            updateUserDisplay();
             if (reward >= 1000) showToast("🎰 " + msg + " 🎰");
         }
     }
@@ -1430,7 +1284,49 @@
                 el.value = "-";
             });
         });
-        if (!loadState()) { /* updateSchedule('r1'); updateSchedule('r2'); */ } // Schedule update removed from loadState to prevent error if undefined
+        if (!loadState()) { /* updateSchedule('r1'); updateSchedule('r2'); */ } 
+    }
+    
+    // updateSchedule function added back
+    function updateSchedule(rp) {
+        const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
+        updatePlayerOptions(rp);
+        const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
+        const currentScores = [];
+        const oldTbody = document.getElementById(`${rp}_matchTableBody`);
+        if (oldTbody) {
+            for (let i = 0; i < oldTbody.rows.length; i++) {
+                const sA = oldTbody.rows[i].querySelector('select[data-type="scoreA"]');
+                const sB = oldTbody.rows[i].querySelector('select[data-type="scoreB"]');
+                currentScores.push({ a: sA ? sA.value : "-", b: sB ? sB.value : "-" });
+            }
+        }
+        const tb = document.getElementById(`${rp}_matchTableBody`); tb.innerHTML = "";
+        patterns.forEach((pat, idx) => {
+            const row = document.createElement("tr");
+            row.dataset.pA1=pl[pat[0]]; row.dataset.pA2=pl[pat[1]]; row.dataset.pB1=pl[pat[2]]; row.dataset.pB2=pl[pat[3]];
+            const cNo = document.createElement("td"); cNo.textContent=`MATCH ${idx+1}`; row.appendChild(cNo);
+            const cTA = document.createElement("td"); cTA.textContent=`${pl[pat[0]]} & ${pl[pat[1]]}`; row.appendChild(cTA);
+            const cSA = document.createElement("td"); cSA.className="score-cell";
+            const sA = createScoreSelect(); sA.setAttribute('data-type','scoreA'); 
+            if(currentScores[idx]) sA.value = currentScores[idx].a;
+            cSA.appendChild(sA); row.appendChild(cSA);
+            const probA = getWinProbability(pl[pat[0]], pl[pat[1]]);
+            const cVs = document.createElement("td"); cVs.className="vs"; 
+            cVs.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; width:100%;"><div style="font-size:0.6rem; color:#aaa; margin-bottom:2px;">WIN PROBABILITY</div><div style="display:flex; width:80%; height:4px; background:#333; border-radius:2px; overflow:hidden;"><div style="width:${probA}%; background:#00ffff; box-shadow:0 0 5px #00ffff;"></div><div style="width:${100-probA}%; background:#555;"></div></div><div style="display:flex; justify-content:space-between; width:80%; font-size:0.6rem; margin-top:2px;"><span style="color:#00ffff;">${probA}%</span><span style="color:#888;">${100-probA}%</span></div></div>`;
+            row.appendChild(cVs);
+            const cSB = document.createElement("td"); cSB.className="score-cell";
+            const sB = createScoreSelect(); sB.setAttribute('data-type','scoreB'); 
+            if(currentScores[idx]) sB.value = currentScores[idx].b;
+            cSB.appendChild(sB); row.appendChild(cSB);
+            const cTB = document.createElement("td"); cTB.textContent=`${pl[pat[2]]} & ${pl[pat[3]]}`; row.appendChild(cTB);
+            const cR = document.createElement("td"); cR.className="rest-highlight"; cR.textContent=pl[pat[4]]; row.appendChild(cR);
+            sA.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
+            sB.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
+            tb.appendChild(row);
+            checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
+        });
+        updateInputRanking(rp); saveState();
     }
 
     function toggleEditMode() {
@@ -1472,7 +1368,8 @@
             document.querySelectorAll('.score-select').forEach(s => s.value = "-"); 
             document.getElementById('courtSelect').value = "-";
             localStorage.removeItem(STORAGE_KEY);
-            // updateSchedule removed
+            // updateSchedule calls removed as they are now static or handled differently
+            updateSchedule('r1'); updateSchedule('r2'); // Restored call
             showToast("RESET DONE");
         }
     }
@@ -1493,47 +1390,6 @@
             if (iA > iB) { cTA.classList.add("winner"); cSA.classList.add("winner"); cTB.classList.add("loser"); cSB.classList.add("loser"); }
             else if (iB > iA) { cTB.classList.add("winner"); cSB.classList.add("winner"); cTA.classList.add("loser"); cSA.classList.add("loser"); }
         }
-        updateInputRanking(rp); saveState();
-    }
-
-    function updateSchedule(rp) {
-        const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
-        updatePlayerOptions(rp);
-        const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
-        const currentScores = [];
-        const oldTbody = document.getElementById(`${rp}_matchTableBody`);
-        if (oldTbody) {
-            for (let i = 0; i < oldTbody.rows.length; i++) {
-                const sA = oldTbody.rows[i].querySelector('select[data-type="scoreA"]');
-                const sB = oldTbody.rows[i].querySelector('select[data-type="scoreB"]');
-                currentScores.push({ a: sA ? sA.value : "-", b: sB ? sB.value : "-" });
-            }
-        }
-        const tb = document.getElementById(`${rp}_matchTableBody`); tb.innerHTML = "";
-        patterns.forEach((pat, idx) => {
-            const row = document.createElement("tr");
-            row.dataset.pA1=pl[pat[0]]; row.dataset.pA2=pl[pat[1]]; row.dataset.pB1=pl[pat[2]]; row.dataset.pB2=pl[pat[3]];
-            const cNo = document.createElement("td"); cNo.textContent=`MATCH ${idx+1}`; row.appendChild(cNo);
-            const cTA = document.createElement("td"); cTA.textContent=`${pl[pat[0]]} & ${pl[pat[1]]}`; row.appendChild(cTA);
-            const cSA = document.createElement("td"); cSA.className="score-cell";
-            const sA = createScoreSelect(); sA.setAttribute('data-type','scoreA'); 
-            if(currentScores[idx]) sA.value = currentScores[idx].a;
-            cSA.appendChild(sA); row.appendChild(cSA);
-            const probA = getWinProbability(pl[pat[0]], pl[pat[1]]);
-            const cVs = document.createElement("td"); cVs.className="vs"; 
-            cVs.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; width:100%;"><div style="font-size:0.6rem; color:#aaa; margin-bottom:2px;">WIN PROBABILITY</div><div style="display:flex; width:80%; height:4px; background:#333; border-radius:2px; overflow:hidden;"><div style="width:${probA}%; background:#00ffff; box-shadow:0 0 5px #00ffff;"></div><div style="width:${100-probA}%; background:#555;"></div></div><div style="display:flex; justify-content:space-between; width:80%; font-size:0.6rem; margin-top:2px;"><span style="color:#00ffff;">${probA}%</span><span style="color:#888;">${100-probA}%</span></div></div>`;
-            row.appendChild(cVs);
-            const cSB = document.createElement("td"); cSB.className="score-cell";
-            const sB = createScoreSelect(); sB.setAttribute('data-type','scoreB'); 
-            if(currentScores[idx]) sB.value = currentScores[idx].b;
-            cSB.appendChild(sB); row.appendChild(cSB);
-            const cTB = document.createElement("td"); cTB.textContent=`${pl[pat[2]]} & ${pl[pat[3]]}`; row.appendChild(cTB);
-            const cR = document.createElement("td"); cR.className="rest-highlight"; cR.textContent=pl[pat[4]]; row.appendChild(cR);
-            sA.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
-            sB.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
-            tb.appendChild(row);
-            checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
-        });
         updateInputRanking(rp); saveState();
     }
 
@@ -1713,8 +1569,8 @@
         }).then(() => { 
             const msg = mode === "setup" ? "PREDICTION SETUP SENT" : "RESULTS SENT";
             showToast(msg); 
-            if(mode === 'setup') fetchPredictionData();
-            else fetchAnalysisData();
+            // if(mode === 'setup') fetchPredictionData();
+            if (mode !== 'setup') fetchAnalysisData();
         })
         .catch(e => { console.error(e); showToast("FAILED"); })
         .finally(() => { 
@@ -1865,6 +1721,7 @@
         renderAnalysisPairs(pairStats);
         renderAnalysisLogs(logs);
         renderAnalysisChart(sortedP);
+        if(currentSector === 'ALL') { updateSchedule('r1'); updateSchedule('r2'); }
         
         // Refresh MyPage if active
         if(document.getElementById('view-mypage').classList.contains('active')) {
