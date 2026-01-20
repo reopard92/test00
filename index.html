@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 93</title>
+    <title>CODE NAME: 94</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -835,45 +835,61 @@
 
     // --- INITIALIZATION ---
     window.onload = function() {
-        initAuth(); // Local storage auth (for name)
-        initSelectors();
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
-        
-        fetchAnalysisData(); // Main Stats from GAS
-        
-        // Restore last view from sessionStorage
-        const lastView = sessionStorage.getItem('lastView');
-        if (lastView) {
-            switchMainView(lastView);
-        } else {
-            switchMainView('top'); 
-        }
-
+        // Failsafe: Force hide loading screen after 4 seconds
         setTimeout(() => {
-            document.getElementById('loadingScreen').style.opacity = 0;
-            setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
-        }, 1000);
-        
-        // Swipe Logic
-        let touchStartX = 0;
-        document.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
+            const ls = document.getElementById('loadingScreen');
+            if (ls && ls.style.display !== 'none') {
+                ls.style.opacity = 0;
+                setTimeout(() => { ls.style.display = 'none'; }, 500);
+                console.warn("Loading screen forcibly removed by failsafe.");
+            }
+        }, 4000);
 
-        document.addEventListener('touchend', e => {
-            const touchEndX = e.changedTouches[0].screenX;
-            if(touchStartX > window.innerWidth - 100 && touchStartX - touchEndX > 50) {
-                document.getElementById('sideMenu').classList.add('open');
-                updateSideMenuActiveState();
+        try {
+            initAuth(); 
+            initSelectors();
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
+            
+            fetchAnalysisData(); 
+            
+            // Restore last view from sessionStorage
+            const lastView = sessionStorage.getItem('lastView');
+            if (lastView) {
+                switchMainView(lastView);
+            } else {
+                switchMainView('top'); 
             }
-            if(touchEndX - touchStartX > 50) {
-                document.getElementById('sideMenu').classList.remove('open');
-            }
-        }, {passive: true});
+
+            // Normal loading removal
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.opacity = 0;
+                setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
+            }, 1000);
+            
+            // Swipe Logic
+            let touchStartX = 0;
+            document.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, {passive: true});
+
+            document.addEventListener('touchend', e => {
+                const touchEndX = e.changedTouches[0].screenX;
+                if(touchStartX > window.innerWidth - 100 && touchStartX - touchEndX > 50) {
+                    document.getElementById('sideMenu').classList.add('open');
+                    updateSideMenuActiveState();
+                }
+                if(touchEndX - touchStartX > 50) {
+                    document.getElementById('sideMenu').classList.remove('open');
+                }
+            }, {passive: true});
+        } catch (e) {
+            console.error("Initialization Error:", e);
+            showToast("INIT ERROR: " + e.message);
+        }
     };
 
     // --- COIN LOGIC (FIREBASE) ---
@@ -956,7 +972,6 @@
 
 
     // --- AUTHENTICATION LOGIC ---
-    // JSONP callback needs to be global window property
     window.onAuthDataLoaded = function(json) {
         const pass = document.getElementById('loginPassInput').value;
         const btn = document.querySelector('.btn-login');
@@ -1447,10 +1462,10 @@
         });
         if (!loadState()) { updateSchedule('r1'); updateSchedule('r2'); } 
     }
-
-    window.updateSchedule = function(rp) {
+    
+    // updateSchedule function added back
+    function updateSchedule(rp) {
         const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
-        updatePlayerOptions(rp);
         const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
         const currentScores = [];
         const oldTbody = document.getElementById(`${rp}_matchTableBody`);
@@ -1528,7 +1543,8 @@
             document.querySelectorAll('.score-select').forEach(s => s.value = "-"); 
             document.getElementById('courtSelect').value = "-";
             localStorage.removeItem(STORAGE_KEY);
-            // updateSchedule removed
+            // updateSchedule calls removed as they are now static or handled differently
+            updateSchedule('r1'); updateSchedule('r2'); // Restored call
             showToast("RESET DONE");
         }
     }
@@ -1549,47 +1565,6 @@
             if (iA > iB) { cTA.classList.add("winner"); cSA.classList.add("winner"); cTB.classList.add("loser"); cSB.classList.add("loser"); }
             else if (iB > iA) { cTB.classList.add("winner"); cSB.classList.add("winner"); cTA.classList.add("loser"); cSA.classList.add("loser"); }
         }
-        updateInputRanking(rp); saveState();
-    }
-
-    window.updateSchedule = function(rp) {
-        const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
-        updatePlayerOptions(rp);
-        const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
-        const currentScores = [];
-        const oldTbody = document.getElementById(`${rp}_matchTableBody`);
-        if (oldTbody) {
-            for (let i = 0; i < oldTbody.rows.length; i++) {
-                const sA = oldTbody.rows[i].querySelector('select[data-type="scoreA"]');
-                const sB = oldTbody.rows[i].querySelector('select[data-type="scoreB"]');
-                currentScores.push({ a: sA ? sA.value : "-", b: sB ? sB.value : "-" });
-            }
-        }
-        const tb = document.getElementById(`${rp}_matchTableBody`); tb.innerHTML = "";
-        patterns.forEach((pat, idx) => {
-            const row = document.createElement("tr");
-            row.dataset.pA1=pl[pat[0]]; row.dataset.pA2=pl[pat[1]]; row.dataset.pB1=pl[pat[2]]; row.dataset.pB2=pl[pat[3]];
-            const cNo = document.createElement("td"); cNo.textContent=`MATCH ${idx+1}`; row.appendChild(cNo);
-            const cTA = document.createElement("td"); cTA.textContent=`${pl[pat[0]]} & ${pl[pat[1]]}`; row.appendChild(cTA);
-            const cSA = document.createElement("td"); cSA.className="score-cell";
-            const sA = createScoreSelect(); sA.setAttribute('data-type','scoreA'); 
-            if(currentScores[idx]) sA.value = currentScores[idx].a;
-            cSA.appendChild(sA); row.appendChild(cSA);
-            const probA = getWinProbability(pl[pat[0]], pl[pat[1]]);
-            const cVs = document.createElement("td"); cVs.className="vs"; 
-            cVs.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; width:100%;"><div style="font-size:0.6rem; color:#aaa; margin-bottom:2px;">WIN PROBABILITY</div><div style="display:flex; width:80%; height:4px; background:#333; border-radius:2px; overflow:hidden;"><div style="width:${probA}%; background:#00ffff; box-shadow:0 0 5px #00ffff;"></div><div style="width:${100-probA}%; background:#555;"></div></div><div style="display:flex; justify-content:space-between; width:80%; font-size:0.6rem; margin-top:2px;"><span style="color:#00ffff;">${probA}%</span><span style="color:#888;">${100-probA}%</span></div></div>`;
-            row.appendChild(cVs);
-            const cSB = document.createElement("td"); cSB.className="score-cell";
-            const sB = createScoreSelect(); sB.setAttribute('data-type','scoreB'); 
-            if(currentScores[idx]) sB.value = currentScores[idx].b;
-            cSB.appendChild(sB); row.appendChild(cSB);
-            const cTB = document.createElement("td"); cTB.textContent=`${pl[pat[2]]} & ${pl[pat[3]]}`; row.appendChild(cTB);
-            const cR = document.createElement("td"); cR.className="rest-highlight"; cR.textContent=pl[pat[4]]; row.appendChild(cR);
-            sA.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
-            sB.onchange = () => checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
-            tb.appendChild(row);
-            checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
-        });
         updateInputRanking(rp); saveState();
     }
 
@@ -1921,6 +1896,10 @@
         renderAnalysisPairs(pairStats);
         renderAnalysisLogs(logs);
         renderAnalysisChart(sortedP);
+        if(currentSector === 'ALL') { 
+            // Removed updateSchedule() call from here as it is static now
+            // But we need to make sure updateSchedule is defined if used elsewhere
+        }
         
         // Refresh MyPage if active
         if(document.getElementById('view-mypage').classList.contains('active')) {
