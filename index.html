@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 86</title>
+    <title>CODE NAME: 88</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -759,6 +759,7 @@
 
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtWaBkvdPNzkN1_7lmFRnAQLbnu6A40YUQdbzX6gTfIY5CznZs13GYxZw/exec";
     const TOTO_GAS_URL = "https://script.google.com/macros/s/AKfycbz75QnaA4ex2Fm0Kr2li3zFebZZ2dANV4r21D6ZcSBmtT_aqr6K5bt6aYeaPylNiFMQhg/exec";
+    const COIN_MANAGER_URL = "https://script.google.com/macros/s/AKfycbyMTW3WIJmSDQUmGq6GDVAz0AkKIaghNcFf5mEsfS4skWJM2YTTh65Pt85vVnJqwklq/exec";
     
     // Auth Sheet Info
     const AUTH_SHEET_ID = '18J_8wm-Qc3yRV-eEwdtB_55CYOAsVGy26AIU7aCvSQw';
@@ -789,6 +790,7 @@
     let currentSector = 'ALL';
     
     let currentUser = null;
+    let globalCoinBalances = {};
 
     // PREDICTION STATE
     let currentPredictionRound = 1;
@@ -809,7 +811,7 @@
         
         fetchAnalysisData(); 
         fetchPredictionData(); 
-        // fetchScheduleData() removed - Handled in external app
+        fetchCoinData(); // Fetch Coins from Spreadsheet
         
         // Restore last view from sessionStorage
         const lastView = sessionStorage.getItem('lastView');
@@ -842,6 +844,32 @@
         }, {passive: true});
     };
 
+    // --- COIN LOGIC ---
+    async function fetchCoinData() {
+        try {
+            const res = await fetch(COIN_MANAGER_URL);
+            const json = await res.json();
+            globalCoinBalances = json;
+            updateUserDisplay(); 
+            if(document.getElementById('view-mypage').classList.contains('active')) renderMyPage();
+        } catch(e) { console.error("Coin Fetch Error", e); }
+    }
+
+    function sendCoinTransaction(name, amount, reason) {
+        if (!globalCoinBalances[name]) globalCoinBalances[name] = 0;
+        globalCoinBalances[name] += amount;
+        updateUserDisplay();
+        
+        fetch(COIN_MANAGER_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, amount: amount, reason: reason })
+        }).then(() => {
+            console.log("Transaction sent");
+        }).catch(e => console.error("Transaction failed", e));
+    }
+
     // --- SHOP LOGIC ---
     let holdTimer = null;
     const holdDuration = 1500; // 1.5s
@@ -860,7 +888,9 @@
     function completePurchase(btn) {
         clearTimeout(holdTimer);
         btn.classList.remove('holding');
-        showToast("TRANSACTION COMPLETE");
+        if(spendCoins(10000)) { // 10000 coin item
+             showToast("TRANSACTION COMPLETE");
+        }
     }
 
     function openShop() { document.getElementById('shopModal').style.display = 'flex'; }
@@ -918,11 +948,8 @@
         if (playerStatsGlobal && playerStatsGlobal[name]) {
             statsCoins = playerStatsGlobal[name].games * 100;
         }
-        const bonusKey = `bonus_coins_${name}`;
-        const bonusCoins = parseInt(localStorage.getItem(bonusKey) || 0);
-        const spentKey = `spent_coins_${name}`;
-        const spentCoins = parseInt(localStorage.getItem(spentKey) || 0);
-        return Math.max(0, statsCoins + bonusCoins - spentCoins);
+        let variableCoins = globalCoinBalances[name] || 0;
+        return Math.max(0, statsCoins + variableCoins);
     }
     
     function spendCoins(amount) {
@@ -933,10 +960,8 @@
             showToast("コインが不足しています");
             return false;
         }
-        const spentKey = `spent_coins_${name}`;
-        const spentTotal = parseInt(localStorage.getItem(spentKey) || 0);
-        localStorage.setItem(spentKey, spentTotal + amount);
-        updateUserDisplay();
+        
+        sendCoinTransaction(name, -amount, "Shop/Bet");
         return true;
     }
 
@@ -987,13 +1012,9 @@
         
         if (lastDate === today) { showToast("本日は既に受取済みです"); return; }
         
-        const bonusKey = `bonus_coins_${name}`;
-        const currentBonus = parseInt(localStorage.getItem(bonusKey) || 0);
-        localStorage.setItem(bonusKey, currentBonus + 500);
+        sendCoinTransaction(name, 500, "Daily Bonus");
         localStorage.setItem(lastBonusKey, today);
         showToast("デイリーボーナス 500コイン GET!");
-        updateUserDisplay();
-        renderMyPage();
         checkDailyBonusState();
     }
 
@@ -1321,13 +1342,12 @@
         }
         const rewardPerWin = 500; const totalReward = correctCount * rewardPerWin;
         const bonus = (correctCount === 5) ? 1000 : 0; const finalReward = totalReward + bonus;
-        const bonusKey = `bonus_coins_${currentUser.name}`;
-        const currentBonus = parseInt(localStorage.getItem(bonusKey) || 0);
-        localStorage.setItem(bonusKey, currentBonus + finalReward);
+        
+        sendCoinTransaction(currentUser.name, finalReward, "Prediction Reward");
         localStorage.setItem(claimKey, "true");
         let msg = `${correctCount}問正解！\n報酬: ${totalReward}コイン`;
         if (bonus > 0) msg += `\nパーフェクトボーナス: +${bonus}コイン！`;
-        alert(msg); updateUserDisplay();
+        alert(msg);
     }
 
     // ================== INPUT & ANALYSIS LOGIC ==================
@@ -1343,7 +1363,7 @@
                 el.value = "-";
             });
         });
-        if (!loadState()) { updateSchedule('r1'); updateSchedule('r2'); }
+        if (!loadState()) { /* Schedule not loaded here anymore */ }
     }
 
     function toggleEditMode() {
@@ -1385,33 +1405,13 @@
             document.querySelectorAll('.score-select').forEach(s => s.value = "-"); 
             document.getElementById('courtSelect').value = "-";
             localStorage.removeItem(STORAGE_KEY);
-            updateSchedule('r1'); updateSchedule('r2');
+            // updateSchedule calls removed as they are now static or handled differently
             showToast("RESET DONE");
         }
     }
 
-    function updatePlayerOptions(rp) {
-        const selects = []; for(let i=1; i<=5; i++) selects.push(document.getElementById(`${rp}_p${i}`));
-        const vals = selects.map(s => s.value).filter(v => v !== "-");
-        selects.forEach(s => { s.querySelectorAll('option').forEach(o => { if (o.value === "-") return; o.disabled = (vals.includes(o.value) && s.value !== o.value); }); });
-    }
-
-    function checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp) {
-        const vA = sA.value; const vB = sB.value;
-        if (vA !== "-") sA.classList.add("filled"); else sA.classList.remove("filled");
-        if (vB !== "-") sB.classList.add("filled"); else sB.classList.remove("filled");
-        [cTA, cSA, cSB, cTB].forEach(c => c.classList.remove("winner", "loser"));
-        if (vA !== "-" && vB !== "-") {
-            const iA = parseInt(vA); const iB = parseInt(vB);
-            if (iA > iB) { cTA.classList.add("winner"); cSA.classList.add("winner"); cTB.classList.add("loser"); cSB.classList.add("loser"); }
-            else if (iB > iA) { cTB.classList.add("winner"); cSB.classList.add("winner"); cTA.classList.add("loser"); cSA.classList.add("loser"); }
-        }
-        updateInputRanking(rp); saveState();
-    }
-
     function updateSchedule(rp) {
         const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
-        updatePlayerOptions(rp);
         const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
         const currentScores = [];
         const oldTbody = document.getElementById(`${rp}_matchTableBody`);
@@ -1447,6 +1447,19 @@
             tb.appendChild(row);
             checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp);
         });
+        updateInputRanking(rp); saveState();
+    }
+
+    function checkWinner(sA, sB, cTA, cSA, cSB, cTB, rp) {
+        const vA = sA.value; const vB = sB.value;
+        if (vA !== "-") sA.classList.add("filled"); else sA.classList.remove("filled");
+        if (vB !== "-") sB.classList.add("filled"); else sB.classList.remove("filled");
+        [cTA, cSA, cSB, cTB].forEach(c => c.classList.remove("winner", "loser"));
+        if (vA !== "-" && vB !== "-") {
+            const iA = parseInt(vA); const iB = parseInt(vB);
+            if (iA > iB) { cTA.classList.add("winner"); cSA.classList.add("winner"); cTB.classList.add("loser"); cSB.classList.add("loser"); }
+            else if (iB > iA) { cTB.classList.add("winner"); cSB.classList.add("winner"); cTA.classList.add("loser"); cSA.classList.add("loser"); }
+        }
         updateInputRanking(rp); saveState();
     }
 
@@ -1778,7 +1791,10 @@
         renderAnalysisPairs(pairStats);
         renderAnalysisLogs(logs);
         renderAnalysisChart(sortedP);
-        if(currentSector === 'ALL') { updateSchedule('r1'); updateSchedule('r2'); }
+        if(currentSector === 'ALL') { 
+            // Removed updateSchedule() call from here as it is static now
+            // But we need to make sure updateSchedule is defined if used elsewhere
+        }
         
         // Refresh MyPage if active
         if(document.getElementById('view-mypage').classList.contains('active')) {
@@ -1890,6 +1906,21 @@
     }
 
     function closeModal(e) { if(e.target.id==='playerModal'||e.target.className==='close-btn') document.getElementById('playerModal').style.display='none'; }
+    
+    // --- MAP LOGIC ---
+    const courtDatabase = {
+        "MOGUSA": { name: "百草テニスガーデン", address: "〒191-0033 東京都日野市百草878−1", tel: "042-591-1212", hours: "9:00～18:00", costStr: "¥4,500/h", costVal: 4500 },
+        "NERIMA": { name: "練馬ステップイン", address: "〒177-0035 東京都練馬区南田中1丁目15−22", tel: "03-3904-7051", hours: "9:00～21:30", costStr: "¥4,000/h", costVal: 4000 }
+    };
+    function renderMapInfo(val) {
+        const c = document.getElementById('mapContainer');
+        const data = courtDatabase[val];
+        if (!data) {
+            c.innerHTML = `<div class="empty-map-state"><div class="spinning" style="display:inline-block; margin-bottom:10px;">❖</div><br>WAITING FOR NAVI INPUT...</div>`;
+            return;
+        }
+        c.innerHTML = `<div class="info-card"><div class="info-row"><div class="info-label">SECTOR</div><div class="info-val" style="color:#00ffff; font-weight:bold;">${data.name}</div></div><div class="info-row"><div class="info-label">ADDRESS</div><div class="info-val">${data.address}</div></div><div class="info-row"><div class="info-label">TEL</div><div class="info-val">${data.tel}</div></div></div>`;
+    }
 </script>
 
 </body>
