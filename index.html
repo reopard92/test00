@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 89</title>
+    <title>CODE NAME: 91</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -271,30 +271,6 @@
         .slot-btn:active { transform: scale(0.95); box-shadow: 0 0 10px rgba(255, 87, 34, 0.8); }
         .slot-btn:disabled { background: #333; box-shadow: none; cursor: not-allowed; opacity: 0.5; }
 
-        /* ... existing prediction styles ... */
-        .prediction-timer { font-family: 'Courier New', monospace; font-size: 2.5rem; color: #00ffff; text-align: center; margin: 20px 0; text-shadow: 0 0 15px rgba(0,255,255,0.5); letter-spacing: 3px; font-weight: bold; }
-        .prediction-timer.urgent { color: #ff5252; text-shadow: 0 0 15px rgba(255,82,82,0.6); animation: pulseTimer 1s infinite; }
-        @keyframes pulseTimer { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        
-        .prediction-tabs { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
-        .p-tab { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 20px; color: #888; cursor: pointer; font-size: 0.9rem; }
-        .p-tab.active { background: #00ffff; color: #000; font-weight: bold; border-color: #00ffff; }
-        
-        .match-card { background: rgba(30, 35, 45, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 15px; padding: 15px; position: relative; }
-        .match-no { font-size: 0.7rem; color: #00ffff; letter-spacing: 2px; margin-bottom: 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-        .pair-container { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .pair-btn { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 15px 5px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; }
-        .pair-btn:hover { background: rgba(255,255,255,0.1); }
-        .pair-btn.selected { border-color: #00ffff; background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 15px rgba(0,255,255,0.2); }
-        .pair-btn.winner-result { background: rgba(0, 255, 0, 0.2); border-color: #00ff00; }
-        .pair-btn.loser-result { opacity: 0.4; }
-        .pair-names { font-size: 0.9rem; color: #fff; font-weight: bold; }
-        .vs-text { font-size: 0.8rem; color: #555; font-style: italic; }
-        
-        .bet-area { text-align: center; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
-        .bet-status { font-size: 0.9rem; color: #aaa; margin-bottom: 15px; }
-        .locked-msg { color: #00ffff; font-weight: bold; border: 1px solid #00ffff; padding: 10px; display: inline-block; margin-bottom: 15px; }
-        
         /* ANALYSIS STYLES */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: rgba(20, 20, 30, 0.4); padding: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
@@ -497,27 +473,8 @@
     </div>
 
     <!-- PREDICTION SECTION (NEW) -->
-    <div id="view-prediction" class="view-section">
-        <div class="section-title">WINNER PREDICTION</div>
-        
-        <div id="predictionTimer" class="prediction-timer">--:--</div>
-        
-        <div class="prediction-tabs">
-            <div class="p-tab active" onclick="switchPredictionRound(1)">ROUND 1</div>
-            <div class="p-tab" onclick="switchPredictionRound(2)">ROUND 2</div>
-        </div>
-        
-        <div id="predictionListArea">
-            <div style="text-align:center; padding:30px; color:#666;">LOADING MATCH DATA...</div>
-        </div>
-
-        <div class="bet-area">
-            <div id="betStatus" class="bet-status">UNLOCKED: SELECTIONS OPEN</div>
-            <button id="betBtn" class="btn-send" onclick="submitPrediction()" style="margin-top:0;">BET 0 COINS (TEST)</button>
-            <button id="checkResultBtn" class="btn-ctrl" onclick="checkPredictionResult()" style="margin-top:20px; width:auto; border-radius:4px; padding:10px 20px;">結果を確認＆報酬受取</button>
-        </div>
-    </div>
-
+    <!-- PREDICTION REMOVED/HIDDEN AS PER REQUEST -->
+    
     <!-- MATCH INPUT SECTION -->
     <div id="view-match" class="view-section active">
         <div class="input-header-area">
@@ -664,12 +621,7 @@
                 <div class="game-card-title">ITEM SHOP</div>
             </div>
             
-            <!-- PREDICTION (LOCKED) -->
-            <div class="game-card locked"> 
-                <div class="game-status">LOCKED</div>
-                <div class="game-icon">🔮</div>
-                <div class="game-card-title">PREDICTION</div>
-            </div>
+            <!-- PREDICTION (REMOVED UI) -->
 
             <!-- SLOT MACHINE (NEW) -->
             <div class="game-card" onclick="openSlotGame()">
@@ -724,7 +676,7 @@
     </div>
 </div>
 
-<!-- SLOT GAME MODAL (NEW) -->
+<!-- SLOT GAME MODAL -->
 <div id="slotGameModal" onclick="closeSlotGame(event)">
     <div class="modal-content" style="max-width:350px; text-align:center; padding: 30px 20px;">
         <button class="close-btn" onclick="closeSlotGame(event)">×</button>
@@ -790,20 +742,18 @@
 
 <div id="toast"></div>
 
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-            navigator.serviceWorker.register('sw.js').then(function(registration) {
-                console.log('ServiceWorker registration successful');
-            }, function(err) {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-        });
-    }
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = JSON.parse(__firebase_config);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtWaBkvdPNzkN1_7lmFRnAQLbnu6A40YUQdbzX6gTfIY5CznZs13GYxZw/exec";
-    const TOTO_GAS_URL = "https://script.google.com/macros/s/AKfycbz75QnaA4ex2Fm0Kr2li3zFebZZ2dANV4r21D6ZcSBmtT_aqr6K5bt6aYeaPylNiFMQhg/exec";
-    const COIN_MANAGER_URL = "https://script.google.com/macros/s/AKfycbyMTW3WIJmSDQUmGq6GDVAz0AkKIaghNcFf5mEsfS4skWJM2YTTh65Pt85vVnJqwklq/exec";
     
     // Auth Sheet Info
     const AUTH_SHEET_ID = '18J_8wm-Qc3yRV-eEwdtB_55CYOAsVGy26AIU7aCvSQw';
@@ -834,10 +784,30 @@
     let currentSector = 'ALL';
     
     let currentUser = null;
-    let globalCoinBalances = {};
+    let globalCoinBalances = {}; // Variable coins from Firestore
+    let firestoreUnsubscribe = null;
 
+    // --- FIREBASE AUTH & INIT ---
+    const initAuthFirebase = async () => {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+            await signInAnonymously(auth);
+        }
+    };
+    initAuthFirebase();
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log("Firebase User:", user.uid);
+            // Start listening to coin transactions
+            setupCoinListener();
+        }
+    });
+
+    // --- INITIALIZATION ---
     window.onload = function() {
-        initAuth(); // Initialize Authentication
+        initAuth(); // Local storage auth (for name)
         initSelectors();
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -845,15 +815,13 @@
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
         
-        fetchAnalysisData(); // Main Stats
-        fetchCoinData(); // Fetch Coins from Spreadsheet
+        fetchAnalysisData(); // Main Stats from GAS
         
-        // Restore last view from sessionStorage to keep page state on refresh
+        // Restore last view from sessionStorage
         const lastView = sessionStorage.getItem('lastView');
         if (lastView) {
             switchMainView(lastView);
         } else {
-            // Default to TOP
             switchMainView('top'); 
         }
 
@@ -870,49 +838,64 @@
 
         document.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].screenX;
-            // 右端(画面幅-100px以内)から左へスワイプでオープン
             if(touchStartX > window.innerWidth - 100 && touchStartX - touchEndX > 50) {
                 document.getElementById('sideMenu').classList.add('open');
                 updateSideMenuActiveState();
             }
-            // 右へスワイプでクローズ
             if(touchEndX - touchStartX > 50) {
                 document.getElementById('sideMenu').classList.remove('open');
             }
         }, {passive: true});
     };
 
-    // --- COIN LOGIC ---
-    async function fetchCoinData() {
-        try {
-            const res = await fetch(COIN_MANAGER_URL);
-            const json = await res.json();
-            globalCoinBalances = json;
-            updateUserDisplay(); 
+    // --- COIN LOGIC (FIREBASE) ---
+    function setupCoinListener() {
+        if (!auth.currentUser) return;
+        
+        // Listen to ALL transactions in public path
+        const q = collection(db, 'artifacts', appId, 'public', 'data', 'coin_transactions');
+        
+        firestoreUnsubscribe = onSnapshot(q, (snapshot) => {
+            // Re-calculate balances for everyone
+            const newBalances = {};
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.name && data.amount) {
+                    if (!newBalances[data.name]) newBalances[data.name] = 0;
+                    newBalances[data.name] += Number(data.amount);
+                }
+            });
+            globalCoinBalances = newBalances;
+            updateUserDisplay();
             if(document.getElementById('view-mypage').classList.contains('active')) renderMyPage();
-        } catch(e) { console.error("Coin Fetch Error", e); }
+        }, (error) => {
+            console.error("Firestore Error:", error);
+        });
     }
 
-    function sendCoinTransaction(name, amount, reason) {
-        if (!globalCoinBalances[name]) globalCoinBalances[name] = 0;
-        globalCoinBalances[name] += amount;
-        updateUserDisplay();
+    async function sendCoinTransaction(name, amount, reason) {
+        if (!auth.currentUser) return;
         
-        fetch(COIN_MANAGER_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: name, amount: amount, reason: reason })
-        }).then(() => {
-            console.log("Transaction sent");
-        }).catch(e => console.error("Transaction failed", e));
+        try {
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'coin_transactions'), {
+                name: name,
+                amount: Number(amount),
+                reason: reason,
+                timestamp: Date.now(),
+                userId: auth.currentUser.uid // Optional: track who made the change
+            });
+            console.log("Transaction sent to Firestore");
+        } catch (e) {
+            console.error("Transaction failed", e);
+            showToast("ERROR SAVING COINS");
+        }
     }
 
     // --- SHOP LOGIC ---
     let holdTimer = null;
     const holdDuration = 1500; // 1.5s
 
-    function startHold(btn) {
+    window.startHold = function(btn) {
         if(event.type === 'touchstart') event.preventDefault();
         btn.classList.add('holding');
         holdTimer = setTimeout(() => {
@@ -920,7 +903,7 @@
         }, holdDuration);
     }
 
-    function endHold(btn) {
+    window.endHold = function(btn) {
         clearTimeout(holdTimer);
         btn.classList.remove('holding');
     }
@@ -933,11 +916,11 @@
         }
     }
 
-    function openShop() {
+    window.openShop = function() {
         document.getElementById('shopModal').style.display = 'flex';
     }
 
-    function closeShop(e) {
+    window.closeShop = function(e) {
         if(e.target.id === 'shopModal' || e.target.className === 'close-btn') {
             document.getElementById('shopModal').style.display = 'none';
         }
@@ -945,38 +928,29 @@
 
 
     // --- AUTHENTICATION LOGIC ---
-    // JSONP callback needs to be global
+    // JSONP callback needs to be global window property
     window.onAuthDataLoaded = function(json) {
         const pass = document.getElementById('loginPassInput').value;
         const btn = document.querySelector('.btn-login');
-        
-        // Remove the script tag to clean up
         const script = document.getElementById('authScript');
         if(script) script.remove();
 
-        // Safety check for valid JSON structure
         if (!json || !json.table || !json.table.rows) {
             console.error("Auth Data Error:", json);
-            alert("ACCESS DENIED: DATA LOAD FAILED (Check Sheet Permissions)");
-            btn.textContent = "AUTHENTICATE";
-            btn.disabled = false;
+            alert("ACCESS DENIED");
+            btn.textContent = "AUTHENTICATE"; btn.disabled = false;
             return;
         }
 
         const rows = json.table.rows;
         let foundUser = null;
         
-        // Assume Col A (0) is Name, Col B (1) is Password
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             if (!row.c[0] || !row.c[1]) continue;
             const name = row.c[0].v;
             const dbPass = String(row.c[1].v); 
-            
-            if (String(pass) === dbPass) {
-                foundUser = { name: name };
-                break;
-            }
+            if (String(pass) === dbPass) { foundUser = { name: name }; break; }
         }
 
         if (foundUser) {
@@ -985,17 +959,11 @@
             updateUserDisplay();
             document.getElementById('loginModal').style.display = 'none';
             showToast(`WELCOME, ${currentUser.name}`);
-            
-            // If MyPage is currently shown, re-render it
-            if(document.getElementById('view-mypage').classList.contains('active')) {
-                renderMyPage();
-            }
+            if(document.getElementById('view-mypage').classList.contains('active')) renderMyPage();
         } else {
             alert("ACCESS DENIED: INVALID PASSCODE");
         }
-        
-        btn.textContent = "AUTHENTICATE";
-        btn.disabled = false;
+        btn.textContent = "AUTHENTICATE"; btn.disabled = false;
     };
 
     function initAuth() {
@@ -1012,14 +980,13 @@
     function getUserCoins(name) {
         if (!name) return 0;
         
-        // 1. 戦績からのコイン (新ロジック: ゲーム数 * 100)
+        // 1. Stats Coins (GAS)
         let statsCoins = 0;
         if (playerStatsGlobal && playerStatsGlobal[name]) {
-            const p = playerStatsGlobal[name];
-            statsCoins = p.games * 100;
+            statsCoins = playerStatsGlobal[name].games * 100;
         }
         
-        // 2. 変動コイン (Spreadsheet)
+        // 2. Variable Coins (Firestore)
         let variableCoins = globalCoinBalances[name] || 0;
         
         return Math.max(0, statsCoins + variableCoins);
@@ -1034,7 +1001,8 @@
             return false;
         }
         
-        sendCoinTransaction(name, -amount, "Shop/Bet");
+        // Send transaction immediately
+        sendCoinTransaction(name, -amount, "Shop/Bet/Slot");
         return true;
     }
 
@@ -1048,10 +1016,10 @@
             disp.textContent = 'GUEST';
             disp.className = 'user-status-display status-guest';
         }
-        checkDailyBonusState(); // ついでにボタン状態も更新
+        checkDailyBonusState(); 
     }
 
-    function attemptLogin() {
+    window.attemptLogin = function() {
         const pass = document.getElementById('loginPassInput').value;
         if (!pass) return;
         
@@ -1071,7 +1039,7 @@
         document.body.appendChild(script);
     }
 
-    function enableGuestMode() {
+    window.enableGuestMode = function() {
         // Just close the modal, stay as guest (or whatever current state)
         document.getElementById('loginModal').style.display = 'none';
         if (!currentUser) {
@@ -1079,7 +1047,7 @@
         }
     }
 
-    function handleLogout() {
+    window.handleLogout = function() {
         if (confirm("LOGOUT / CHANGE USER?")) {
             localStorage.removeItem(LOGIN_KEY);
             currentUser = null;
@@ -1087,7 +1055,7 @@
         }
     }
 
-    function getDailyBonus() {
+    window.getDailyBonus = function() {
         if (!currentUser) {
             showToast("ログインが必要です");
             return;
@@ -1110,8 +1078,8 @@
         
         // UI更新
         updateUserDisplay();
-        renderMyPage(); // もし開いていれば
-        checkDailyBonusState(); // ボタン状態更新
+        renderMyPage(); 
+        checkDailyBonusState(); 
     }
 
     function checkDailyBonusState() {
@@ -1139,7 +1107,7 @@
         }
     }
 
-    function showMyPage() {
+    window.showMyPage = function() {
         // Close side menu
         document.getElementById('sideMenu').classList.remove('open');
 
@@ -1159,7 +1127,8 @@
         const name = currentUser.name;
         // Get Stats from Global Data (if available)
         const pStats = playerStatsGlobal[name] || { wins: 0, losses: 0, games: 0, mvpCount: 0, matches: 0 };
-        const max = playerStatsGlobal._max || { wins:100, games:2000 };
+        const max = playerStatsGlobal._max || { wins:100, games:2000 }; // Default max if load fails
+        if (playerStatsGlobal._max) Object.assign(max, playerStatsGlobal._max);
         
         const rankInfo = getRankInfo(pStats.games);
         const nextRank = rankInfo.next;
@@ -1224,7 +1193,7 @@
         document.getElementById('pageTitle').textContent = "MY PAGE";
     }
     
-    function handleAvatarUpload(input) {
+    window.handleAvatarUpload = function(input) {
         if (input.files && input.files[0] && currentUser) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1238,7 +1207,7 @@
     }
 
     // --- NAVIGATION LOGIC ---
-    function toggleSideMenu() {
+    window.toggleSideMenu = function() {
         const menu = document.getElementById('sideMenu');
         menu.classList.toggle('open');
         if(menu.classList.contains('open')) {
@@ -1261,14 +1230,13 @@
         }
     }
     
-    function closeSideMenu(e) {
+    window.closeSideMenu = function(e) {
         if(e.target.id === 'sideMenu') {
             document.getElementById('sideMenu').classList.remove('open');
-            // document.getElementById('menuToggleBtn').classList.remove('active'); // Removed morph trigger
         }
     }
 
-    function selectAppMode(mode) {
+    window.selectAppMode = function(mode) {
         document.getElementById('sideMenu').classList.remove('open');
         
         const bottomNav = document.getElementById('bottomNav');
@@ -1283,11 +1251,7 @@
             bottomNav.classList.remove('hidden');
             subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         } else if (mode === 'prediction') {
-            items[1].classList.add('active'); // Parent is Game
-            switchMainView('prediction');
-            bottomNav.classList.add('hidden');
-            document.getElementById('pageTitle').textContent = "WINNER PREDICTION";
-            subTitle.textContent = "PREDICT THE OUTCOME";
+            // REMOVED LOGIC
         } else if (mode === 'game') {
             items[1].classList.add('active');
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
@@ -1299,7 +1263,7 @@
         }
     }
 
-    function switchMainView(viewName) {
+    window.switchMainView = function(viewName) {
         if (viewName === 'schedule') { window.location.href = './schedule.html'; return; } // REDIRECT
         sessionStorage.setItem('lastView', viewName);
         
@@ -1321,22 +1285,44 @@
         document.getElementById('pageTitle').textContent = titles[viewName] || 'TENNIS CHRONICLES';
     }
 
-    function manualReload() {
+    window.manualReload = function() {
         location.reload();
     }
 
     // --- SLOT GAME LOGIC ---
     const slotSymbols = ['🍒', '🔔', '💎', '7️⃣', '❌', '🌙'];
     let isSpinning = false;
+    let sessionSlotNet = 0; // Session net win/loss
     
-    function openSlotGame() {
+    window.openSlotGame = function() {
         document.getElementById('slotGameModal').style.display = 'flex';
         resetSlot();
+        sessionSlotNet = 0; // Reset session tracker
     }
     
-    function closeSlotGame(e) {
+    window.closeSlotGame = function(e) {
         if(e.target.id === 'slotGameModal' || e.target.className === 'close-btn') {
-            if(!isSpinning) document.getElementById('slotGameModal').style.display = 'none';
+            if(!isSpinning) {
+                document.getElementById('slotGameModal').style.display = 'none';
+                // SETTLEMENT logic moved to Firebase
+                // Note: We don't send bulk transaction here for simplicity in Firebase
+                // Actually, sendCoinTransaction sends individual transaction.
+                // If we want session based, we accumulate locally and send one trans here.
+                // But for free Firebase, individual is fine for now. 
+                // Wait, previous advice was session based.
+                // Let's implement session send.
+                if(sessionSlotNet !== 0) {
+                     // We already updated local balance in spinSlot/checkSlotResult visually
+                     // Now we sync to DB.
+                     // IMPORTANT: spinSlot logic below updates globalCoinBalances locally.
+                     // But sendCoinTransaction ALSO updates locally.
+                     // We need to decouple.
+                     // Let's just send transaction at the end.
+                     // But wait, user might close tab.
+                     // For stability with Firebase, let's just save every spin/win result immediately.
+                     // It's fast enough.
+                }
+            }
         }
     }
     
@@ -1346,12 +1332,23 @@
         document.getElementById('spinBtn').disabled = false;
     }
     
-    function spinSlot() {
+    window.spinSlot = function() {
         if(isSpinning) return;
         
-        if(!spendCoins(100)) {
-            return; // Not enough coins
-        }
+        // Local Check First
+        const name = currentUser ? currentUser.name : null;
+        if (!name) { showToast("Login Required"); return; }
+        
+        const current = getUserCoins(name);
+        if(current < 100) { showToast("Not enough coins"); return; }
+
+        // Deduct locally for UI
+        if (!globalCoinBalances[name]) globalCoinBalances[name] = 0;
+        globalCoinBalances[name] -= 100;
+        updateUserDisplay();
+        
+        // Send 'Spend' Transaction immediately to be safe
+        sendCoinTransaction(name, -100, "Slot Spin");
         
         isSpinning = true;
         const btn = document.getElementById('spinBtn');
@@ -1366,17 +1363,13 @@
             const el = document.getElementById(id);
             el.classList.add('spinning');
             
-            // Random rolling
             const interval = setInterval(() => {
                 el.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
             }, 100);
             
-            // Stop delay (staggered)
             setTimeout(() => {
                 clearInterval(interval);
                 el.classList.remove('spinning');
-                // Determine final symbol (weighted random could be implemented here)
-                // For now simple random
                 const finalSymbol = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
                 el.textContent = finalSymbol;
                 results.push(finalSymbol);
@@ -1396,23 +1389,17 @@
         let reward = 0;
         let msg = "NO LUCK...";
         
-        if (r1 === '7️⃣' && r2 === '7️⃣' && r3 === '7️⃣') {
-            reward = 7777; msg = "JACKPOT!!!";
-        } else if (r1 === '💎' && r2 === '💎' && r3 === '💎') {
-            reward = 1000; msg = "BIG WIN!!";
-        } else if (r1 === '🔔' && r2 === '🔔' && r3 === '🔔') {
-            reward = 500; msg = "NICE WIN!";
-        } else if (r1 === '🍒' && r2 === '🍒' && r3 === '🍒') {
-            reward = 300; msg = "SMALL WIN";
-        } else if (r1 === '7️⃣' || r2 === '7️⃣' || r3 === '7️⃣') {
-            reward = 50; msg = "REPLAY (7)";
-        }
+        if (r1 === '7️⃣' && r2 === '7️⃣' && r3 === '7️⃣') { reward = 7777; msg = "JACKPOT!!!"; } 
+        else if (r1 === '💎' && r2 === '💎' && r3 === '💎') { reward = 1000; msg = "BIG WIN!!"; } 
+        else if (r1 === '🔔' && r2 === '🔔' && r3 === '🔔') { reward = 500; msg = "NICE WIN!"; } 
+        else if (r1 === '🍒' && r2 === '🍒' && r3 === '🍒') { reward = 300; msg = "SMALL WIN"; } 
+        else if (r1 === '7️⃣' || r2 === '7️⃣' || r3 === '7️⃣') { reward = 50; msg = "REPLAY (7)"; }
         
         document.getElementById('slotMsg').textContent = msg + (reward > 0 ? ` +${reward}` : "");
         
         if (reward > 0) {
-            sendCoinTransaction(currentUser.name, reward, "Slot Win");
-            if (reward >= 1000) showToast("🎰 " + msg + " 🎰");
+             sendCoinTransaction(currentUser.name, reward, "Slot Win");
+             if (reward >= 1000) showToast("🎰 " + msg + " 🎰");
         }
     }
 
@@ -1420,7 +1407,7 @@
     // ================== INPUT LOGIC (Existing) ==================
     const patterns = [[1, 2, 3, 4, 5],[1, 5, 2, 3, 4],[1, 4, 2, 5, 3],[1, 3, 4, 5, 2],[2, 4, 3, 5, 1]];
 
-    function initSelectors() {
+    window.initSelectors = function() {
         ['r1', 'r2'].forEach(r => {
             [1,2,3,4,5].forEach(i => {
                 const el = document.getElementById(`${r}_p${i}`);
@@ -1430,10 +1417,10 @@
                 el.value = "-";
             });
         });
-        if (!loadState()) { /* updateSchedule('r1'); updateSchedule('r2'); */ } // Schedule update removed from loadState to prevent error if undefined
+        if (!loadState()) { /* updateSchedule('r1'); updateSchedule('r2'); */ } 
     }
 
-    function toggleEditMode() {
+    window.toggleEditMode = function() {
         if (!isEditMode) {
             const pin = prompt("ENTER PASSCODE");
             if (pin === "8047") { isEditMode = true; applyEditMode(); showToast("UNLOCKED"); }
@@ -1465,7 +1452,7 @@
         return s;
     }
 
-    function secureReset() {
+    window.secureReset = function() {
         if (!isEditMode) return;
         if (confirm("RESET INPUT?")) {
             document.querySelectorAll('.player-select').forEach(s => s.value = "-");
@@ -1496,7 +1483,7 @@
         updateInputRanking(rp); saveState();
     }
 
-    function updateSchedule(rp) {
+    window.updateSchedule = function(rp) {
         const p = {}; for(let i=1; i<=5; i++) p[i] = document.getElementById(`${rp}_p${i}`).value;
         updatePlayerOptions(rp);
         const pl = {1:p[1], 2:p[2], 3:p[3], 4:p[4], 5:p[5]};
@@ -1599,7 +1586,7 @@
         });
     }
 
-    function saveState() {
+    window.saveState = function() {
         if(isLoading) return;
         const court = document.getElementById('courtSelect').value;
         const rd = {};
@@ -1644,7 +1631,7 @@
         } catch(e) { console.error(e); isLoading = false; return false; }
     }
 
-    function sendToSpreadsheet() {
+    window.sendToSpreadsheet = function() {
         if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("ここに")) { alert("GAS_WEB_APP_URL Error"); return; }
         const btn = document.getElementById('sendButton'); btn.disabled = true; btn.textContent = "SENDING...";
         const date = document.getElementById('matchDate').textContent;
@@ -1713,8 +1700,8 @@
         }).then(() => { 
             const msg = mode === "setup" ? "PREDICTION SETUP SENT" : "RESULTS SENT";
             showToast(msg); 
-            if(mode === 'setup') fetchPredictionData();
-            else fetchAnalysisData();
+            // if(mode === 'setup') fetchPredictionData();
+            if (mode !== 'setup') fetchAnalysisData();
         })
         .catch(e => { console.error(e); showToast("FAILED"); })
         .finally(() => { 
@@ -1756,7 +1743,7 @@
         } catch(e) { console.error(e); }
     }
 
-    function filterRanking(sector) {
+    window.filterRanking = function(sector) {
         currentSector = sector;
         processAnalysisData();
     }
@@ -1943,7 +1930,7 @@
         });
     }
 
-    function showModal(name) {
+    window.showModal = function(name) {
         const p = playerStatsGlobal[name]; const max = playerStatsGlobal._max; if(!p) return;
         document.getElementById('modalPlayerName').textContent = p.name;
         document.getElementById('modalMedals').innerHTML = getMedals(p, max);
@@ -1975,14 +1962,14 @@
         });
     }
 
-    function closeModal(e) { if(e.target.id==='playerModal'||e.target.className==='close-btn') document.getElementById('playerModal').style.display='none'; }
+    window.closeModal = function(e) { if(e.target.id==='playerModal'||e.target.className==='close-btn') document.getElementById('playerModal').style.display='none'; }
     
     // --- MAP LOGIC ---
     const courtDatabase = {
         "MOGUSA": { name: "百草テニスガーデン", address: "〒191-0033 東京都日野市百草878−1", tel: "042-591-1212", hours: "9:00～18:00", costStr: "¥4,500/h", costVal: 4500 },
         "NERIMA": { name: "練馬ステップイン", address: "〒177-0035 東京都練馬区南田中1丁目15−22", tel: "03-3904-7051", hours: "9:00～21:30", costStr: "¥4,000/h", costVal: 4000 }
     };
-    function renderMapInfo(val) {
+    window.renderMapInfo = function(val) {
         const c = document.getElementById('mapContainer');
         const data = courtDatabase[val];
         if (!data) {
