@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 92</title>
+    <title>CODE NAME: 93</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -496,27 +496,8 @@
     </div>
 
     <!-- PREDICTION SECTION (NEW) -->
-    <div id="view-prediction" class="view-section">
-        <div class="section-title">WINNER PREDICTION</div>
-        
-        <div id="predictionTimer" class="prediction-timer">--:--</div>
-        
-        <div class="prediction-tabs">
-            <div class="p-tab active" onclick="switchPredictionRound(1)">ROUND 1</div>
-            <div class="p-tab" onclick="switchPredictionRound(2)">ROUND 2</div>
-        </div>
-        
-        <div id="predictionListArea">
-            <div style="text-align:center; padding:30px; color:#666;">LOADING MATCH DATA...</div>
-        </div>
-
-        <div class="bet-area">
-            <div id="betStatus" class="bet-status">UNLOCKED: SELECTIONS OPEN</div>
-            <button id="betBtn" class="btn-send" onclick="submitPrediction()" style="margin-top:0;">BET 0 COINS (TEST)</button>
-            <button id="checkResultBtn" class="btn-ctrl" onclick="checkPredictionResult()" style="margin-top:20px; width:auto; border-radius:4px; padding:10px 20px;">結果を確認＆報酬受取</button>
-        </div>
-    </div>
-
+    <!-- PREDICTION REMOVED/HIDDEN AS PER REQUEST -->
+    
     <!-- MATCH INPUT SECTION -->
     <div id="view-match" class="view-section active">
         <div class="input-header-area">
@@ -1464,7 +1445,7 @@
                 el.value = "-";
             });
         });
-        if (!loadState()) { /* updateSchedule('r1'); updateSchedule('r2'); */ } 
+        if (!loadState()) { updateSchedule('r1'); updateSchedule('r2'); } 
     }
 
     window.updateSchedule = function(rp) {
