@@ -389,19 +389,8 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     box-shadow: 0 5px 10px rgba(0,0,0,0.5);
     transition: transform 0.5s;
 }
-/* Attach handle to arm visually via nesting or simpler DOM structure */
-.lever-arm::after {
-    content: '';
-    position: absolute;
-    top: -15px;
-    left: -10px;
-    width: 30px;
-    height: 30px;
-    background: radial-gradient(circle at 30% 30%, #ff5252, #b71c1c);
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
-}
+/* Removed duplicate lever arm pseudo element */
+
 /* Animation class */
 .pull-lever .lever-arm {
     animation: pull 0.6s ease-in-out;
