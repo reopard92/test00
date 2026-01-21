@@ -458,7 +458,10 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         
         // Reset state
         isSpinning = true;
-        document.getElementById('spinBtn').disabled = true; // Not strictly needed as we use lever now
+        
+        // ★修正ポイント：HTMLに存在しないボタン(spinBtn)を操作しようとしてエラーになっていた行を削除
+        // document.getElementById('spinBtn').disabled = true; <-- これが原因でした
+        
         document.getElementById('slotMsg').textContent = "SPINNING...";
         reelStopped = [false, false, false];
         reelResults = [null, null, null];
@@ -469,8 +472,11 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         document.getElementById('stop3').disabled = false;
         
         // Animate Lever
-        document.querySelector('.lever-container').classList.add('pull-lever');
-        setTimeout(() => document.querySelector('.lever-container').classList.remove('pull-lever'), 600);
+        const lever = document.querySelector('.lever-container');
+        if(lever) {
+            lever.classList.add('pull-lever');
+            setTimeout(() => lever.classList.remove('pull-lever'), 600);
+        }
         
         // Start reels
         [0, 1, 2].forEach(i => {
