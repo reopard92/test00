@@ -1,5 +1,6 @@
 const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtWaBkvdPNzkN1_7lmFRnAQLbnu6A40YUQdbzX6gTfIY5CznZs13GYxZw/exec";
     const SCHEDULE_GAS_URL = "https://script.google.com/macros/s/AKfycbxkywDklSyaMf93hYhG-ULAyAEQ1qHGgaYjNewTxX34pfySOZKYsbwehygCccEvnchB/exec";
+    const COIN_MANAGER_URL = "https://script.google.com/macros/s/AKfycbyMTW3WIJmSDQUmGq6GDVAz0AkKIaghNcFf5mEsfS4skWJM2YTTh65Pt85vVnJqwklq/exec";
     
     // Auth Sheet Info
     const AUTH_SHEET_ID = '18J_8wm-Qc3yRV-eEwdtB_55CYOAsVGy26AIU7aCvSQw';
@@ -32,6 +33,9 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
     // スケジュールデータ保存用
     let globalScheduleData = [];
     let currentUser = null;
+    
+    // ゲーム用データ
+    let globalCoinBalances = {};
 
     window.onload = function() {
         initAuth(); // Initialize Authentication
@@ -41,16 +45,17 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
-        fetchAnalysisData();
-        fetchScheduleData(); // Real Fetch
-        fetchWeather(); // Fetch Weather
         
-        // Restore last view from sessionStorage to keep page state on refresh
+        fetchAnalysisData();
+        fetchScheduleData();
+        fetchWeather();
+        fetchCoinData(); // Fetch external coin data if any
+        
+        // Restore last view
         const lastView = sessionStorage.getItem('lastView');
-        if (lastView && lastView !== 'game') { // 'game'だった場合はtopへ戻す
+        if (lastView) {
             switchMainView(lastView);
         } else {
-            // Default to TOP
             switchMainView('top'); 
         }
 
@@ -83,7 +88,6 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
     };
 
     // --- AUTHENTICATION LOGIC ---
-    // グローバル関数として定義
     window.onAuthDataLoaded = function(json) {
         const pass = document.getElementById('loginPassInput').value;
         const btn = document.querySelector('.btn-login');
@@ -145,10 +149,11 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
     function updateUserDisplay() {
         const disp = document.getElementById('currentUserDisplay');
         if (currentUser) {
-            // ★修正: コイン数を計算して表示
             const name = currentUser.name;
             const pStats = playerStatsGlobal[name] || { wins: 0, games: 0 };
-            const coins = (pStats.wins * 50) + (pStats.games * 10);
+            const variable = globalCoinBalances[name] || 0;
+            // 基礎コイン(実績) + 変動コイン(スロット等)
+            const coins = (pStats.wins * 50) + (pStats.games * 10) + variable;
             
             disp.textContent = `${name} : 🪙${coins.toLocaleString()}`;
             disp.className = 'user-status-display status-user';
@@ -222,8 +227,8 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
         
-        // Coin Calculation
-        const coins = (pStats.wins * 50) + (pStats.games * 10);
+        const variable = globalCoinBalances[name] || 0;
+        const coins = (pStats.wins * 50) + (pStats.games * 10) + variable;
         
         const storedAvatar = localStorage.getItem(`avatar_${name}`);
         let avatarStyle = '';
@@ -286,6 +291,155 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         }
     }
 
+    // --- GAME & COIN LOGIC ---
+    async function fetchCoinData() {
+        try {
+            const res = await fetch(COIN_MANAGER_URL);
+            globalCoinBalances = await res.json();
+            updateUserDisplay();
+        } catch(e) { console.error("Coin Data Error", e); }
+    }
+
+    function getUserTotalCoins(name) {
+        if(!name) return 0;
+        const pStats = playerStatsGlobal[name] || { wins: 0, games: 0 };
+        const variable = globalCoinBalances[name] || 0;
+        return (pStats.wins * 50) + (pStats.games * 10) + variable;
+    }
+
+    function sendCoinTransaction(name, amount, reason) {
+        if(!globalCoinBalances[name]) globalCoinBalances[name]=0;
+        globalCoinBalances[name] += amount;
+        
+        // 即時反映
+        updateUserDisplay();
+        if(document.getElementById('view-mypage').classList.contains('active')) renderMyPage();
+
+        // バックグラウンド送信
+        fetch(COIN_MANAGER_URL, {
+            method: 'POST', mode: 'no-cors',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name: name, amount: amount, reason: reason})
+        });
+    }
+
+    // --- COIN GAME ---
+    window.openCoinGame = function() { 
+        document.getElementById('coinGameModal').style.display='flex'; 
+        const c = document.getElementById('gameCoin');
+        c.classList.remove('spinning'); c.textContent="TAP"; 
+    }
+    window.closeCoinGame = function(e) {
+        if(e.target.id === 'coinGameModal' || e.target.className === 'close-btn') {
+            document.getElementById('coinGameModal').style.display = 'none';
+        }
+    }
+    window.playCoinToss = function() {
+        const c = document.getElementById('gameCoin');
+        if(c.classList.contains('spinning')) return;
+        c.classList.add('spinning'); c.textContent="";
+        setTimeout(() => { 
+            c.classList.remove('spinning'); 
+            c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
+        }, 1000);
+    }
+
+    // --- SLOT GAME ---
+    const slotSymbols = ['🍒', '🔔', '💎', '7️⃣', '❌', '🌙'];
+    let isSpinning = false;
+    
+    window.openSlotGame = function() { document.getElementById('slotGameModal').style.display='flex'; }
+    
+    window.spinSlot = function() {
+        if(isSpinning) return;
+        if(!currentUser) return showToast("LOGIN REQUIRED");
+        
+        const currentCoins = getUserTotalCoins(currentUser.name);
+        if(currentCoins < 100) return showToast(`NO COINS (REQ: 100)`);
+
+        sendCoinTransaction(currentUser.name, -100, "Slot Spin");
+        
+        isSpinning = true;
+        document.getElementById('spinBtn').disabled = true;
+        document.getElementById('slotMsg').textContent = "SPINNING...";
+        
+        const reels = ['reel1', 'reel2', 'reel3'];
+        const results = [];
+        
+        reels.forEach((id, i) => {
+            const el = document.getElementById(id);
+            const interval = setInterval(() => { 
+                el.textContent = slotSymbols[Math.floor(Math.random()*slotSymbols.length)]; 
+            }, 80);
+            
+            setTimeout(() => {
+                clearInterval(interval);
+                const sym = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+                el.textContent = sym;
+                results.push(sym);
+                
+                if(i===2) finishSlot(results);
+            }, 1000 + i*500);
+        });
+    }
+
+    function finishSlot(res) {
+        isSpinning = false;
+        document.getElementById('spinBtn').disabled = false;
+        
+        let r=0, m="NO LUCK";
+        
+        if(res[0]==='7️⃣'&&res[1]==='7️⃣'&&res[2]==='7️⃣'){ r=7777; m="JACKPOT!!"; }
+        else if(res[0]==='💎'&&res[1]==='💎'&&res[2]==='💎'){ r=1000; m="BIG WIN!"; }
+        else if(res[0]==='🔔'&&res[1]==='🔔'&&res[2]==='🔔'){ r=500; m="NICE!"; }
+        else if(res[0]==='🍒'&&res[1]==='🍒'&&res[2]==='🍒'){ r=300; m="GOOD!"; }
+        else if(res.includes('7️⃣')){ r=50; m="REPLAY"; }
+        
+        document.getElementById('slotMsg').textContent = m + (r>0 ? ` +${r} COINS` : "");
+        
+        if(r>0) {
+            sendCoinTransaction(currentUser.name, r, "Slot Win");
+            showToast(m + ` (+${r})`);
+        }
+    }
+
+    // --- SHOP LOGIC ---
+    let holdTimer = null;
+    window.openShop = function() { document.getElementById('shopModal').style.display='flex'; }
+    
+    window.startHold = function(btn, e) {
+        if(e && e.type === 'touchstart') e.preventDefault();
+        btn.classList.add('holding');
+        holdTimer = setTimeout(() => buyItem(), 1500); 
+    }
+    
+    window.endHold = function(btn) { 
+        clearTimeout(holdTimer); 
+        btn.classList.remove('holding'); 
+    }
+    
+    function buyItem() {
+        const btn = document.querySelector('.hold-btn');
+        btn.classList.remove('holding');
+        
+        if(!currentUser) return showToast("LOGIN REQUIRED");
+        const currentCoins = getUserTotalCoins(currentUser.name);
+        
+        if(currentCoins < 10000) return showToast(`NOT ENOUGH COINS`);
+        
+        if(localStorage.getItem(`has_imada_card_${currentUser.name}`)) {
+            return showToast("ALREADY OWNED");
+        }
+
+        sendCoinTransaction(currentUser.name, -10000, "Buy Card: Imada");
+        localStorage.setItem(`has_imada_card_${currentUser.name}`, 'true');
+        showToast("PURCHASE SUCCESSFUL!");
+        
+        setTimeout(() => {
+            document.getElementById('shopModal').style.display='none';
+        }, 1000);
+    }
+
     // --- NAVIGATION LOGIC ---
     function toggleSideMenu() {
         const menu = document.getElementById('sideMenu');
@@ -302,8 +456,10 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         
         if(currentView === 'mypage') {
             items[2].classList.add('active'); // My Page
+        } else if (currentView === 'game') {
+            items[1].classList.add('active'); // Game
         } else {
-            items[0].classList.add('active'); // Tennis (default)
+            items[0].classList.add('active'); // Tennis
         }
     }
     
@@ -315,21 +471,19 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
 
     function selectAppMode(mode) {
         document.getElementById('sideMenu').classList.remove('open');
-        
         const bottomNav = document.getElementById('bottomNav');
         const subTitle = document.querySelector('.subtitle');
 
-        const items = document.querySelectorAll('.side-menu-content .menu-item');
-        items.forEach(item => item.classList.remove('active'));
-
         if (mode === 'tennis') {
-            items[0].classList.add('active');
             switchMainView('top'); 
             bottomNav.classList.remove('hidden');
             subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         } else if (mode === 'game') {
-            // REDIRECT TO GAME PAGE
-            window.location.href = './game.html';
+            // SPA遷移に変更
+            switchMainView('game');
+            bottomNav.classList.add('hidden'); // ゲーム画面では下部ナビを隠す場合
+            document.getElementById('pageTitle').textContent = "GAME ARCHIVE";
+            subTitle.textContent = "TACTICAL SIMULATION MODULES";
         }
     }
 
@@ -350,8 +504,16 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         const targetSection = document.getElementById(`view-${viewName}`);
         if(targetSection) targetSection.classList.add('active');
         
-        const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'mypage': 'MY PAGE' };
-        document.getElementById('pageTitle').textContent = titles[viewName] || 'TENNIS CHRONICLES';
+        const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'mypage': 'MY PAGE', 'game': 'GAME ARCHIVE' };
+        if(titles[viewName]) document.getElementById('pageTitle').textContent = titles[viewName];
+        
+        // ヘッダー制御: ゲーム画面ならナビ隠す、それ以外なら表示
+        const bottomNav = document.getElementById('bottomNav');
+        if (viewName === 'game') {
+            bottomNav.classList.add('hidden');
+        } else {
+            bottomNav.classList.remove('hidden');
+        }
     }
 
     function manualReload() {
