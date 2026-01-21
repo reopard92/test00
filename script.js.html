@@ -36,7 +36,7 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
     
     // ゲーム用データ
     let globalCoinBalances = {};
-    let pendingBalance = 0; // まとめて送信するための一時保存用
+    let pendingBalance = 0; // まとめて送信するための一時保存用（スロットのみ）
 
     window.onload = function() {
         initAuth(); // Initialize Authentication
@@ -461,10 +461,11 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         const c = document.getElementById('gameCoin');
         c.classList.remove('spinning'); c.textContent="TAP"; 
     }
-    // 修正: 閉じる時に送信
+    
+    // スロット専用の閉じる処理（送信して閉じる）
     window.closeGameModal = function(modalId) {
         document.getElementById(modalId).style.display = 'none';
-        flushPendingCoins(); // 閉じる時に一括送信
+        flushPendingCoins(); 
     }
     
     window.playCoinToss = function() {
@@ -498,6 +499,7 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         
         // Reset state
         isSpinning = true;
+        
         document.getElementById('slotMsg').textContent = "SPINNING...";
         reelStopped = [false, false, false];
         reelResults = [null, null, null];
