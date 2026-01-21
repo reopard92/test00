@@ -274,9 +274,9 @@
 </div>
 
 <!-- COIN MODAL -->
-<div id="coinGameModal" class="modal-overlay" onclick="closeCoinGame(event)">
+<div id="coinGameModal" class="modal-overlay" onclick="closeGameModal('coinGameModal')">
     <div class="modal-content" style="max-width:300px; text-align:center;">
-        <button class="close-btn" onclick="closeCoinGame(event)">×</button>
+        <button class="close-btn" onclick="closeGameModal('coinGameModal')">×</button>
         <div class="modal-title">COIN TOSS</div>
         <div class="coin-game-container">
             <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
@@ -286,9 +286,9 @@
 </div>
 
 <!-- SLOT MODAL (UPDATED) -->
-<div id="slotGameModal" class="modal-overlay" onclick="if(event.target===this && !isSpinning)this.style.display='none'">
+<div id="slotGameModal" class="modal-overlay" onclick="if(event.target===this && !isSpinning)closeGameModal('slotGameModal')">
     <div class="modal-content slot-machine-frame">
-        <span class="close-btn" onclick="if(!isSpinning)document.getElementById('slotGameModal').style.display='none'">×</span>
+        <span class="close-btn" onclick="if(!isSpinning)closeGameModal('slotGameModal')">×</span >
         <div style="color:#00ffff; margin-bottom:15px; letter-spacing:2px; font-weight:bold; text-shadow:0 0 10px rgba(0,255,255,0.5);">CYBER SLOTS</div>
         
         <div class="slot-main-body">
