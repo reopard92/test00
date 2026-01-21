@@ -145,7 +145,12 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
     function updateUserDisplay() {
         const disp = document.getElementById('currentUserDisplay');
         if (currentUser) {
-            disp.textContent = currentUser.name;
+            // ★修正: コイン数を計算して表示
+            const name = currentUser.name;
+            const pStats = playerStatsGlobal[name] || { wins: 0, games: 0 };
+            const coins = (pStats.wins * 50) + (pStats.games * 10);
+            
+            disp.textContent = `${name} : 🪙${coins.toLocaleString()}`;
             disp.className = 'user-status-display status-user';
         } else {
             disp.textContent = 'GUEST';
@@ -217,7 +222,7 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
         
-        // Dummy Coin Calculation for display
+        // Coin Calculation
         const coins = (pStats.wins * 50) + (pStats.games * 10);
         
         const storedAvatar = localStorage.getItem(`avatar_${name}`);
@@ -996,6 +1001,9 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         renderAnalysisLogs(logs);
         renderAnalysisChart(sortedP);
         if(currentSector === 'ALL') { updateSchedule('r1'); updateSchedule('r2'); }
+        
+        // ★修正: データ更新後にヘッダーも更新
+        updateUserDisplay();
         
         if(document.getElementById('view-mypage').classList.contains('active')) {
             renderMyPage();
