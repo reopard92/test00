@@ -1430,14 +1430,7 @@
             bottomNav.classList.remove('hidden');
             subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         } else if (mode === 'game') {
-            items[1].classList.add('active');
-            // Show Game Portal
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById('view-game').classList.add('active');
-            bottomNav.classList.add('hidden');
-            document.getElementById('pageTitle').textContent = "GAME ARCHIVE";
-            subTitle.textContent = "TACTICAL SIMULATION MODULES";
-            sessionStorage.setItem('lastView', 'game');
+          window.location.href = './game.html';
         }
     }
 
@@ -2264,3 +2257,4 @@
 
 </body>
 </html>
+
