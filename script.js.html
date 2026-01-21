@@ -85,6 +85,11 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
                 document.getElementById('sideMenu').classList.remove('open');
             }
         }, {passive: true});
+        
+        // Card Tilt Event
+        window.addEventListener('deviceorientation', handleCardTilt);
+        // PC Mouse tilt
+        document.addEventListener('mousemove', handleCardMouseTilt);
     };
 
     // --- AUTHENTICATION LOGIC ---
@@ -239,6 +244,27 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
             avatarContent = '';
         }
         
+        // CHECK OWNED ITEMS
+        const hasCard = localStorage.getItem(`has_imada_card_${name}`);
+        let inventoryHtml = '';
+        if(hasCard) {
+            inventoryHtml = `
+                <div class="inventory-area">
+                    <div style="font-size:0.8rem; color:#00ffff; letter-spacing:2px; margin-bottom:10px;">INVENTORY</div>
+                    <div class="inv-grid">
+                        <div class="inv-item" style="background-image:url('./今田美桜.png');" onclick="showCard()"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // DAILY BONUS CHECK
+        const lastBonus = localStorage.getItem(`last_bonus_date_${name}`);
+        const todayStr = new Date().toDateString();
+        const canClaim = lastBonus !== todayStr;
+        const btnDisabled = canClaim ? '' : 'disabled';
+        const btnText = canClaim ? 'DAILY BONUS (+500)' : 'BONUS CLAIMED';
+        
         const html = `
             <div class="mypage-header">
                 <div class="mypage-avatar-large" style="${avatarStyle}" onclick="document.getElementById('avatarInput').click()">
@@ -259,9 +285,12 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
             <div class="mypage-coin-area">
                 <div class="coin-val">${coins.toLocaleString()}</div>
                 <div class="coin-label">CRYPTO COINS</div>
+                <button class="daily-bonus-btn" onclick="claimDailyBonus()" ${btnDisabled}>${btnText}</button>
             </div>
             
-            <div class="section-title">COMBAT STATS</div>
+            ${inventoryHtml}
+            
+            <div class="section-title" style="margin-top:30px;">COMBAT STATS</div>
             <div class="dashboard-grid">
                 <div class="stat-card"><div class="stat-label">VICTORIES</div><div class="stat-value highlight">${pStats.wins}</div></div>
                 <div class="stat-card"><div class="stat-label">MATCHES</div><div class="stat-value">${pStats.matches}</div></div>
@@ -278,6 +307,16 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         document.getElementById('pageTitle').textContent = "MY PAGE";
     }
     
+    function claimDailyBonus() {
+        if(!currentUser) return;
+        const name = currentUser.name;
+        const todayStr = new Date().toDateString();
+        localStorage.setItem(`last_bonus_date_${name}`, todayStr);
+        sendCoinTransaction(name, 500, "Daily Bonus");
+        showToast("BONUS RECEIVED: +500");
+        renderMyPage(); // Refresh UI
+    }
+
     function handleAvatarUpload(input) {
         if (input.files && input.files[0] && currentUser) {
             const reader = new FileReader();
@@ -323,6 +362,60 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         });
     }
 
+    // --- CARD VIEW LOGIC ---
+    function showCard() {
+        document.getElementById('cardViewModal').style.display = 'flex';
+    }
+    function closeCardView() {
+        document.getElementById('cardViewModal').style.display = 'none';
+        // Reset transform
+        const card = document.getElementById('holoCard');
+        if(card) card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+    }
+    
+    function handleCardTilt(event) {
+        if(document.getElementById('cardViewModal').style.display !== 'flex') return;
+        const card = document.getElementById('holoCard');
+        const glare = document.querySelector('.holo-glare');
+        
+        // gamma: left-to-right tilt [-90,90], beta: front-to-back tilt [-180,180]
+        // Limit rotation for better visual
+        let x = event.beta; 
+        let y = event.gamma;
+        
+        // Simple constraints
+        if (x > 45) x = 45; if (x < -45) x = -45;
+        if (y > 45) y = 45; if (y < -45) y = -45;
+        
+        // Invert for natural feel
+        card.style.transform = `rotateY(${y}deg) rotateX(${-x}deg)`;
+        
+        // Move glare
+        const gx = 50 + (y * 2);
+        const gy = 50 + (x * 2);
+        glare.style.backgroundPosition = `${gx}% ${gy}%`;
+    }
+    
+    function handleCardMouseTilt(e) {
+        if(document.getElementById('cardViewModal').style.display !== 'flex') return;
+        const card = document.getElementById('holoCard');
+        const glare = document.querySelector('.holo-glare');
+        
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        
+        const yRotation = ((mouseX - w / 2) / w) * 60; // Max 30deg
+        const xRotation = ((mouseY - h / 2) / h) * 60; // Max 30deg
+        
+        card.style.transform = `rotateY(${yRotation}deg) rotateX(${-xRotation}deg)`;
+        
+        const gx = 50 + (yRotation * 2);
+        const gy = 50 + (xRotation * 2);
+        glare.style.backgroundPosition = `${gx}% ${gy}%`;
+    }
+
     // --- COIN GAME ---
     window.openCoinGame = function() { 
         document.getElementById('coinGameModal').style.display='flex'; 
@@ -344,9 +437,12 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         }, 1000);
     }
 
-    // --- SLOT GAME ---
+    // --- SLOT GAME (ENHANCED) ---
     const slotSymbols = ['🍒', '🔔', '💎', '7️⃣', '❌', '🌙'];
     let isSpinning = false;
+    let reelIntervals = [null, null, null];
+    let reelStopped = [true, true, true];
+    let reelResults = [null, null, null];
     
     window.openSlotGame = function() { document.getElementById('slotGameModal').style.display='flex'; }
     
@@ -355,37 +451,57 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         if(!currentUser) return showToast("LOGIN REQUIRED");
         
         const currentCoins = getUserTotalCoins(currentUser.name);
-        if(currentCoins < 100) return showToast(`NO COINS (REQ: 100)`);
+        if(currentCoins < 50) return showToast(`NO COINS (REQ: 50)`); // Changed to 50
 
-        sendCoinTransaction(currentUser.name, -100, "Slot Spin");
+        // Consume
+        sendCoinTransaction(currentUser.name, -50, "Slot Spin");
         
+        // Reset state
         isSpinning = true;
-        document.getElementById('spinBtn').disabled = true;
+        document.getElementById('spinBtn').disabled = true; // Not strictly needed as we use lever now
         document.getElementById('slotMsg').textContent = "SPINNING...";
+        reelStopped = [false, false, false];
+        reelResults = [null, null, null];
         
-        const reels = ['reel1', 'reel2', 'reel3'];
-        const results = [];
+        // Enable stop buttons
+        document.getElementById('stop1').disabled = false;
+        document.getElementById('stop2').disabled = false;
+        document.getElementById('stop3').disabled = false;
         
-        reels.forEach((id, i) => {
-            const el = document.getElementById(id);
-            const interval = setInterval(() => { 
+        // Animate Lever
+        document.querySelector('.lever-container').classList.add('pull-lever');
+        setTimeout(() => document.querySelector('.lever-container').classList.remove('pull-lever'), 600);
+        
+        // Start reels
+        [0, 1, 2].forEach(i => {
+            const el = document.getElementById(`reel${i+1}`);
+            if(reelIntervals[i]) clearInterval(reelIntervals[i]);
+            reelIntervals[i] = setInterval(() => { 
                 el.textContent = slotSymbols[Math.floor(Math.random()*slotSymbols.length)]; 
             }, 80);
-            
-            setTimeout(() => {
-                clearInterval(interval);
-                const sym = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
-                el.textContent = sym;
-                results.push(sym);
-                
-                if(i===2) finishSlot(results);
-            }, 1000 + i*500);
         });
+    }
+    
+    window.stopReel = function(index) {
+        if(reelStopped[index]) return;
+        
+        clearInterval(reelIntervals[index]);
+        const el = document.getElementById(`reel${index+1}`);
+        const sym = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+        el.textContent = sym;
+        reelResults[index] = sym;
+        reelStopped[index] = true;
+        
+        document.getElementById(`stop${index+1}`).disabled = true;
+        
+        // Check if all stopped
+        if(reelStopped[0] && reelStopped[1] && reelStopped[2]) {
+            finishSlot(reelResults);
+        }
     }
 
     function finishSlot(res) {
         isSpinning = false;
-        document.getElementById('spinBtn').disabled = false;
         
         let r=0, m="NO LUCK";
         
@@ -437,6 +553,8 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         
         setTimeout(() => {
             document.getElementById('shopModal').style.display='none';
+            // update my page if open (to show inventory)
+            if(document.getElementById('view-mypage').classList.contains('active')) renderMyPage();
         }, 1000);
     }
 
