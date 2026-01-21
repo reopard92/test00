@@ -31,7 +31,6 @@
             min-height: 100vh;
             overflow-x: hidden;
             padding-bottom: 80px;
-            /* Prevent swipe navigation on iOS */
             overscroll-behavior-x: none;
         }
         .container {
@@ -111,10 +110,10 @@
         }
         .header-btn.right {
             right: 10px;
-            font-size: 2rem; /* Restore simple icon size */
+            font-size: 2rem;
         }
 
-        /* --- USER STATUS DISPLAY (NEW) --- */
+        /* --- USER STATUS DISPLAY --- */
         .user-status-display {
             position: absolute;
             top: 5px;
@@ -128,7 +127,7 @@
         .status-guest { color: #ff5252; font-weight: bold; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
         .status-user { color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
 
-        /* --- SIDE MENU ANIMATION (FIXED) --- */
+        /* --- SIDE MENU ANIMATION --- */
         .side-menu-overlay {
             position: fixed;
             top: 0;
@@ -138,13 +137,10 @@
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(10px);
             z-index: 6000;
-            
-            /* Changed from display:none to visibility for animation */
             visibility: hidden;
             opacity: 0;
-            display: flex; /* Always flex, but hidden */
+            display: flex;
             justify-content: flex-end;
-            
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
         .side-menu-overlay.open {
@@ -160,17 +156,13 @@
             padding-top: 90px;
             display: flex;
             flex-direction: column;
-            
-            /* Slide Animation Setting */
             transform: translateX(100%);
-            /* Smooth organic easing */
             transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .side-menu-overlay.open .side-menu-content {
             transform: translateX(0);
         }
 
-        /* Stagger Animation for Menu Items */
         .menu-item {
             padding: 20px 30px;
             color: #fff;
@@ -179,18 +171,14 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
             cursor: pointer;
             text-transform: uppercase;
-            
-            /* Initial state for stagger */
             opacity: 0;
             transform: translateX(30px);
             transition: all 0.4s ease;
         }
-        
         .side-menu-overlay.open .menu-item {
             opacity: 1;
             transform: translateX(0);
         }
-        /* Delays */
         .side-menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.2s; }
         .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.3s; }
         .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.4s; }
@@ -221,23 +209,6 @@
         }
         #courtSelect:focus { outline: none; border-bottom-color: #fff; background-color: #000; }
         #courtSelect option { background-color: #000; color: #fff; }
-        
-        .coin-game-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 300px;
-        }
-        .coin-large {
-            width: 120px; height: 120px;
-            background: radial-gradient(circle at 30% 30%, #ffffff, #b0bec5);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: bold; color: #333;
-            cursor: pointer;
-            margin-bottom: 30px;
-            border: 4px solid #fff;
-        }
-        .spinning { animation: spin 0.5s infinite ease-in-out; }
-        @keyframes spin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
         
         .round-title {
             color: #fff; font-size: 1rem; font-weight: 300; letter-spacing: 3px;
@@ -278,60 +249,6 @@
 
         .header-ctrl-area { position: absolute; top: 0; right: 0; margin-top: 60px; display: flex; gap: 10px; }
         
-        /* GAME PORTAL STYLES */
-        .game-hero {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1614728263952-84ea256f9679?q=80&w=1000&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            border-radius: 8px;
-            padding: 40px 20px;
-            text-align: center;
-            margin-bottom: 40px;
-            border: 1px solid rgba(0,255,255,0.3);
-            box-shadow: 0 0 20px rgba(0,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .game-hero::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, #00ffff, transparent);
-            box-shadow: 0 0 10px #00ffff;
-        }
-        .game-tag {
-            display: inline-block;
-            background: rgba(0,255,255,0.1);
-            color: #00ffff;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(0,255,255,0.3);
-        }
-        .game-hero h2 { font-size: 1.8rem; margin: 10px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); font-weight: 300; }
-        .game-hero p { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; }
-        .btn-hero {
-            background: #00ffff; color: #000; border: none; padding: 10px 30px; font-weight: bold; letter-spacing: 2px;
-            cursor: pointer; box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: 0.3s;
-        }
-        .btn-hero:hover { background: #fff; box-shadow: 0 0 25px rgba(0,255,255,0.8); }
-
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
-        .game-card {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 20px;
-            text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1 / 1;
-        }
-        .game-card:hover { background: rgba(255,255,255,0.1); border-color: rgba(0,255,255,0.5); transform: translateY(-5px); }
-        .game-card.locked { opacity: 0.5; cursor: not-allowed; }
-        .game-card.locked:hover { transform: none; border-color: rgba(255,255,255,0.1); }
-        .game-icon { font-size: 2.5rem; margin-bottom: 15px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
-        .game-card-title { font-size: 0.8rem; font-weight: bold; color: #fff; letter-spacing: 1px; }
-        .game-status {
-            position: absolute; top: 10px; right: -25px; background: #333; color: #888;
-            font-size: 0.5rem; padding: 2px 25px; transform: rotate(45deg); width: 80px; text-align: center;
-        }
-        .game-status.live { background: #00ffff; color: #000; font-weight: bold; }
-        
         /* ANALYSIS STYLES */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: rgba(20, 20, 30, 0.4); padding: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
@@ -349,7 +266,7 @@
         .log-date { color: #fff; font-weight: bold; font-size: 1rem; }
         .log-content { display: none; padding: 15px; background: rgba(0, 0, 0, 0.3); }
         .log-content.open { display: block; animation: fadeIn 0.3s; }
-        #playerModal, #coinGameModal, #scheduleDetailModal, #loginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
+        #playerModal, #scheduleDetailModal, #loginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: rgba(15, 20, 30, 0.95); border: 1px solid #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; }
         .close-btn { position: absolute; top: 15px; right: 15px; color: #fff; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
         .modal-title { color: #fff; font-weight: 300; text-align: center; font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 2px; }
@@ -361,7 +278,6 @@
         .rank-bar-fill { height: 100%; background: #00ffff; width: 0%; box-shadow: 0 0 10px #00ffff; }
         .chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 30px; }
         
-        /* Dropdown styles for Ranking page */
         .sector-select {
             padding: 8px 15px; font-size: 1rem;
             background-color: rgba(0, 0, 0, 0.6); color: #00ffff;
@@ -371,7 +287,7 @@
 
         .sector-filter::-webkit-scrollbar { display: none; }
 
-        /* MY PAGE STYLES (NEW) */
+        /* MY PAGE STYLES */
         .mypage-header {
             text-align: center;
             margin-bottom: 30px;
@@ -439,9 +355,7 @@
         @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
         .no-data { text-align: center; padding: 20px; font-size: 0.8rem; color: #666; }
 
-        /* =========================================
-           MAP / INFO CARD STYLES
-           ========================================= */
+        /* MAP / INFO CARD STYLES */
         .map-frame {
             position: relative; width: 100%; padding-bottom: 75%; height: 0; 
             overflow: hidden; border: 1px solid #00ffff; 
@@ -450,7 +364,6 @@
         }
         .map-frame iframe {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            /* Map filter for Sci-Fi look */
             filter: invert(100%) hue-rotate(180deg) brightness(0.85) contrast(1.2) grayscale(0.5);
         }
         .info-card {
@@ -474,9 +387,7 @@
             border: 1px dashed rgba(255,255,255,0.1);
         }
 
-        /* =========================================
-           SCHEDULE VIEW STYLES
-           ========================================= */
+        /* SCHEDULE VIEW STYLES */
         .month-tabs-area {
             display: flex;
             gap: 10px;
@@ -502,11 +413,7 @@
             box-shadow: 0 0 10px rgba(0,255,255,0.3);
         }
 
-        .schedule-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+        .schedule-list { list-style: none; padding: 0; margin: 0; }
         .schedule-item {
             display: flex;
             justify-content: space-between;
@@ -517,9 +424,7 @@
             transition: background 0.2s;
             position: relative;
         }
-        .schedule-item:hover {
-            background: rgba(255,255,255,0.05);
-        }
+        .schedule-item:hover { background: rgba(255,255,255,0.05); }
         .schedule-item.top-attendance {
             background: linear-gradient(90deg, rgba(0,255,255,0.1), transparent);
             border-left: 3px solid #00ffff;
@@ -558,16 +463,8 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 15px;
         }
-        .detail-date {
-            font-size: 1.4rem;
-            color: #fff;
-            letter-spacing: 2px;
-        }
-        .detail-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+        .detail-date { font-size: 1.4rem; color: #fff; letter-spacing: 2px; }
+        .detail-list { list-style: none; padding: 0; margin: 0; }
         .member-item {
             display: flex;
             justify-content: space-between;
@@ -575,11 +472,7 @@
             padding: 12px 5px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .member-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .member-info { display: flex; align-items: center; gap: 12px; }
         .member-avatar {
             width: 36px;
             height: 36px;
@@ -592,13 +485,8 @@
             font-size: 0.8rem;
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .member-name {
-            font-size: 1rem;
-            color: #fff;
-        }
-        .member-status {
-            font-size: 1.2rem;
-        }
+        .member-name { font-size: 1rem; color: #fff; }
+        .member-status { font-size: 1.2rem; }
         .status-ok { color: #00ffff; text-shadow: 0 0 5px rgba(0,255,255,0.5); }
         .status-maybe { color: #fff; }
         .status-ng { color: #555; }
@@ -654,14 +542,9 @@
             cursor: pointer; transition: 0.3s;
         }
 
-
-        /* =========================================
-           SMARTPHONE OPTIMIZATION
-           ========================================= */
+        /* SMARTPHONE OPTIMIZATION */
         @media (max-width: 600px) {
             .container { padding: 5px; padding-bottom: 80px; }
-            .header-area { margin-top: 10px; }
-            
             .input-header-area {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -670,7 +553,6 @@
                 min-height: auto;
                 margin-bottom: 20px;
             }
-
             #matchDate {
                 position: relative;
                 top: auto; right: auto;
@@ -716,15 +598,8 @@
             
             h1 { font-size: 1.4rem; padding-left: 0; text-align: center; }
 
-            #r1_matchTableBody, #r2_matchTableBody {
-                display: block;
-                width: 100%;
-            }
-            
-            table {
-                width: 100% !important;
-                display: block;
-            }
+            #r1_matchTableBody, #r2_matchTableBody { display: block; width: 100%; }
+            table { width: 100% !important; display: block; }
             
             .standard-table {
                 display: table !important;
@@ -749,9 +624,7 @@
                 border-bottom: 1px solid rgba(255,255,255,0.1) !important;
             }
 
-            .input-match-table thead {
-                display: none;
-            }
+            .input-match-table thead { display: none; }
             
             #r1_matchTableBody tr, #r2_matchTableBody tr {
                 display: grid;
@@ -791,15 +664,6 @@
             
             .stat-value { font-size: 1.5rem; }
             .medal-legend span, .rank-legend span { display: inline-block; margin-right: 8px; margin-bottom: 3px; font-size: 0.65rem; }
-            
-            .video-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            .video-title { font-size: 0.75rem; }
-            .video-meta { font-size: 0.6rem; }
-            .video-info { padding: 10px; }
-            .video-play-icon { width: 40px; height: 40px; font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -827,7 +691,7 @@
         <div class="header-btn right" id="menuToggleBtn" onclick="toggleSideMenu()">≡</div>
     </header>
     
-    <!-- TOP SECTION (NEW) -->
+    <!-- TOP SECTION -->
     <div id="view-top" class="view-section">
         <div class="section-title">WEATHER FORECAST</div>
         <div id="weather-forecast" class="weather-container">
@@ -850,7 +714,7 @@
         </div>
     </div>
 
-    <!-- MY PAGE SECTION (NEW) -->
+    <!-- MY PAGE SECTION -->
     <div id="view-mypage" class="view-section">
         <div id="myPageContent">
             <!-- Content injected by JS -->
@@ -858,6 +722,7 @@
         <input type="file" id="avatarInput" hidden accept="image/*" onchange="handleAvatarUpload(this)">
     </div>
 
+    <!-- MATCH INPUT SECTION -->
     <div id="view-match" class="view-section active">
         <div class="input-header-area">
             <div id="matchDate"></div>
@@ -919,6 +784,7 @@
         <button id="sendButton" class="btn-send" onclick="sendToSpreadsheet()" disabled>TRANSMIT DATA</button>
     </div>
 
+    <!-- DASHBOARD SECTION -->
     <div id="view-dashboard" class="view-section">
         <div class="section-title">活動状況サマリー</div>
         <div class="dashboard-grid">
@@ -935,6 +801,7 @@
         <div id="logsContainer"></div>
     </div>
 
+    <!-- RANKING SECTION -->
     <div id="view-ranking" class="view-section">
         <div class="section-title">通算個人ランキング</div>
         <div class="sector-filter-area" style="text-align:center; margin-bottom:20px;">
@@ -969,6 +836,7 @@
         </div>
     </div>
 
+    <!-- SCHEDULE SECTION -->
     <div id="view-schedule" class="view-section">
         <div class="section-title">MISSION SCHEDULE</div>
         <div style="text-align:center; margin: 15px 0 25px 0;">
@@ -977,36 +845,6 @@
         <div id="scheduleTabs" class="month-tabs-area"></div>
         <div id="scheduleList" class="schedule-list">
             <div style="padding:20px; text-align:center; color:#888;">LOADING DATA...</div>
-        </div>
-    </div>
-
-    <div id="view-game" class="view-section">
-        <div class="game-hero">
-            <div class="game-tag">DEV PHASE 1</div>
-            <h2>RESOURCE STRATEGY<br>CARD BATTLE</h2>
-            <p>1v1 TACTICAL CARD GAME</p>
-            <button class="btn-hero" onclick="window.location.href='https://reopard92.github.io/game/'">PLAY NOW</button>
-        </div>
-
-        <div class="section-title">MINI GAMES & TOOLS</div>
-        <div class="game-grid">
-            <div class="game-card" onclick="window.location.href='https://reopard92.github.io/game/'">
-                <div class="game-status live">BETA</div>
-                <div class="game-icon">⚔️</div>
-                <div class="game-card-title">CARD BATTLE</div>
-            </div>
-
-            <div class="game-card" onclick="openCoinGame()">
-                <div class="game-status live">LIVE</div>
-                <div class="game-icon">🪙</div>
-                <div class="game-card-title">COIN TOSS</div>
-            </div>
-
-            <div class="game-card locked">
-                <div class="game-status">OFFLINE</div>
-                <div class="game-icon">🔒</div>
-                <div class="game-card-title">COMING SOON</div>
-            </div>
         </div>
     </div>
 
@@ -1033,23 +871,6 @@
         <div class="section-title" style="font-size:0.9rem;">勝率推移</div>
         <div class="chart-container" style="height:150px; margin-bottom:0;">
             <canvas id="historyChart"></canvas>
-        </div>
-    </div>
-</div>
-
-<div id="videoModal" onclick="closeVideoModal(event)">
-    <div class="video-container">
-        <div id="videoPlayer"></div>
-    </div>
-</div>
-
-<div id="coinGameModal" onclick="closeCoinGame(event)">
-    <div class="modal-content" style="max-width:300px; text-align:center;">
-        <button class="close-btn" onclick="closeCoinGame(event)">×</button>
-        <div class="modal-title">COIN TOSS</div>
-        <div class="coin-game-container">
-            <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
-            <div style="font-size:0.8rem; color:#aaa;">TAP COIN TO FLIP</div>
         </div>
     </div>
 </div>
@@ -1140,7 +961,7 @@
         
         // Restore last view from sessionStorage to keep page state on refresh
         const lastView = sessionStorage.getItem('lastView');
-        if (lastView) {
+        if (lastView && lastView !== 'game') { // 'game'だった場合はtopへ戻す
             switchMainView(lastView);
         } else {
             // Default to TOP
@@ -1173,19 +994,16 @@
     };
 
     // --- AUTHENTICATION LOGIC ---
-    // JSONP callback needs to be global
     window.onAuthDataLoaded = function(json) {
         const pass = document.getElementById('loginPassInput').value;
         const btn = document.querySelector('.btn-login');
         
-        // Remove the script tag to clean up
         const script = document.getElementById('authScript');
         if(script) script.remove();
 
-        // Safety check for valid JSON structure
         if (!json || !json.table || !json.table.rows) {
             console.error("Auth Data Error:", json);
-            alert("ACCESS DENIED: DATA LOAD FAILED (Check Sheet Permissions)");
+            alert("ACCESS DENIED: DATA LOAD FAILED");
             btn.textContent = "AUTHENTICATE";
             btn.disabled = false;
             return;
@@ -1194,7 +1012,6 @@
         const rows = json.table.rows;
         let foundUser = null;
         
-        // Assume Col A (0) is Name, Col B (1) is Password
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             if (!row.c[0] || !row.c[1]) continue;
@@ -1214,7 +1031,6 @@
             document.getElementById('loginModal').style.display = 'none';
             showToast(`WELCOME, ${currentUser.name}`);
             
-            // If MyPage is currently shown, re-render it
             if(document.getElementById('view-mypage').classList.contains('active')) {
                 renderMyPage();
             }
@@ -1231,7 +1047,6 @@
         if (storedUser) {
             currentUser = JSON.parse(storedUser);
         } else {
-            // Do not show modal on load, just set null
             currentUser = null;
         }
         updateUserDisplay();
@@ -1256,7 +1071,6 @@
         btn.textContent = "VERIFYING...";
         btn.disabled = true;
 
-        // Use JSONP to bypass CORS
         const script = document.createElement('script');
         script.id = 'authScript';
         script.src = `https://docs.google.com/spreadsheets/d/${AUTH_SHEET_ID}/gviz/tq?tqx=responseHandler:onAuthDataLoaded&gid=${AUTH_SHEET_GID}`;
@@ -1269,7 +1083,6 @@
     }
 
     function enableGuestMode() {
-        // Just close the modal, stay as guest (or whatever current state)
         document.getElementById('loginModal').style.display = 'none';
         if (!currentUser) {
             showToast("GUEST MODE ACTIVE");
@@ -1285,15 +1098,12 @@
     }
 
     function showMyPage() {
-        // Close side menu
         document.getElementById('sideMenu').classList.remove('open');
 
         if (currentUser) {
-            // Logged in: Show My Page View
             switchMainView('mypage');
             renderMyPage();
         } else {
-            // Not logged in, show login modal
             document.getElementById('loginModal').style.display = 'flex';
         }
     }
@@ -1302,7 +1112,6 @@
         if (!currentUser) return;
         
         const name = currentUser.name;
-        // Get Stats from Global Data (if available)
         const pStats = playerStatsGlobal[name] || { wins: 0, losses: 0, games: 0, mvpCount: 0, matches: 0 };
         const max = playerStatsGlobal._max || { wins:100, games:2000 };
         
@@ -1318,10 +1127,9 @@
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
         
-        // Dummy Coin Calculation: Wins * 50 + Games * 10
+        // Dummy Coin Calculation for display
         const coins = (pStats.wins * 50) + (pStats.games * 10);
         
-        // Avatar Logic
         const storedAvatar = localStorage.getItem(`avatar_${name}`);
         let avatarStyle = '';
         let avatarContent = name.charAt(0);
@@ -1376,7 +1184,7 @@
             reader.onload = function(e) {
                 const base64 = e.target.result;
                 localStorage.setItem(`avatar_${currentUser.name}`, base64);
-                renderMyPage(); // Re-render to show new image
+                renderMyPage();
                 showToast("AVATAR UPDATED");
             }
             reader.readAsDataURL(input.files[0]);
@@ -1399,23 +1207,19 @@
         
         if(currentView === 'mypage') {
             items[2].classList.add('active'); // My Page
-        } else if (currentView === 'game') {
-            items[1].classList.add('active'); // Game
         } else {
-            items[0].classList.add('active'); // Tennis (default for all tennis views)
+            items[0].classList.add('active'); // Tennis (default)
         }
     }
     
     function closeSideMenu(e) {
         if(e.target.id === 'sideMenu') {
             document.getElementById('sideMenu').classList.remove('open');
-            // document.getElementById('menuToggleBtn').classList.remove('active'); // Removed morph trigger
         }
     }
 
     function selectAppMode(mode) {
         document.getElementById('sideMenu').classList.remove('open');
-        // document.getElementById('menuToggleBtn').classList.remove('active'); // Removed morph trigger
         
         const bottomNav = document.getElementById('bottomNav');
         const subTitle = document.querySelector('.subtitle');
@@ -1425,29 +1229,26 @@
 
         if (mode === 'tennis') {
             items[0].classList.add('active');
-            // Show Tennis Views
             switchMainView('top'); 
             bottomNav.classList.remove('hidden');
             subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
         } else if (mode === 'game') {
-          window.location.href = './game.html';
+            // REDIRECT TO GAME PAGE
+            window.location.href = './game.html';
         }
     }
 
     function switchMainView(viewName) {
-        // Save current view for refresh
         sessionStorage.setItem('lastView', viewName);
 
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
         const navs = document.querySelectorAll('.nav-item');
         
-        // Handle nav active states
         if(viewName === 'top') navs[0].classList.add('active');
         if(viewName === 'match') navs[1].classList.add('active');
         if(viewName === 'dashboard') navs[2].classList.add('active');
         if(viewName === 'ranking') navs[3].classList.add('active');
         if(viewName === 'schedule') navs[4].classList.add('active');
-        // mypage has no bottom nav button, so no active class needed there
         
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         
@@ -1464,7 +1265,6 @@
 
     // --- WEATHER LOGIC ---
     function fetchWeather() {
-        // Tokyo Coordinates
         const url = "https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo";
         
         fetch(url)
@@ -1482,7 +1282,6 @@
                 const code = daily.weathercode[i];
                 const icon = weatherCodeToIcon(code);
                 
-                // Highlight today
                 const isToday = i === 0 ? 'today' : '';
 
                 const div = document.createElement('div');
@@ -1503,7 +1302,6 @@
     }
 
     function weatherCodeToIcon(code) {
-        // WMO Weather interpretation codes (WW)
         if (code === 0) return "☀";
         if (code === 1 || code === 2 || code === 3) return "☁";
         if (code === 45 || code === 48) return "🌫";
@@ -1513,31 +1311,6 @@
         if (code >= 85 && code <= 86) return "☃";
         if (code >= 95) return "⚡";
         return "❓";
-    }
-
-    // --- COIN TOSS GAME LOGIC ---
-    function openCoinGame() {
-        document.getElementById('coinGameModal').style.display = 'flex';
-        const c = document.getElementById('gameCoin');
-        c.classList.remove('spinning');
-        c.textContent = "TAP";
-    }
-
-    function closeCoinGame(e) {
-        if(e.target.id === 'coinGameModal' || e.target.className === 'close-btn') {
-            document.getElementById('coinGameModal').style.display = 'none';
-        }
-    }
-
-    function playCoinToss() {
-        const c = document.getElementById('gameCoin');
-        if(c.classList.contains('spinning')) return;
-        c.classList.add('spinning');
-        c.textContent = "";
-        setTimeout(() => { 
-            c.classList.remove('spinning'); 
-            c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
-        }, 1500);
     }
 
     // ================== MAP LOGIC ==================
@@ -1602,14 +1375,13 @@
         document.getElementById('calcResult').innerText = '¥' + result.toLocaleString();
     }
 
-    // ================== SCHEDULE LOGIC (UPDATED for Real Data) ==================
+    // ================== SCHEDULE LOGIC ==================
     function fetchScheduleData() {
         const list = document.getElementById('scheduleList');
-        // GASからのレスポンスを待つ
         fetch(SCHEDULE_GAS_URL)
           .then(response => response.json())
           .then(data => {
-            globalScheduleData = data; // 保存
+            globalScheduleData = data;
             if(data.length === 0) {
                 list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">予定がありません</div>';
                 return;
@@ -1626,17 +1398,14 @@
         const tabsContainer = document.getElementById('scheduleTabs');
         tabsContainer.innerHTML = "";
         
-        // 存在する月を抽出 (yyyy-mm)
         const months = [...new Set(data.map(item => item.fullDate.substring(0, 7)))];
         
         months.forEach((m, idx) => {
             const btn = document.createElement('div');
             btn.className = 'month-tab';
-            // 表示名: "2026-01" -> "1月"
             const mNum = parseInt(m.split('-')[1]);
             btn.textContent = `${mNum}月`;
             btn.onclick = () => {
-                // タブ切り替え
                 document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
                 btn.classList.add('active');
                 renderScheduleList(m);
@@ -1653,10 +1422,8 @@
         const list = document.getElementById('scheduleList');
         list.innerHTML = "";
         
-        // 選択された月のデータのみフィルタ
         const filtered = globalScheduleData.filter(item => item.fullDate.startsWith(targetMonth));
         
-        // その月で最も参加(ok)が多い数を探す
         let maxOk = 0;
         filtered.forEach(item => {
             if(item.counts.ok > maxOk) maxOk = item.counts.ok;
@@ -1666,15 +1433,12 @@
             const li = document.createElement('li');
             li.className = 'schedule-item';
             
-            // 最多人数ならハイライト
             let crownHtml = "";
             if (maxOk > 0 && item.counts.ok === maxOk) {
                 li.classList.add('top-attendance');
                 crownHtml = '<span class="crown-icon">👑</span>';
             }
 
-            // クリック時にグローバルデータのインデックスではなく、フィルタ後のデータを使う必要があるため
-            // 直接オブジェクトを渡すか、フィルタ済みのインデックスを使う
             li.onclick = () => showScheduleDetail(item);
             
             li.innerHTML = `
@@ -1697,7 +1461,6 @@
         if (!itemData.details || itemData.details.length === 0) {
             list.innerHTML = '<li style="padding:20px; text-align:center; color:#888;">回答データなし</li>';
         } else {
-            // ok順、maybe順、ng順にソート
             const sortedDetails = itemData.details.sort((a, b) => {
                 const rank = { "ok": 1, "maybe": 2, "ng": 3 };
                 return rank[a.status] - rank[b.status];
@@ -1732,7 +1495,7 @@
         }
     }
 
-    // ================== INPUT LOGIC (Existing) ==================
+    // ================== INPUT LOGIC ==================
     const patterns = [[1, 2, 3, 4, 5],[1, 5, 2, 3, 4],[1, 4, 2, 5, 3],[1, 3, 4, 5, 2],[2, 4, 3, 5, 1]];
 
     function initSelectors() {
@@ -2144,7 +1907,6 @@
         renderAnalysisChart(sortedP);
         if(currentSector === 'ALL') { updateSchedule('r1'); updateSchedule('r2'); }
         
-        // Refresh MyPage if active
         if(document.getElementById('view-mypage').classList.contains('active')) {
             renderMyPage();
         }
@@ -2257,4 +2019,3 @@
 
 </body>
 </html>
-
