@@ -36,6 +36,7 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
     
     // ゲーム用データ
     let globalCoinBalances = {};
+    let pendingBalance = 0; // まとめて送信するための一時保存用
 
     window.onload = function() {
         initAuth(); // Initialize Authentication
@@ -90,6 +91,13 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         window.addEventListener('deviceorientation', handleCardTilt);
         // PC Mouse tilt
         document.addEventListener('mousemove', handleCardMouseTilt);
+        
+        // Page Leave Event (Flush Coins)
+        window.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                flushPendingCoins();
+            }
+        });
     };
 
     // --- AUTHENTICATION LOGIC ---
@@ -312,7 +320,8 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         const name = currentUser.name;
         const todayStr = new Date().toDateString();
         localStorage.setItem(`last_bonus_date_${name}`, todayStr);
-        sendCoinTransaction(name, 500, "Daily Bonus");
+        // デイリーボーナスは即時送信
+        sendCoinTransaction(name, 500, "Daily Bonus", false);
         showToast("BONUS RECEIVED: +500");
         renderMyPage(); // Refresh UI
     }
@@ -346,20 +355,50 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         return (pStats.wins * 50) + (pStats.games * 10) + variable;
     }
 
-    function sendCoinTransaction(name, amount, reason) {
+    /**
+     * コイン増減処理
+     * @param {string} name ユーザー名
+     * @param {number} amount 増減額
+     * @param {string} reason 理由
+     * @param {boolean} isBatch trueなら一時保存、falseなら即時送信
+     */
+    function sendCoinTransaction(name, amount, reason, isBatch = true) {
         if(!globalCoinBalances[name]) globalCoinBalances[name]=0;
         globalCoinBalances[name] += amount;
         
-        // 即時反映
+        // 即時反映(UI)
         updateUserDisplay();
         if(document.getElementById('view-mypage').classList.contains('active')) renderMyPage();
 
-        // バックグラウンド送信
+        if (isBatch) {
+            // 一時保存
+            pendingBalance += amount;
+        } else {
+            // 即時送信
+            fetch(COIN_MANAGER_URL, {
+                method: 'POST', mode: 'no-cors',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name: name, amount: amount, reason: reason})
+            });
+        }
+    }
+
+    /**
+     * 未送信のコインデータをまとめて送信する
+     */
+    function flushPendingCoins() {
+        if (pendingBalance === 0 || !currentUser) return;
+        
+        const amountToSend = pendingBalance;
+        pendingBalance = 0; // リセット
+        
+        // まとめて送信 (keepalive: true を使うとページを閉じても送信されやすいが、GAS対応状況によりno-corsのみ)
         fetch(COIN_MANAGER_URL, {
             method: 'POST', mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({name: name, amount: amount, reason: reason})
+            body: JSON.stringify({name: currentUser.name, amount: amountToSend, reason: "Game Session (Batch)"})
         });
+        console.log(`Flushed: ${amountToSend}`);
     }
 
     // --- CARD VIEW LOGIC ---
@@ -422,11 +461,12 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         const c = document.getElementById('gameCoin');
         c.classList.remove('spinning'); c.textContent="TAP"; 
     }
-    window.closeCoinGame = function(e) {
-        if(e.target.id === 'coinGameModal' || e.target.className === 'close-btn') {
-            document.getElementById('coinGameModal').style.display = 'none';
-        }
+    // 修正: 閉じる時に送信
+    window.closeGameModal = function(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+        flushPendingCoins(); // 閉じる時に一括送信
     }
+    
     window.playCoinToss = function() {
         const c = document.getElementById('gameCoin');
         if(c.classList.contains('spinning')) return;
@@ -453,15 +493,11 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         const currentCoins = getUserTotalCoins(currentUser.name);
         if(currentCoins < 50) return showToast(`NO COINS (REQ: 50)`); // Changed to 50
 
-        // Consume
-        sendCoinTransaction(currentUser.name, -50, "Slot Spin");
+        // Consume (Batch)
+        sendCoinTransaction(currentUser.name, -50, "Slot Spin", true);
         
         // Reset state
         isSpinning = true;
-        
-        // ★修正ポイント：HTMLに存在しないボタン(spinBtn)を操作しようとしてエラーになっていた行を削除
-        // document.getElementById('spinBtn').disabled = true; <-- これが原因でした
-        
         document.getElementById('slotMsg').textContent = "SPINNING...";
         reelStopped = [false, false, false];
         reelResults = [null, null, null];
@@ -520,7 +556,8 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
         document.getElementById('slotMsg').textContent = m + (r>0 ? ` +${r} COINS` : "");
         
         if(r>0) {
-            sendCoinTransaction(currentUser.name, r, "Slot Win");
+            // Win (Batch)
+            sendCoinTransaction(currentUser.name, r, "Slot Win", true);
             showToast(m + ` (+${r})`);
         }
     }
@@ -553,7 +590,8 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtW
             return showToast("ALREADY OWNED");
         }
 
-        sendCoinTransaction(currentUser.name, -10000, "Buy Card: Imada");
+        // Shop is immediate transaction
+        sendCoinTransaction(currentUser.name, -10000, "Buy Card: Imada", false);
         localStorage.setItem(`has_imada_card_${currentUser.name}`, 'true');
         showToast("PURCHASE SUCCESSFUL!");
         
