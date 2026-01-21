@@ -357,6 +357,7 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     height: 150px;
     position: relative;
     margin-left: 15px;
+    cursor: pointer;
 }
 .lever-base {
     position: absolute;
@@ -377,19 +378,18 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     transform-origin: bottom center;
     transition: transform 0.5s;
 }
+/* Handle is now nested, position relative to arm top */
 .lever-handle {
     position: absolute;
-    top: -20px;
-    left: -10px; /* Relative to arm */
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 30px;
     height: 30px;
     background: radial-gradient(circle at 30% 30%, #ff5252, #b71c1c);
     border-radius: 50%;
-    cursor: pointer;
     box-shadow: 0 5px 10px rgba(0,0,0,0.5);
-    transition: transform 0.5s;
 }
-/* Removed duplicate lever arm pseudo element */
 
 /* Animation class */
 .pull-lever .lever-arm {
