@@ -273,10 +273,10 @@
     </div>
 </div>
 
-<!-- COIN MODAL -->
-<div id="coinGameModal" class="modal-overlay" onclick="closeGameModal('coinGameModal')">
+<!-- COIN MODAL (REVERTED TO SIMPLE CLOSE) -->
+<div id="coinGameModal" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
     <div class="modal-content" style="max-width:300px; text-align:center;">
-        <button class="close-btn" onclick="closeGameModal('coinGameModal')">×</button>
+        <button class="close-btn" onclick="document.getElementById('coinGameModal').style.display='none'">×</button>
         <div class="modal-title">COIN TOSS</div>
         <div class="coin-game-container">
             <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
@@ -285,7 +285,7 @@
     </div>
 </div>
 
-<!-- SLOT MODAL (UPDATED) -->
+<!-- SLOT MODAL (LEVER FIXED) -->
 <div id="slotGameModal" class="modal-overlay" onclick="if(event.target===this && !isSpinning)closeGameModal('slotGameModal')">
     <div class="modal-content slot-machine-frame">
         <span class="close-btn" onclick="if(!isSpinning)closeGameModal('slotGameModal')">×</span >
@@ -307,10 +307,12 @@
                 </div>
             </div>
             
-            <div class="lever-container">
+            <!-- LEVER STRUCTURE FIXED (NESTED) -->
+            <div class="lever-container" onclick="spinSlot()">
                 <div class="lever-base"></div>
-                <div class="lever-arm" id="slotLeverArm"></div>
-                <div class="lever-handle" id="slotLeverHandle" onclick="spinSlot()"></div>
+                <div class="lever-arm" id="slotLeverArm">
+                    <div class="lever-handle" id="slotLeverHandle"></div>
+                </div>
             </div>
         </div>
 
@@ -341,7 +343,7 @@
     </div>
 </div>
 
-<!-- CARD VIEW MODAL (NEW) -->
+<!-- CARD VIEW MODAL -->
 <div id="cardViewModal" class="modal-overlay" onclick="closeCardView()">
     <div class="card-view-container">
         <div id="holoCard" class="holo-card">
