@@ -289,44 +289,128 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 }
 .game-status.live { background: #00ffff; color: #000; font-weight: bold; }
 
-/* SLOT STYLES */
-.slot-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
-    perspective: 1000px;
+/* SLOT STYLES (ENHANCED) */
+.slot-machine-frame {
+    border: 3px solid #444;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #222, #111);
+    box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.8);
+    position: relative;
+    padding: 20px 10px !important;
 }
-.slot-reel {
-    width: 60px;
-    height: 80px;
-    background: #111;
-    border: 2px solid #00ffff;
-    border-radius: 8px;
+.slot-main-body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5rem;
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
-    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
-.slot-btn {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.2rem;
-    background: linear-gradient(135deg, #ff9800, #ff5722);
+.slot-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px 0;
+    perspective: 1000px;
+    background: #000;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    box-shadow: inset 0 0 10px #000;
+}
+.reel-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.slot-reel {
+    width: 50px;
+    height: 70px;
+    background: #fff;
+    color: #000;
+    border: 2px solid #999;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
+    font-weight: bold;
+}
+.slot-stop-btn {
+    width: 50px;
+    padding: 8px 0;
+    font-size: 0.7rem;
+    background: linear-gradient(#f44336, #d32f2f);
     color: #fff;
     border: none;
-    border-radius: 50px;
-    font-weight: bold;
-    margin-top: 10px;
+    border-radius: 4px;
     cursor: pointer;
-    letter-spacing: 2px;
-    box-shadow: 0 5px 15px rgba(255,87,34,0.4);
-    transition: 0.2s;
+    box-shadow: 0 3px 0 #b71c1c;
+    transition: 0.1s;
+    font-weight: bold;
 }
-.slot-btn:active { transform: scale(0.95); }
-.slot-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+.slot-stop-btn:active { transform: translateY(3px); box-shadow: none; }
+.slot-stop-btn:disabled { background: #333; color: #555; box-shadow: none; transform: translateY(3px); cursor: not-allowed; }
+
+/* LEVER STYLES */
+.lever-container {
+    width: 30px;
+    height: 150px;
+    position: relative;
+    margin-left: 15px;
+}
+.lever-base {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: #444;
+    border-radius: 5px;
+    border: 1px solid #666;
+}
+.lever-arm {
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    width: 10px;
+    height: 80px;
+    background: linear-gradient(90deg, #ccc, #fff, #ccc);
+    transform-origin: bottom center;
+    transition: transform 0.5s;
+}
+.lever-handle {
+    position: absolute;
+    top: -20px;
+    left: -10px; /* Relative to arm */
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle at 30% 30%, #ff5252, #b71c1c);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+    transition: transform 0.5s;
+}
+/* Attach handle to arm visually via nesting or simpler DOM structure */
+.lever-arm::after {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -10px;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle at 30% 30%, #ff5252, #b71c1c);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+}
+/* Animation class */
+.pull-lever .lever-arm {
+    animation: pull 0.6s ease-in-out;
+}
+@keyframes pull {
+    0% { transform: rotateX(0deg); }
+    50% { transform: rotateX(60deg) scaleY(0.8); }
+    100% { transform: rotateX(0deg); }
+}
 
 /* SHOP HOLOGRAM */
 .holo-showcase {
@@ -382,6 +466,95 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     transition: width 1.5s linear;
 }
 .hold-btn:active { transform: scale(0.98); }
+
+/* INVENTORY & BONUS STYLES */
+.inventory-area {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+}
+.inv-grid {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+.inv-item {
+    width: 60px;
+    height: 85px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,255,255,0.3);
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+}
+.inv-item:hover { transform: scale(1.1); box-shadow: 0 0 10px #00ffff; }
+
+.daily-bonus-btn {
+    background: linear-gradient(45deg, #ffd700, #ffa000);
+    color: #000;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.75rem;
+    margin-top: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    animation: glow 2s infinite alternate;
+}
+.daily-bonus-btn:disabled {
+    background: #333;
+    color: #555;
+    animation: none;
+    box-shadow: none;
+    cursor: default;
+}
+@keyframes glow { from { box-shadow: 0 0 5px rgba(255,215,0,0.4); } to { box-shadow: 0 0 15px rgba(255,215,0,0.8); } }
+
+/* HOLOGRAM CARD VIEW */
+.card-view-container {
+    perspective: 1000px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.holo-card {
+    width: 300px;
+    height: 450px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.1s;
+    border-radius: 15px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+}
+.card-face {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #000;
+    border: 2px solid rgba(0,255,255,0.5);
+}
+.card-face img { width: 100%; height: 100%; object-fit: cover; }
+.holo-glare {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 100%);
+    pointer-events: none;
+    opacity: 0.8;
+    mix-blend-mode: overlay;
+    transition: background-position 0.1s;
+}
 
 /* COIN GAME STYLES */
 .coin-game-container {
