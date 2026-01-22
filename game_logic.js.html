@@ -13,8 +13,12 @@ function initGameLogic() {
     fetchCoinData();
     
     // Event Listeners for Game
-    window.addEventListener('deviceorientation', handleCardTilt);
-    document.addEventListener('mousemove', handleCardMouseTilt);
+    if (typeof handleCardTilt === 'function') {
+        window.addEventListener('deviceorientation', handleCardTilt);
+    }
+    if (typeof handleCardMouseTilt === 'function') {
+        document.addEventListener('mousemove', handleCardMouseTilt);
+    }
     
     // Page Leave Event (Flush Coins)
     window.addEventListener('visibilitychange', () => {
@@ -33,7 +37,7 @@ async function fetchCoinData() {
         if(typeof updateUserDisplay === 'function') updateUserDisplay();
         
         // Update Ranking if data is ready
-        renderCoinRanking();
+        if (typeof renderCoinRanking === 'function') renderCoinRanking();
     } catch(e) { console.error("Coin Data Error", e); }
 }
 
@@ -50,7 +54,7 @@ function renderCoinRanking() {
     const container = document.getElementById('coinRankingList');
     if(!container) return; // Not on page or element missing
     
-    // Check if we have player data
+    // Check if we have player data (Global var from tennis_logic.js)
     if(typeof playerStatsGlobal === 'undefined' || Object.keys(playerStatsGlobal).length === 0) {
         container.innerHTML = '<div style="padding:10px; color:#666;">LOADING...</div>';
         return;
@@ -128,8 +132,7 @@ function renderMyPage() {
     if (!currentUser) return;
     
     const name = currentUser.name;
-    const pStats = playerStatsGlobal[name] || { wins: 0, losses: 0, games: 0, mvpCount: 0, matches: 0 };
-    const max = playerStatsGlobal._max || { wins:100, games:2000 };
+    const pStats = (typeof playerStatsGlobal !== 'undefined' ? playerStatsGlobal[name] : null) || { wins: 0, losses: 0, games: 0, mvpCount: 0, matches: 0 };
     
     // Function from tennis_logic.js
     const rankInfo = (typeof getRankInfo === 'function') ? getRankInfo(pStats.games) : {current:{icon:'?',name:'?'}, next:null};
@@ -291,11 +294,15 @@ function handleCardMouseTilt(e) {
 window.openCoinGame = function() { 
     document.getElementById('coinGameModal').style.display='flex'; 
     const c = document.getElementById('gameCoin');
-    c.classList.remove('spinning'); c.textContent="TAP"; 
+    if(c) {
+        c.classList.remove('spinning'); 
+        c.textContent="TAP";
+    }
 }
 
 window.closeGameModal = function(modalId) {
-    document.getElementById(modalId).style.display = 'none';
+    const el = document.getElementById(modalId);
+    if(el) el.style.display = 'none';
     if (modalId === 'slotGameModal') {
         flushPendingCoins(); 
     }
@@ -303,8 +310,9 @@ window.closeGameModal = function(modalId) {
 
 window.playCoinToss = function() {
     const c = document.getElementById('gameCoin');
-    if(c.classList.contains('spinning')) return;
-    c.classList.add('spinning'); c.textContent="";
+    if(!c || c.classList.contains('spinning')) return;
+    c.classList.add('spinning'); 
+    c.textContent="";
     setTimeout(() => { 
         c.classList.remove('spinning'); 
         c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
@@ -347,9 +355,12 @@ window.spinSlot = function() {
     reelStopped = [false, false, false];
     reelResults = [null, null, null];
     
-    document.getElementById('stop1').disabled = false;
-    document.getElementById('stop2').disabled = false;
-    document.getElementById('stop3').disabled = false;
+    const stop1 = document.getElementById('stop1');
+    const stop2 = document.getElementById('stop2');
+    const stop3 = document.getElementById('stop3');
+    if(stop1) stop1.disabled = false;
+    if(stop2) stop2.disabled = false;
+    if(stop3) stop3.disabled = false;
     
     const lever = document.querySelector('.lever-container');
     if(lever) {
