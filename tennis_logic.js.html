@@ -21,6 +21,7 @@ const CREW_RANKS = [
     { name: '提督',       min: 2000, icon: '🌌' }
 ];
 
+// --- GLOBAL VARIABLES (Parent Definitions) ---
 let isEditMode = false;
 let isLoading = false;
 let playerStatsGlobal = {};
@@ -41,17 +42,21 @@ let currentUser = null;
 window.onload = function() {
     initAuth(); // Initialize Authentication
     initSelectors();
+    
+    // Set Date
     const today = new Date();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
-    document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
+    const dateEl = document.getElementById('matchDate');
+    if(dateEl) dateEl.textContent = `${yyyy}-${mm}-${dd}`;
     
+    // Fetch Data
     fetchAnalysisData();
     fetchScheduleData();
     fetchWeather();
     
-    // Game initialization (if game_logic.js is loaded)
+    // Game initialization (Call Child Logic)
     if (typeof initGameLogic === 'function') {
         initGameLogic();
     }
@@ -82,12 +87,16 @@ window.onload = function() {
         const touchEndX = e.changedTouches[0].screenX;
         // Right to Left Swipe (Open Menu)
         if(touchStartX > window.innerWidth - 100 && touchStartX - touchEndX > 50) {
-            document.getElementById('sideMenu').classList.add('open');
-            updateSideMenuActiveState();
+            const menu = document.getElementById('sideMenu');
+            if(menu) {
+                menu.classList.add('open');
+                updateSideMenuActiveState();
+            }
         }
         // Left to Right Swipe (Close Menu)
         if(touchEndX - touchStartX > 50) {
-            document.getElementById('sideMenu').classList.remove('open');
+            const menu = document.getElementById('sideMenu');
+            if(menu) menu.classList.remove('open');
         }
     }, {passive: true});
 };
@@ -131,6 +140,7 @@ window.onAuthDataLoaded = function(json) {
         showToast(`WELCOME, ${currentUser.name}`);
         
         if(document.getElementById('view-mypage').classList.contains('active')) {
+            // Check if game logic has overwritten this
             if (typeof renderMyPage === 'function') renderMyPage();
         }
         
@@ -157,6 +167,8 @@ function initAuth() {
 
 function updateUserDisplay() {
     const disp = document.getElementById('currentUserDisplay');
+    if (!disp) return;
+
     if (currentUser) {
         const name = currentUser.name;
         // Game logic integration
@@ -164,7 +176,6 @@ function updateUserDisplay() {
         if (typeof getUserTotalCoins === 'function') {
             coins = getUserTotalCoins(name);
         } else {
-            // Fallback calculation if game logic not loaded yet
             const pStats = playerStatsGlobal[name] || { wins: 0, games: 0 };
             coins = (pStats.wins * 50) + (pStats.games * 10);
         }
@@ -226,11 +237,11 @@ function updateSideMenuActiveState() {
     items.forEach(i => i.classList.remove('active'));
     
     if(currentView === 'mypage') {
-        items[2].classList.add('active'); // My Page
+        if(items[2]) items[2].classList.add('active'); // My Page
     } else if (currentView === 'game') {
-        items[1].classList.add('active'); // Game
+        if(items[1]) items[1].classList.add('active'); // Game
     } else {
-        items[0].classList.add('active'); // Tennis
+        if(items[0]) items[0].classList.add('active'); // Tennis
     }
 }
 
@@ -242,18 +253,19 @@ function closeSideMenu(e) {
 
 function selectAppMode(mode) {
     document.getElementById('sideMenu').classList.remove('open');
+    
     const bottomNav = document.getElementById('bottomNav');
     const subTitle = document.querySelector('.subtitle');
 
     if (mode === 'tennis') {
         switchMainView('top'); 
-        bottomNav.classList.remove('hidden');
-        subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
+        if(bottomNav) bottomNav.classList.remove('hidden');
+        if(subTitle) subTitle.textContent = "DEEP SPACE INTEGRATED SYSTEM";
     } else if (mode === 'game') {
         switchMainView('game');
-        bottomNav.classList.add('hidden');
+        if(bottomNav) bottomNav.classList.add('hidden');
         document.getElementById('pageTitle').textContent = "GAME ARCHIVE";
-        subTitle.textContent = "TACTICAL SIMULATION MODULES";
+        if(subTitle) subTitle.textContent = "TACTICAL SIMULATION MODULES";
     }
 }
 
@@ -263,11 +275,14 @@ function switchMainView(viewName) {
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
     const navs = document.querySelectorAll('.nav-item');
     
-    if(viewName === 'top') navs[0].classList.add('active');
-    if(viewName === 'match') navs[1].classList.add('active');
-    if(viewName === 'dashboard') navs[2].classList.add('active');
-    if(viewName === 'ranking') navs[3].classList.add('active');
-    if(viewName === 'schedule') navs[4].classList.add('active');
+    // Handle nav active states
+    if(navs.length > 0) {
+        if(viewName === 'top' && navs[0]) navs[0].classList.add('active');
+        if(viewName === 'match' && navs[1]) navs[1].classList.add('active');
+        if(viewName === 'dashboard' && navs[2]) navs[2].classList.add('active');
+        if(viewName === 'ranking' && navs[3]) navs[3].classList.add('active');
+        if(viewName === 'schedule' && navs[4]) navs[4].classList.add('active');
+    }
     
     document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
     
@@ -275,13 +290,16 @@ function switchMainView(viewName) {
     if(targetSection) targetSection.classList.add('active');
     
     const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'mypage': 'MY PAGE', 'game': 'GAME ARCHIVE' };
-    if(titles[viewName]) document.getElementById('pageTitle').textContent = titles[viewName];
+    const pageTitle = document.getElementById('pageTitle');
+    if(pageTitle && titles[viewName]) pageTitle.textContent = titles[viewName];
     
     const bottomNav = document.getElementById('bottomNav');
-    if (viewName === 'game') {
-        bottomNav.classList.add('hidden');
-    } else {
-        bottomNav.classList.remove('hidden');
+    if (bottomNav) {
+        if (viewName === 'game') {
+            bottomNav.classList.add('hidden');
+        } else {
+            bottomNav.classList.remove('hidden');
+        }
     }
 }
 
@@ -297,6 +315,8 @@ function fetchWeather() {
     .then(response => response.json())
     .then(data => {
         const container = document.getElementById('weather-forecast');
+        if(!container) return;
+        
         container.innerHTML = "";
         const daily = data.daily;
         
@@ -322,7 +342,8 @@ function fetchWeather() {
     })
     .catch(err => {
         console.error("Weather Fetch Error", err);
-        document.getElementById('weather-forecast').innerHTML = '<div style="color:#666; font-size:0.8rem;">WEATHER SIGNAL LOST</div>';
+        const el = document.getElementById('weather-forecast');
+        if(el) el.innerHTML = '<div style="color:#666; font-size:0.8rem;">WEATHER SIGNAL LOST</div>';
     });
 }
 
@@ -340,8 +361,8 @@ function weatherCodeToIcon(code) {
 
 // ================== MAP LOGIC ==================
 const courtDatabase = {
-    "MOGUSA": { name: "百草テニスガーデン", address: "〒191-0033 東京都日野市百草878−1", tel: "042-591-1212", hours: "9:00～18:00", costStr: "¥4,500/h", costVal: 4500, mapSrc: "https://googleusercontent.com/maps.google.com/5" },
-    "NERIMA": { name: "練馬ステップイン", address: "〒177-0035 東京都練馬区南田中1丁目15−22", tel: "03-3904-7051", hours: "9:00～21:30", costStr: "¥4,000/h", costVal: 4000, mapSrc: "" }
+    "MOGUSA": { name: "百草テニスガーデン", address: "〒191-0033 東京都日野市百草878−1", tel: "042-591-1212", hours: "9:00～18:00", costStr: "¥4,500/h", costVal: 4500 },
+    "NERIMA": { name: "練馬ステップイン", address: "〒177-0035 東京都練馬区南田中1丁目15−22", tel: "03-3904-7051", hours: "9:00～21:30", costStr: "¥4,000/h", costVal: 4000 }
 };
 
 function renderMapInfo(val) {
@@ -922,76 +943,6 @@ function processAnalysisData() {
     if(document.getElementById('view-mypage').classList.contains('active')) {
         if(typeof renderMyPage === 'function') renderMyPage();
     }
-}
-
-function getRankInfo(games) {
-    for(let i=CREW_RANKS.length-1; i>=0; i--) { if(games>=CREW_RANKS[i].min) return {current:CREW_RANKS[i], next:CREW_RANKS[i+1]||null}; }
-    return {current:CREW_RANKS[0], next:CREW_RANKS[1]};
-}
-
-function getMedals(p, m) {
-    let h = "";
-    const r = (p.wins+p.losses)>0 ? p.wins/(p.wins+p.losses) : 0;
-    const cr = p.clutchTotal>0 ? p.clutchWins/p.clutchTotal : 0;
-    if(r===m.bestWR && p.matches>0) h+='<span class="medal-icon">👑</span>';
-    if(r>=0.7 && p.matches>0) h+='<span class="medal-icon">🔥</span>';
-    if(p.matches===m.matches && m.matches>0) h+='<span class="medal-icon">💪🏼</span>';
-    for(let i=0; i<Math.min(p.mvpCount,3); i++) h+='<span class="medal-icon">⭐</span>';
-    if(p.sniperCount===m.sniper && m.sniper>0) h+='<span class="medal-icon">🎯</span>';
-    if(cr===m.clutchR && m.clutchR>0 && p.clutchTotal>0) h+='<span class="medal-icon">❤️‍🔥</span>';
-    return h;
-}
-
-function renderAnalysisRanking(players) {
-    const tb = document.getElementById('leaderboardBody'); tb.innerHTML="";
-    players.forEach((p,i)=>{
-        if (!p.name || p.name === "undefined") return;
-        const tr = document.createElement('tr');
-        const rate = (p.wins+p.losses)>0 ? ((p.wins/(p.wins+p.losses))*100).toFixed(1)+'%' : '-';
-        const rk = getRankInfo(p.games).current;
-        tr.onclick = () => showModal(p.name);
-        tr.innerHTML = `<td class="${i===0?'rank-1':''}">${i+1}</td><td style="text-align:left;padding-left:10px;"><span class="rank-icon">${rk.icon}</span> ${p.name} ${getMedals(p, playerStatsGlobal._max)}</td><td>${p.wins}</td><td>${rate}</td><td>${p.mvpCount}</td>`;
-        tb.appendChild(tr);
-    });
-}
-
-function renderAnalysisPairs(ps) {
-    const tb = document.getElementById('pairRankingBody'); tb.innerHTML="";
-    const pairs = Object.entries(ps).map(([n,s])=>({name:n,...s})).filter(p=>p.total>=2).sort((a,b)=>{ const rA=a.wins/a.total, rB=b.wins/b.total; if(rA!==rB) return rB-rA; return a.wins-b.wins; });
-    if(pairs.length===0) { tb.innerHTML='<tr><td colspan="4" class="no-data">データ不足 (2試合以上)</td></tr>'; return; }
-    pairs.forEach((p,i)=>{
-        const tr = document.createElement('tr');
-        const rate = (p.wins/p.total*100).toFixed(1)+'%';
-        const pct = (p.wins/p.total)*100;
-        const bar = `background:linear-gradient(90deg, rgba(0,200,255,0.15) ${pct}%, transparent ${pct}%)`;
-        tr.innerHTML = `<td class="${i===0?'rank-1':''}">${i+1}</td><td style="font-size:0.8rem;">${p.name}</td><td>${p.wins}-${p.losses}</td><td style="${bar}">${rate}</td>`;
-        tb.appendChild(tr);
-    });
-}
-
-function renderAnalysisLogs(logs) {
-    const c = document.getElementById('logsContainer'); c.innerHTML="";
-    Object.keys(logs).sort().reverse().forEach(k => {
-        const l = logs[k];
-        let ds = {};
-        l.records.forEach(r => { if(!ds[r.name]) ds[r.name]={n:r.name,w:0,l:0}; ds[r.name].w+=parseInt(r.win); ds[r.name].l+=parseInt(r.lose); });
-        const sD = Object.values(ds).sort((a,b)=>{ const rA=(a.w+a.l)>0?a.w/(a.w+a.l):0; const rB=(b.w+b.l)>0?b.w/(b.w+b.l):0; if(rA!==rB) return rB-rA; return b.w-a.w; });
-        const winner = sD.length > 0 ? sD[0].n : '-';
-        const div = document.createElement('div'); div.className="log-item";
-        div.innerHTML = `<div class="log-header" onclick="this.nextElementSibling.classList.toggle('open')"><div><span class="log-date">${l.date}</span><span class="log-court">@${l.court}</span></div><div style="font-size:0.7rem;color:#aaa;">TOP: ${winner}</div></div><div class="log-content"><table class="standard-table"><thead><tr><th>順位</th><th>名前</th><th>勝敗</th><th>勝率</th></tr></thead><tbody>${sD.map((r,i)=>`<tr><td style="color:${i==0?'#fff':''}">${i+1}</td><td>${r.n}</td><td>${r.w}-${r.l}</td><td>${((r.w+r.l)>0?((r.w/(r.w+r.l))*100).toFixed(0)+'%':'-')}</td></tr>`).join('')}</tbody></table></div>`;
-        c.appendChild(div);
-    });
-}
-
-function renderAnalysisChart(players) {
-    if(winRateChartInstance) winRateChartInstance.destroy();
-    const ctx = document.getElementById('winRateChart').getContext('2d');
-    const tops = players.slice(0,5);
-    new Chart(ctx, {
-        type: 'bar',
-        data: { labels: tops.map(p=>p.name), datasets: [{ label:'勝率 (%)', data: tops.map(p=>(p.wins+p.losses)>0?p.wins/(p.wins+p.losses)*100:0), backgroundColor:'rgba(255,255,255,0.1)', borderColor:'#fff', borderWidth:1 }] },
-        options: { responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true,max:100,grid:{color:'rgba(255,255,255,0.05)'}},x:{grid:{display:false}}}, plugins: { tooltip: { callbacks: { label: function(context) { return (context.dataset.label||'') + ': ' + (context.parsed.y!==null?context.parsed.y.toFixed(1)+'%':''); } } } } }
-    });
 }
 
 function showModal(name) {
