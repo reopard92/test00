@@ -31,6 +31,9 @@ async function fetchCoinData() {
         globalCoinBalances = await res.json();
         // Function from tennis_logic.js
         if(typeof updateUserDisplay === 'function') updateUserDisplay();
+        
+        // Update Ranking if data is ready
+        renderCoinRanking();
     } catch(e) { console.error("Coin Data Error", e); }
 }
 
@@ -40,6 +43,43 @@ function getUserTotalCoins(name) {
     const pStats = (typeof playerStatsGlobal !== 'undefined' ? playerStatsGlobal[name] : null) || { wins: 0, games: 0 };
     const variable = globalCoinBalances[name] || 0;
     return (pStats.wins * 50) + (pStats.games * 10) + variable;
+}
+
+// Render Coin Ranking in Game Page
+function renderCoinRanking() {
+    const container = document.getElementById('coinRankingList');
+    if(!container) return; // Not on page or element missing
+    
+    // Check if we have player data
+    if(typeof playerStatsGlobal === 'undefined' || Object.keys(playerStatsGlobal).length === 0) {
+        container.innerHTML = '<div style="padding:10px; color:#666;">LOADING...</div>';
+        return;
+    }
+
+    const rankingData = [];
+    Object.keys(playerStatsGlobal).forEach(name => {
+        if (name === '_max') return;
+        const total = getUserTotalCoins(name);
+        rankingData.push({ name: name, coins: total });
+    });
+
+    // Sort desc
+    rankingData.sort((a, b) => b.coins - a.coins);
+
+    let html = '';
+    rankingData.forEach((p, i) => {
+        const rankClass = i === 0 ? 'top1' : '';
+        const rankIcon = i === 0 ? '👑' : (i+1) + '.';
+        html += `
+            <div class="coin-ranking-item ${rankClass}">
+                <div class="coin-ranking-rank">${rankIcon}</div>
+                <div class="coin-ranking-name">${p.name}</div>
+                <div class="coin-ranking-val">${p.coins.toLocaleString()}</div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
 }
 
 /**
@@ -52,6 +92,11 @@ function sendCoinTransaction(name, amount, reason, isBatch = true) {
     // UI Update
     if(typeof updateUserDisplay === 'function') updateUserDisplay();
     if(document.getElementById('view-mypage').classList.contains('active')) renderMyPage();
+    // Update Ranking realtime
+    renderCoinRanking();
+    
+    // Update Slot Credit UI if open
+    updateSlotCreditUI();
 
     if (isBatch) {
         pendingBalance += amount;
@@ -251,7 +296,6 @@ window.openCoinGame = function() {
 
 window.closeGameModal = function(modalId) {
     document.getElementById(modalId).style.display = 'none';
-    // Flush coins when closing Slot
     if (modalId === 'slotGameModal') {
         flushPendingCoins(); 
     }
@@ -273,20 +317,35 @@ let isSpinning = false;
 let reelIntervals = [null, null, null];
 let reelStopped = [true, true, true];
 let reelResults = [null, null, null];
+let isMoonWinRound = false; // Flag for forced win
 
-window.openSlotGame = function() { document.getElementById('slotGameModal').style.display='flex'; }
+window.openSlotGame = function() { 
+    document.getElementById('slotGameModal').style.display='flex';
+    updateSlotCreditUI();
+}
+
+function updateSlotCreditUI() {
+    if(!currentUser) return;
+    const current = getUserTotalCoins(currentUser.name);
+    const el = document.getElementById('slotCredit');
+    if(el) el.textContent = `CREDIT: ${current.toLocaleString()}`;
+}
 
 window.spinSlot = function() {
     if(isSpinning) return;
     if(!currentUser) return showToast("LOGIN REQUIRED");
     
     const currentCoins = getUserTotalCoins(currentUser.name);
-    if(currentCoins < 50) return showToast(`NO COINS (REQ: 50)`);
+    if(currentCoins < 20) return showToast(`NO COINS (REQ: 20)`);
 
-    sendCoinTransaction(currentUser.name, -50, "Slot Spin", true);
+    // Consume 20
+    sendCoinTransaction(currentUser.name, -20, "Slot Spin", true);
+    
+    // Determine Result (20% chance for Moon Win)
+    isMoonWinRound = Math.random() < 0.2; 
     
     isSpinning = true;
-    document.getElementById('slotMsg').textContent = "SPINNING...";
+    document.getElementById('slotMsg').textContent = isMoonWinRound ? "CHANCE MODE!" : "SPINNING...";
     reelStopped = [false, false, false];
     reelResults = [null, null, null];
     
@@ -314,7 +373,16 @@ window.stopReel = function(index) {
     
     clearInterval(reelIntervals[index]);
     const el = document.getElementById(`reel${index+1}`);
-    const sym = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+    
+    let sym;
+    if (isMoonWinRound) {
+        // Force Moon
+        sym = '🌙';
+    } else {
+        // Random
+        sym = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+    }
+    
     el.textContent = sym;
     reelResults[index] = sym;
     reelStopped[index] = true;
@@ -330,7 +398,9 @@ function finishSlot(res) {
     isSpinning = false;
     let r=0, m="NO LUCK";
     
-    if(res[0]==='7️⃣'&&res[1]==='7️⃣'&&res[2]==='7️⃣'){ r=7777; m="JACKPOT!!"; }
+    // 🌙 win logic
+    if(res[0]==='🌙'&&res[1]==='🌙'&&res[2]==='🌙') { r=100; m="MOON BONUS!"; }
+    else if(res[0]==='7️⃣'&&res[1]==='7️⃣'&&res[2]==='7️⃣'){ r=7777; m="JACKPOT!!"; }
     else if(res[0]==='💎'&&res[1]==='💎'&&res[2]==='💎'){ r=1000; m="BIG WIN!"; }
     else if(res[0]==='🔔'&&res[1]==='🔔'&&res[2]==='🔔'){ r=500; m="NICE!"; }
     else if(res[0]==='🍒'&&res[1]==='🍒'&&res[2]==='🍒'){ r=300; m="GOOD!"; }
