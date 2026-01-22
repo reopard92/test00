@@ -21,7 +21,7 @@ const CREW_RANKS = [
     { name: '提督',       min: 2000, icon: '🌌' }
 ];
 
-// --- GLOBAL VARIABLES (DEFINED ONCE HERE) ---
+// --- GLOBAL VARIABLES (Parent Definitions) ---
 // これらは親ファイルで一度だけ定義し、子ファイルからは参照のみ行う
 let isEditMode = false;
 let isLoading = false;
@@ -38,6 +38,10 @@ let currentSector = 'ALL';
 // スケジュールデータ保存用
 let globalScheduleData = [];
 let currentUser = null;
+
+// ゲーム用変数もここで定義（重複回避のため）
+let globalCoinBalances = {};
+let pendingBalance = 0; 
 
 // --- INITIALIZATION ---
 window.onload = function() {
@@ -363,33 +367,6 @@ function weatherCodeToIcon(code) {
     if (code >= 85 && code <= 86) return "☃";
     if (code >= 95) return "⚡";
     return "❓";
-}
-
-// --- COIN TOSS GAME LOGIC (Moved here as simple logic) ---
-function openCoinGame() {
-    document.getElementById('coinGameModal').style.display = 'flex';
-    const c = document.getElementById('gameCoin');
-    if(c) {
-        c.classList.remove('spinning');
-        c.textContent = "TAP";
-    }
-}
-
-function closeCoinGame(e) {
-    // If called directly or by event
-    const modal = document.getElementById('coinGameModal');
-    if(modal) modal.style.display = 'none';
-}
-
-function playCoinToss() {
-    const c = document.getElementById('gameCoin');
-    if(!c || c.classList.contains('spinning')) return;
-    c.classList.add('spinning');
-    c.textContent = "";
-    setTimeout(() => { 
-        c.classList.remove('spinning'); 
-        c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
-    }, 1500);
 }
 
 // ================== MAP LOGIC ==================
