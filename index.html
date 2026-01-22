@@ -197,7 +197,7 @@
         </div>
     </div>
 
-    <!-- GAME SECTION (INTEGRATED) -->
+    <!-- GAME SECTION -->
     <div id="view-game" class="view-section">
         <div class="game-hero">
             <div class="game-tag">DEV PHASE 1</div>
@@ -273,7 +273,7 @@
     </div>
 </div>
 
-<!-- COIN MODAL (REVERTED TO SIMPLE CLOSE) -->
+<!-- COIN MODAL -->
 <div id="coinGameModal" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
     <div class="modal-content" style="max-width:300px; text-align:center;">
         <button class="close-btn" onclick="document.getElementById('coinGameModal').style.display='none'">×</button>
@@ -285,7 +285,7 @@
     </div>
 </div>
 
-<!-- SLOT MODAL (LEVER FIXED) -->
+<!-- SLOT MODAL -->
 <div id="slotGameModal" class="modal-overlay" onclick="if(event.target===this && !isSpinning)closeGameModal('slotGameModal')">
     <div class="modal-content slot-machine-frame">
         <span class="close-btn" onclick="if(!isSpinning)closeGameModal('slotGameModal')">×</span >
@@ -307,7 +307,6 @@
                 </div>
             </div>
             
-            <!-- LEVER STRUCTURE FIXED (NESTED) -->
             <div class="lever-container" onclick="spinSlot()">
                 <div class="lever-base"></div>
                 <div class="lever-arm" id="slotLeverArm">
@@ -371,8 +370,9 @@
 
 <div id="toast"></div>
 
-<!-- JSファイルの読み込み -->
-<script src="script.js"></script>
+<!-- JSの読み込み順序が重要：Core(Tennis) -> Game -->
+<script src="tennis_logic.js"></script>
+<script src="game_logic.js"></script>
 
 <!-- Service Worker Register (Optional) -->
 <script>
