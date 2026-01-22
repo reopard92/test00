@@ -197,9 +197,9 @@
         </div>
     </div>
 
-    <!-- GAME SECTION (INTEGRATED) -->
+    <!-- GAME SECTION -->
     <div id="view-game" class="view-section">
-        <!-- COIN RANKING HEADER (NEW) -->
+        <!-- COIN RANKING HEADER -->
         <div class="ranking-header">
             <div style="font-size:0.8rem; color:#00ffff; letter-spacing:2px; margin-bottom:10px;">TOTAL ASSET RANKING</div>
             <div id="coinRankingList" class="coin-ranking-list">
@@ -274,7 +274,7 @@
     </div>
 </div>
 
-<!-- COIN MODAL -->
+<!-- COIN MODAL (REVERTED) -->
 <div id="coinGameModal" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
     <div class="modal-content" style="max-width:300px; text-align:center;">
         <button class="close-btn" onclick="document.getElementById('coinGameModal').style.display='none'">×</button>
@@ -286,7 +286,7 @@
     </div>
 </div>
 
-<!-- SLOT MODAL (UPDATED) -->
+<!-- SLOT MODAL (LEVER FIXED) -->
 <div id="slotGameModal" class="modal-overlay" onclick="if(event.target===this && !isSpinning)closeGameModal('slotGameModal')">
     <div class="modal-content slot-machine-frame">
         <span class="close-btn" onclick="if(!isSpinning)closeGameModal('slotGameModal')">×</span >
@@ -308,6 +308,7 @@
                 </div>
             </div>
             
+            <!-- LEVER STRUCTURE (NESTED) -->
             <div class="lever-container" onclick="spinSlot()">
                 <div class="lever-base"></div>
                 <div class="lever-arm" id="slotLeverArm">
@@ -374,7 +375,7 @@
 
 <div id="toast"></div>
 
-<!-- JSの読み込み順序が重要：Core(Tennis) -> Game -->
+<!-- JSの読み込み：分割された2つのファイルを読み込む -->
 <script src="tennis_logic.js"></script>
 <script src="game_logic.js"></script>
 
