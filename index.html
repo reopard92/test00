@@ -199,6 +199,7 @@
 
     <!-- GAME SECTION -->
     <div id="view-game" class="view-section">
+        <!-- COIN RANKING HEADER -->
         <div class="ranking-header">
             <div style="font-size:0.8rem; color:#00ffff; letter-spacing:2px; margin-bottom:10px;">TOTAL ASSET RANKING</div>
             <div id="coinRankingList" class="coin-ranking-list">
@@ -273,9 +274,10 @@
     </div>
 </div>
 
-<!-- COIN MODAL -->
+<!-- COIN MODAL (REVERTED TO SIMPLE CLOSE) -->
 <div id="coinGameModal" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
     <div class="modal-content" style="max-width:300px; text-align:center;">
+        <!-- Simply hide on click -->
         <button class="close-btn" onclick="document.getElementById('coinGameModal').style.display='none'">×</button>
         <div class="modal-title">COIN TOSS</div>
         <div class="coin-game-container">
@@ -285,7 +287,7 @@
     </div>
 </div>
 
-<!-- SLOT MODAL (LEVER FIXED) -->
+<!-- SLOT MODAL (LEVER FIXED + SEND ON CLOSE) -->
 <div id="slotGameModal" class="modal-overlay" onclick="if(event.target===this && !isSpinning)closeGameModal('slotGameModal')">
     <div class="modal-content slot-machine-frame">
         <span class="close-btn" onclick="if(!isSpinning)closeGameModal('slotGameModal')">×</span >
@@ -322,7 +324,7 @@
         <div style="font-size:0.7rem; color:#666; margin-top:5px;">PULL THE LEVER TO START</div>
         
         <div style="margin-top:20px; font-size:0.6rem; color:#555; line-height:1.5; border-top:1px dashed #333; padding-top:10px;">
-            7⃣: 7777 | 💎: 1000 | 🔔: 500 | 🍒: 300 | 🌙: 100
+            777: 7777 | 💎: 1000 | 🔔: 500 | 🍒: 300 | 🌙x3: 100
         </div>
     </div>
 </div>
@@ -388,4 +390,3 @@
 
 </body>
 </html>
-
