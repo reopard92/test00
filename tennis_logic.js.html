@@ -21,7 +21,8 @@ const CREW_RANKS = [
     { name: '提督',       min: 2000, icon: '🌌' }
 ];
 
-// --- GLOBAL VARIABLES (Parent Definitions) ---
+// --- GLOBAL VARIABLES (DEFINED ONCE HERE) ---
+// これらは親ファイルで一度だけ定義し、子ファイルからは参照のみ行う
 let isEditMode = false;
 let isLoading = false;
 let playerStatsGlobal = {};
@@ -56,7 +57,8 @@ window.onload = function() {
     fetchScheduleData();
     fetchWeather();
     
-    // Game initialization (Call Child Logic)
+    // Initialize Game Logic (if loaded)
+    // ゲーム側の初期化関数をここで呼ぶ
     if (typeof initGameLogic === 'function') {
         initGameLogic();
     }
@@ -139,8 +141,8 @@ window.onAuthDataLoaded = function(json) {
         document.getElementById('loginModal').style.display = 'none';
         showToast(`WELCOME, ${currentUser.name}`);
         
+        // Render MyPage if active (Game logic might override renderMyPage)
         if(document.getElementById('view-mypage').classList.contains('active')) {
-            // Check if game logic has overwritten this
             if (typeof renderMyPage === 'function') renderMyPage();
         }
         
@@ -171,11 +173,12 @@ function updateUserDisplay() {
 
     if (currentUser) {
         const name = currentUser.name;
-        // Game logic integration
+        // Game logic integration check
         let coins = 0;
         if (typeof getUserTotalCoins === 'function') {
             coins = getUserTotalCoins(name);
         } else {
+            // Fallback calculation if game logic not loaded yet
             const pStats = playerStatsGlobal[name] || { wins: 0, games: 0 };
             coins = (pStats.wins * 50) + (pStats.games * 10);
         }
@@ -225,9 +228,11 @@ function handleLogout() {
 // --- NAVIGATION LOGIC ---
 function toggleSideMenu() {
     const menu = document.getElementById('sideMenu');
-    menu.classList.toggle('open');
-    if(menu.classList.contains('open')) {
-        updateSideMenuActiveState();
+    if(menu) {
+        menu.classList.toggle('open');
+        if(menu.classList.contains('open')) {
+            updateSideMenuActiveState();
+        }
     }
 }
 
@@ -252,7 +257,8 @@ function closeSideMenu(e) {
 }
 
 function selectAppMode(mode) {
-    document.getElementById('sideMenu').classList.remove('open');
+    const menu = document.getElementById('sideMenu');
+    if(menu) menu.classList.remove('open');
     
     const bottomNav = document.getElementById('bottomNav');
     const subTitle = document.querySelector('.subtitle');
@@ -264,7 +270,8 @@ function selectAppMode(mode) {
     } else if (mode === 'game') {
         switchMainView('game');
         if(bottomNav) bottomNav.classList.add('hidden');
-        document.getElementById('pageTitle').textContent = "GAME ARCHIVE";
+        const title = document.getElementById('pageTitle');
+        if(title) title.textContent = "GAME ARCHIVE";
         if(subTitle) subTitle.textContent = "TACTICAL SIMULATION MODULES";
     }
 }
@@ -275,7 +282,6 @@ function switchMainView(viewName) {
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
     const navs = document.querySelectorAll('.nav-item');
     
-    // Handle nav active states
     if(navs.length > 0) {
         if(viewName === 'top' && navs[0]) navs[0].classList.add('active');
         if(viewName === 'match' && navs[1]) navs[1].classList.add('active');
@@ -290,8 +296,8 @@ function switchMainView(viewName) {
     if(targetSection) targetSection.classList.add('active');
     
     const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'mypage': 'MY PAGE', 'game': 'GAME ARCHIVE' };
-    const pageTitle = document.getElementById('pageTitle');
-    if(pageTitle && titles[viewName]) pageTitle.textContent = titles[viewName];
+    const titleEl = document.getElementById('pageTitle');
+    if(titleEl && titles[viewName]) titleEl.textContent = titles[viewName];
     
     const bottomNav = document.getElementById('bottomNav');
     if (bottomNav) {
@@ -357,6 +363,33 @@ function weatherCodeToIcon(code) {
     if (code >= 85 && code <= 86) return "☃";
     if (code >= 95) return "⚡";
     return "❓";
+}
+
+// --- COIN TOSS GAME LOGIC (Moved here as simple logic) ---
+function openCoinGame() {
+    document.getElementById('coinGameModal').style.display = 'flex';
+    const c = document.getElementById('gameCoin');
+    if(c) {
+        c.classList.remove('spinning');
+        c.textContent = "TAP";
+    }
+}
+
+function closeCoinGame(e) {
+    // If called directly or by event
+    const modal = document.getElementById('coinGameModal');
+    if(modal) modal.style.display = 'none';
+}
+
+function playCoinToss() {
+    const c = document.getElementById('gameCoin');
+    if(!c || c.classList.contains('spinning')) return;
+    c.classList.add('spinning');
+    c.textContent = "";
+    setTimeout(() => { 
+        c.classList.remove('spinning'); 
+        c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
+    }, 1500);
 }
 
 // ================== MAP LOGIC ==================
