@@ -199,11 +199,12 @@
 
     <!-- GAME SECTION -->
     <div id="view-game" class="view-section">
-        <div class="game-hero">
-            <div class="game-tag">DEV PHASE 1</div>
-            <h2>RESOURCE STRATEGY<br>CARD BATTLE</h2>
-            <p>1v1 TACTICAL CARD GAME</p>
-            <button class="btn-hero" onclick="window.location.href='https://reopard92.github.io/game/'">PLAY NOW</button>
+        <!-- COIN RANKING HEADER -->
+        <div class="ranking-header">
+            <div style="font-size:0.8rem; color:#00ffff; letter-spacing:2px; margin-bottom:10px;">TOTAL ASSET RANKING</div>
+            <div id="coinRankingList" class="coin-ranking-list">
+                <div style="padding:10px; color:#666;">CALCULATING...</div>
+            </div>
         </div>
 
         <div class="section-title">MINI GAMES & TOOLS</div>
@@ -315,11 +316,14 @@
             </div>
         </div>
 
-        <div id="slotMsg" style="margin:15px 0; color:#aaa; min-height:1.2em; font-size:0.9rem;">BET 50 COINS</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+            <div id="slotMsg" style="color:#aaa; font-size:0.9rem;">BET 20 COINS</div>
+            <div id="slotCredit" style="color:#ffd700; font-weight:bold; font-size:0.9rem;">CREDIT: -</div>
+        </div>
         <div style="font-size:0.7rem; color:#666; margin-top:5px;">PULL THE LEVER TO START</div>
         
         <div style="margin-top:20px; font-size:0.6rem; color:#555; line-height:1.5; border-top:1px dashed #333; padding-top:10px;">
-            777: 7777 | 💎: 1000 | 🔔: 500 | 🍒: 300
+            777: 7777 | 💎: 1000 | 🔔: 500 | 🍒: 300 | 🌙x3: 100
         </div>
     </div>
 </div>
@@ -370,9 +374,8 @@
 
 <div id="toast"></div>
 
-<!-- JSの読み込み順序が重要：Core(Tennis) -> Game -->
-<script src="tennis_logic.js"></script>
-<script src="game_logic.js"></script>
+<!-- JSの読み込み：統合された1つのファイルを読み込む -->
+<script src="script.js"></script>
 
 <!-- Service Worker Register (Optional) -->
 <script>
