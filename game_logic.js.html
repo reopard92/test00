@@ -132,7 +132,7 @@ function renderMyPage() {
     const max = playerStatsGlobal._max || { wins:100, games:2000 };
     
     // Function from tennis_logic.js
-    const rankInfo = getRankInfo(pStats.games);
+    const rankInfo = (typeof getRankInfo === 'function') ? getRankInfo(pStats.games) : {current:{icon:'?',name:'?'}, next:null};
     const nextRank = rankInfo.next;
     let expText = "MAX RANK";
     let barW = 100;
@@ -338,10 +338,8 @@ window.spinSlot = function() {
     const currentCoins = getUserTotalCoins(currentUser.name);
     if(currentCoins < 20) return showToast(`NO COINS (REQ: 20)`);
 
-    // Consume 20
     sendCoinTransaction(currentUser.name, -20, "Slot Spin", true);
     
-    // Determine Result (20% chance for Moon Win)
     isMoonWinRound = Math.random() < 0.2; 
     
     isSpinning = true;
@@ -376,10 +374,8 @@ window.stopReel = function(index) {
     
     let sym;
     if (isMoonWinRound) {
-        // Force Moon
         sym = '🌙';
     } else {
-        // Random
         sym = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
     }
     
@@ -398,7 +394,6 @@ function finishSlot(res) {
     isSpinning = false;
     let r=0, m="NO LUCK";
     
-    // 🌙 win logic
     if(res[0]==='🌙'&&res[1]==='🌙'&&res[2]==='🌙') { r=100; m="MOON BONUS!"; }
     else if(res[0]==='7️⃣'&&res[1]==='7️⃣'&&res[2]==='7️⃣'){ r=7777; m="JACKPOT!!"; }
     else if(res[0]==='💎'&&res[1]==='💎'&&res[2]==='💎'){ r=1000; m="BIG WIN!"; }
