@@ -199,6 +199,7 @@
 
     <!-- GAME SECTION -->
     <div id="view-game" class="view-section">
+        <!-- COIN RANKING HEADER -->
         <div class="ranking-header">
             <div style="font-size:0.8rem; color:#00ffff; letter-spacing:2px; margin-bottom:10px;">TOTAL ASSET RANKING</div>
             <div id="coinRankingList" class="coin-ranking-list">
@@ -262,23 +263,6 @@
     </div>
 </div>
 
-<div id="videoModal" onclick="closeVideoModal(event)">
-    <div class="video-container">
-        <div id="videoPlayer"></div>
-    </div>
-</div>
-
-<div id="coinGameModal" onclick="closeCoinGame(event)">
-    <div class="modal-content" style="max-width:300px; text-align:center;">
-        <button class="close-btn" onclick="closeCoinGame(event)">×</button>
-        <div class="modal-title">COIN TOSS</div>
-        <div class="coin-game-container">
-            <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
-            <div style="font-size:0.8rem; color:#aaa;">TAP COIN TO FLIP</div>
-        </div>
-    </div>
-</div>
-
 <div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
     <div class="modal-content">
         <button class="close-btn" onclick="closeScheduleModal(event)">×</button>
@@ -290,7 +274,20 @@
     </div>
 </div>
 
-<!-- SLOT MODAL -->
+<!-- COIN MODAL (REVERTED TO SIMPLE CLOSE) -->
+<div id="coinGameModal" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
+    <div class="modal-content" style="max-width:300px; text-align:center;">
+        <!-- Simply hide on click -->
+        <button class="close-btn" onclick="document.getElementById('coinGameModal').style.display='none'">×</button>
+        <div class="modal-title">COIN TOSS</div>
+        <div class="coin-game-container">
+            <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
+            <div style="font-size:0.8rem; color:#aaa;">TAP COIN TO FLIP</div>
+        </div>
+    </div>
+</div>
+
+<!-- SLOT MODAL (LEVER FIXED + SEND ON CLOSE) -->
 <div id="slotGameModal" class="modal-overlay" onclick="if(event.target===this && !isSpinning)closeGameModal('slotGameModal')">
     <div class="modal-content slot-machine-frame">
         <span class="close-btn" onclick="if(!isSpinning)closeGameModal('slotGameModal')">×</span >
