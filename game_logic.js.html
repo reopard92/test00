@@ -4,10 +4,6 @@
 
 const COIN_MANAGER_URL = "https://script.google.com/macros/s/AKfycbyMTW3WIJmSDQUmGq6GDVAz0AkKIaghNcFf5mEsfS4skWJM2YTTh65Pt85vVnJqwklq/exec";
 
-// Local Game State
-let globalCoinBalances = {};
-let pendingBalance = 0; // Batch variable for slots
-
 // Init Game Logic called from window.onload in tennis_logic.js
 function initGameLogic() {
     fetchCoinData();
