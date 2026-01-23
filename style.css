@@ -494,6 +494,7 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 /* =========================================
    SCHEDULE VIEW STYLES
    ========================================= */
+/* 高さを固定してレイアウトシフトを防止 */
 .month-tabs-area {
     display: flex;
     gap: 10px;
@@ -519,10 +520,14 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     box-shadow: 0 0 10px rgba(0,255,255,0.3);
 }
 
+/* 高さを固定してスクロールさせる（または最低高さを確保） */
 .schedule-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    min-height: 400px; /* ここで高さを確保 */
+    max-height: 60vh;
+    overflow-y: auto;
 }
 .schedule-item {
     display: flex;
@@ -621,6 +626,7 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 .status-ng { color: #555; }
 
 /* WEATHER WIDGET STYLES */
+/* 横スクロールコンテナの高さを確保してガタつき防止 */
 .weather-container {
     display: flex;
     overflow-x: auto;
@@ -628,6 +634,8 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     padding-bottom: 10px;
     margin-bottom: 30px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    min-height: 120px; /* 天気カードの高さに合わせて確保 */
+    align-items: flex-start; /* カードを上揃えに */
 }
 .weather-container::-webkit-scrollbar { display: none; }
 .weather-card {
@@ -640,7 +648,15 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-shrink: 0; /* 縮まないように固定 */
 }
+/* ダミーカード用スタイル */
+.weather-card.empty-slot {
+    height: 80px; /* カードの中身が無いときの高さ */
+    background: rgba(255,255,255,0.05);
+    border: 1px dashed rgba(255,255,255,0.1);
+}
+
 .weather-date { font-size: 0.7rem; color: #888; margin-bottom: 5px; letter-spacing: 1px; }
 .weather-icon { font-size: 1.5rem; margin-bottom: 5px; }
 .weather-temp { font-size: 0.8rem; color: #fff; }
@@ -822,21 +838,60 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 /* =========================================
    SLOT MACHINE STYLES
    ========================================= */
+.slot-payout-table {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid #ffd700;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 15px;
+    font-size: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 16px;
+}
+.payout-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #fff;
+}
+.payout-row.danger {
+    color: #ff5252;
+}
+.payout-icon {
+    font-size: 1rem;
+}
+.payout-val {
+    font-weight: bold;
+    color: #ffd700;
+}
+.payout-row.danger .payout-val {
+    color: #ff5252;
+}
+
+.slot-frame {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 15px;
+    margin: 10px 0 20px 0;
+}
+
 .slot-machine-container {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
+    gap: 8px;
     background: #222;
-    padding: 15px;
+    padding: 12px;
     border-radius: 8px;
-    border: 2px solid #ffd700;
+    border: 3px solid #ffd700;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
 }
 
 .reel-container {
-    width: 60px;
-    height: 80px;
+    width: 50px;
+    height: 70px;
     background: #fff;
     border-radius: 4px;
     overflow: hidden;
@@ -846,10 +901,11 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 }
 
 .reel {
-    font-size: 3rem;
-    line-height: 80px;
+    font-size: 2.5rem;
+    line-height: 70px;
     text-align: center;
     color: #000;
+    font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif; /* For better emoji */
 }
 
 /* 高速回転時のブラー効果 */
@@ -871,6 +927,51 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     100% { background-position: 0 60px; }
 }
 
+/* Slot Lever Styles */
+.slot-lever-container {
+    position: relative;
+    width: 30px;
+    height: 100px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.slot-lever-base {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    background: #444;
+    border-radius: 4px;
+    border: 1px solid #666;
+}
+.slot-lever-stick {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    width: 10px;
+    height: 80px;
+    background: #888;
+    border-radius: 5px;
+    transform-origin: bottom center;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+.slot-lever-knob {
+    position: absolute;
+    top: -15px;
+    left: -10px;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle at 30% 30%, #ff5252, #b71c1c);
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+/* Lever Animation Class */
+.slot-lever-stick.pulled {
+    transform: rotateX(60deg) scaleY(0.8);
+}
+
 .stop-btn-area {
     display: flex;
     justify-content: center;
@@ -879,7 +980,7 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 }
 
 .btn-stop {
-    width: 60px;
+    width: 50px;
     padding: 8px 0;
     background: linear-gradient(to bottom, #ff5252, #d32f2f);
     color: white;
@@ -889,6 +990,7 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     cursor: pointer;
     box-shadow: 0 4px 0 #b71c1c;
     transition: 0.1s;
+    font-size: 0.7rem;
 }
 
 .btn-stop:active {
@@ -902,29 +1004,4 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     color: #888;
     cursor: not-allowed;
     transform: translateY(4px);
-}
-
-.btn-spin {
-    background: linear-gradient(135deg, #ffd700 0%, #ff6f00 100%);
-    color: #000;
-    font-size: 1.2rem;
-    font-weight: bold;
-    padding: 15px 50px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-    letter-spacing: 2px;
-    width: 100%;
-}
-
-.btn-spin:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    filter: grayscale(100%);
-}
-
-.btn-spin:hover:not(:disabled) {
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
 }
