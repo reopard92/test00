@@ -33,7 +33,6 @@
 
 <div class="container">
     <header class="app-header">
-        <!-- 修正: コイン表示に対応するためJSでテキスト制御 -->
         <div id="currentUserDisplay" class="user-status-display" onclick="showMyPage()">GUEST</div>
         <div class="header-btn left" onclick="manualReload()">↻</div>
         <h1 id="pageTitle">MATCH INPUT</h1>
@@ -215,7 +214,7 @@
                 <div class="game-card-title">CARD BATTLE</div>
             </div>
 
-            <!-- 追加: スロットゲーム -->
+            <!-- スロットゲーム -->
             <div class="game-card" onclick="openSlotGame()">
                 <div class="game-status live">NEW</div>
                 <div class="game-icon">🎰</div>
@@ -276,21 +275,42 @@
     </div>
 </div>
 
-<!-- 追加: スロットゲームモーダル -->
+<!-- スロットゲームモーダル (更新) -->
 <div id="slotGameModal" onclick="closeSlotGame(event)">
-    <div class="modal-content" style="max-width:400px; text-align:center; border-color: #ffd700; background: #111;">
+    <div class="modal-content" style="max-width:480px; text-align:center; border-color: #ffd700; background: #111; padding: 20px 10px;">
         <button class="close-btn" onclick="closeSlotGame(event)">×</button>
-        <div class="modal-title" style="color: #ffd700;">CASINO SLOT</div>
+        <div class="modal-title" style="color: #ffd700; margin-bottom: 5px;">CASINO SLOT</div>
         
-        <div class="slot-machine-container">
-            <div class="reel-container">
-                <div id="reel1" class="reel">7</div>
+        <!-- 配当表エリア -->
+        <div class="slot-payout-table">
+            <div class="payout-row"><span class="payout-icon">777</span> <span class="payout-val">7777</span></div>
+            <div class="payout-row"><span class="payout-icon">💎💎💎</span> <span class="payout-val">1000</span></div>
+            <div class="payout-row"><span class="payout-icon">🔔🔔🔔</span> <span class="payout-val">500</span></div>
+            <div class="payout-row"><span class="payout-icon">🍇🍇🍇</span> <span class="payout-val">300</span></div>
+            <div class="payout-row"><span class="payout-icon">🍒🍒🍒</span> <span class="payout-val">100</span></div>
+            <div class="payout-row"><span class="payout-icon">Any 7</span> <span class="payout-val">20</span></div>
+            <div class="payout-row danger"><span class="payout-icon">💀💀💀</span> <span class="payout-val">-1000</span></div>
+        </div>
+
+        <div class="slot-frame">
+            <div class="slot-machine-container">
+                <div class="reel-container">
+                    <div id="reel1" class="reel">7</div>
+                </div>
+                <div class="reel-container">
+                    <div id="reel2" class="reel">7</div>
+                </div>
+                <div class="reel-container">
+                    <div id="reel3" class="reel">7</div>
+                </div>
             </div>
-            <div class="reel-container">
-                <div id="reel2" class="reel">7</div>
-            </div>
-            <div class="reel-container">
-                <div id="reel3" class="reel">7</div>
+            
+            <!-- レバーエリア -->
+            <div class="slot-lever-container" onclick="pullSlotLever()">
+                <div class="slot-lever-base"></div>
+                <div class="slot-lever-stick">
+                    <div class="slot-lever-knob"></div>
+                </div>
             </div>
         </div>
 
@@ -301,11 +321,9 @@
         </div>
 
         <div class="slot-info-area">
-            <div style="font-size:0.8rem; color:#aaa;">BET: 50 COINS</div>
-            <div id="slotMessage" style="color:#ffd700; height:20px; font-weight:bold; margin:10px 0;">WIN UP TO 1000!</div>
+            <div style="font-size:0.9rem; color:#aaa; margin-bottom:5px;">BET: <span style="color:#ffd700; font-weight:bold;">20</span> COINS</div>
+            <div id="slotMessage" style="color:#ffd700; min-height:24px; font-weight:bold; margin:5px 0; font-size:1.1rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">PULL THE LEVER!</div>
         </div>
-
-        <button id="slotStartBtn" class="btn-spin" onclick="startSlot()">SPIN!</button>
         
         <div style="margin-top:15px; font-size:0.9rem; color:#fff;">
             WALLET: <span id="slotWallet" style="color:#ffd700;">0</span>
