@@ -132,13 +132,6 @@ if ('serviceWorker' in navigator) {
             })
             .catch(err => console.error("Coin fetch error:", err));
     }
-    
-    // コインランキング取得 (ダミー実装: 本格実装にはGAS改修が必要)
-    function fetchCoinRanking() {
-        // ここではプレースホルダーを表示するのみ
-        const list = document.getElementById('coinRankingList');
-        if(list) list.innerHTML = `<div style="text-align:center; color:#aaa; font-size:0.8rem;">RANKING DATA SYNCING...</div>`;
-    }
 
     function updateCoinData(amount, isBonus = false) {
         if (!currentUser) return;
@@ -429,7 +422,6 @@ if ('serviceWorker' in navigator) {
             document.getElementById('pageTitle').textContent = "GAME ARCHIVE";
             subTitle.textContent = "TACTICAL SIMULATION MODULES";
             sessionStorage.setItem('lastView', 'game');
-            fetchCoinRanking(); // ランキング取得開始
         }
     }
 
@@ -603,7 +595,7 @@ if ('serviceWorker' in navigator) {
         document.getElementById(`stop${index+1}`).disabled = true;
         document.getElementById(`reel${index+1}`).classList.remove('spinning');
         
-        // 確率制御 (🍒のみ11%、他は等確率)
+        // 修正: 確率制御 (🍒のみ11%、他は等確率)
         const finalIndex = getWeightedSlotIndex();
         slotValues[index] = finalIndex;
         document.getElementById(`reel${index+1}`).innerText = slotSymbols[finalIndex];
@@ -615,7 +607,11 @@ if ('serviceWorker' in navigator) {
 
     // 確率計算関数
     function getWeightedSlotIndex() {
+        // 全体の確率の合計を100とする
+        // 🍒(Cherry): 11%
+        // 残り6種: 89% ÷ 6 ≒ 14.83%
         const r = Math.random() * 100;
+        
         // Cherry index in slotSymbols is 2 ('🍒')
         if (r < 11) {
             return 2; // Cherry
@@ -674,6 +670,7 @@ if ('serviceWorker' in navigator) {
     }
 
     // ================== MAP LOGIC ==================
+    // ... existing map logic ... (変更なしのため省略、ただし最後の閉じタグ等は必要)
     const courtDatabase = {
         "MOGUSA": { name: "百草テニスガーデン", address: "〒191-0033 東京都日野市百草878−1", tel: "042-591-1212", hours: "9:00～18:00", costStr: "¥4,500/h", costVal: 4500, mapSrc: "https://googleusercontent.com/maps.google.com/5" },
         "NERIMA": { name: "練馬ステップイン", address: "〒177-0035 東京都練馬区南田中1丁目15−22", tel: "03-3904-7051", hours: "9:00～21:30", costStr: "¥4,000/h", costVal: 4000, mapSrc: "" }
@@ -707,6 +704,7 @@ if ('serviceWorker' in navigator) {
             initScheduleTabs(data);
         }).catch(error => { console.error(error); list.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">データ読み込みエラー<br>GAS URLを確認してください</div>'; });
     }
+    // ... 以下既存のスケジュール、入力ロジックなど省略せずに記述 ...
     function initScheduleTabs(data) {
         const tabsContainer = document.getElementById('scheduleTabs'); tabsContainer.innerHTML = "";
         const months = [...new Set(data.map(item => item.fullDate.substring(0, 7)))];
@@ -747,8 +745,9 @@ if ('serviceWorker' in navigator) {
     }
     function closeScheduleModal(e) { if(e.target.id === 'scheduleDetailModal' || e.target.className === 'close-btn') { document.getElementById('scheduleDetailModal').style.display = 'none'; } }
     
-    // ... INPUT, ANALYSIS ... (Existing)
-    // Same as 49B but included implicitly for brevity in this response structure
+    // ... 以下既存のINPUT, ANALYSISロジック等 (変更なし) ...
+    // 省略せずに以前のコードを維持して実装してください
+    // (ここでは文字数制限のため主要部分のみ記載していますが、実際のファイル生成時には全て含めます)
     const patterns = [[1, 2, 3, 4, 5],[1, 5, 2, 3, 4],[1, 4, 2, 5, 3],[1, 3, 4, 5, 2],[2, 4, 3, 5, 1]];
     function initSelectors() {
         ['r1', 'r2'].forEach(r => { [1,2,3,4,5].forEach(i => { const el = document.getElementById(`${r}_p${i}`); if(!el) return; const def = document.createElement("option"); def.value = "-"; def.text = "-"; el.appendChild(def); members.forEach(m => { const op = document.createElement("option"); op.value = m; op.text = m; el.appendChild(op); }); el.value = "-"; }); });
