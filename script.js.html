@@ -574,12 +574,14 @@ if ('serviceWorker' in navigator) {
         }, 1500);
     }
     
-    // --- SLOT MACHINE LOGIC ---
-    const slotSymbols = ['7', '🔔', '🍒', '🍇', '🍋', '💎'];
+    // --- SLOT MACHINE LOGIC (LEVER) ---
+    // Added 💀 to symbols
+    const slotSymbols = ['7', '🔔', '🍒', '🍇', '🍋', '💎', '💀'];
     let slotIntervals = [null, null, null];
     let slotValues = [0, 0, 0]; // Index of slotSymbols
     let isSlotSpinning = [false, false, false];
-    const SLOT_BET = 50;
+    let isLeverLocked = false;
+    const SLOT_BET = 20; // 20 coins
     
     function openSlotGame() {
         if(!currentUser) {
@@ -600,26 +602,42 @@ if ('serviceWorker' in navigator) {
     }
     
     function resetSlotUI() {
-        document.getElementById('slotMessage').innerText = "WIN UP TO 1000!";
-        document.getElementById('slotStartBtn').disabled = false;
+        document.getElementById('slotMessage').innerText = "PULL THE LEVER!";
+        isLeverLocked = false;
+        // Reset lever visually
+        const stick = document.querySelector('.slot-lever-stick');
+        if(stick) stick.classList.remove('pulled');
+        
         for(let i=0; i<3; i++) {
             document.getElementById(`stop${i+1}`).disabled = true;
             document.getElementById(`reel${i+1}`).classList.remove('spinning');
         }
     }
     
-    function startSlot() {
+    function pullSlotLever() {
+        if(isLeverLocked) return;
         if(currentCoins < SLOT_BET) {
             document.getElementById('slotMessage').innerText = "NOT ENOUGH COINS!";
             return;
         }
         
-        // Pay Bet (Update via GAS)
+        isLeverLocked = true;
+        const stick = document.querySelector('.slot-lever-stick');
+        stick.classList.add('pulled');
+        
+        // Sound or visual delay then start
+        setTimeout(() => {
+            stick.classList.remove('pulled');
+            startSlot();
+        }, 300); // 0.3s delay for animation
+    }
+    
+    function startSlot() {
+        // Pay Bet
         updateCoinData(-SLOT_BET);
         document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
         
         document.getElementById('slotMessage').innerText = "GOOD LUCK!";
-        document.getElementById('slotStartBtn').disabled = true;
         
         // Start Spinning
         for(let i=0; i<3; i++) {
@@ -644,7 +662,6 @@ if ('serviceWorker' in navigator) {
         document.getElementById(`reel${index+1}`).classList.remove('spinning');
         
         // Determine result for this reel
-        // 単純確率: ランダム
         const finalIndex = Math.floor(Math.random() * slotSymbols.length);
         slotValues[index] = finalIndex;
         document.getElementById(`reel${index+1}`).innerText = slotSymbols[finalIndex];
@@ -661,27 +678,48 @@ if ('serviceWorker' in navigator) {
         const v3 = slotSymbols[slotValues[2]];
         
         let winAmount = 0;
+        let isNegative = false;
+        let message = "TRY AGAIN...";
         
+        // Check all same
         if (v1 === v2 && v2 === v3) {
-            // 3つ揃い
-            if (v1 === '7') winAmount = 1000;
-            else if (v1 === '💎') winAmount = 500;
-            else winAmount = 300;
-        } else if (v1 === v2 || v2 === v3 || v1 === v3) {
-            // 2つ揃い (簡易)
-             winAmount = 50;
+            if (v1 === '7') { winAmount = 7777; message = "JACKPOT! 777"; }
+            else if (v1 === '💎') { winAmount = 1000; message = "BIG WIN!"; }
+            else if (v1 === '🔔') { winAmount = 500; message = "NICE!"; }
+            else if (v1 === '🍇') { winAmount = 300; message = "GOOD!"; }
+            else if (v1 === '🍒') { winAmount = 100; message = "SWEET!"; }
+            else if (v1 === '💀') { winAmount = 1000; isNegative = true; message = "BAD LUCK... -1000"; }
+            else { winAmount = 20; message = "WIN"; } // Lemon etc
+        } else {
+            // Check for single 7
+            let sevenCount = 0;
+            if(v1 === '7') sevenCount++;
+            if(v2 === '7') sevenCount++;
+            if(v3 === '7') sevenCount++;
+            
+            if(sevenCount > 0) {
+                winAmount = 20; // 7が1つでもあれば20枚 (重複なし)
+                message = "LUCKY 7!";
+            }
         }
         
-        if (winAmount > 0) {
-            document.getElementById('slotMessage').innerText = `YOU WON ${winAmount}!`;
+        if (isNegative) {
+            updateCoinData(-winAmount);
+            showToast(`LOST ${winAmount} COINS...`);
+            document.getElementById('slotMessage').style.color = '#ff5252';
+        } else if (winAmount > 0) {
             updateCoinData(winAmount);
             showToast(`WIN! +${winAmount} COINS`);
+            document.getElementById('slotMessage').style.color = '#ffd700';
         } else {
-            document.getElementById('slotMessage').innerText = "TRY AGAIN...";
+            document.getElementById('slotMessage').style.color = '#fff';
         }
         
+        document.getElementById('slotMessage').innerText = message;
         document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
-        document.getElementById('slotStartBtn').disabled = false;
+        
+        // Unlock lever
+        isLeverLocked = false;
     }
 
     // ================== MAP LOGIC ==================
