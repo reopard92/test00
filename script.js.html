@@ -18,6 +18,8 @@ if ('serviceWorker' in navigator) {
     const members = ["周平", "すが", "凌矢", "祐介", "志村", "カトケン", "小田"];
     const STORAGE_KEY = 'tennis_match_data_v7_holo';
     const LOGIN_KEY = 'tennis_user_auth';
+    const COIN_WALLET_KEY = 'tennis_coin_wallet_v1'; // コイン保存用キー
+
     const CREW_RANKS = [
         { name: '候補生',     min: 0,   icon: '🌑' },
         { name: 'パイロット', min: 100,  icon: '🛸' },
@@ -42,6 +44,7 @@ if ('serviceWorker' in navigator) {
     // スケジュールデータ保存用
     let globalScheduleData = [];
     let currentUser = null;
+    let currentCoins = 0; // 現在のコイン所持数
 
     window.onload = function() {
         initAuth(); // Initialize Authentication
@@ -89,6 +92,43 @@ if ('serviceWorker' in navigator) {
         }, {passive: true});
     };
 
+    // --- COIN MANAGEMENT LOGIC ---
+    function loadUserCoins() {
+        if (!currentUser) {
+            currentCoins = 0;
+            return;
+        }
+        const walletData = localStorage.getItem(COIN_WALLET_KEY);
+        let wallet = walletData ? JSON.parse(walletData) : {};
+        
+        // ユーザーのコインデータを取得。なければ初期値として戦績ベースで計算
+        if (wallet[currentUser.name] !== undefined) {
+            currentCoins = wallet[currentUser.name];
+        } else {
+            // 初回ボーナス計算 (既存の計算ロジックを利用)
+            const p = playerStatsGlobal[currentUser.name] || { wins:0, games:0 };
+            const initialBonus = (p.wins * 50) + (p.games * 10) + 1000; // +1000は登録ボーナス
+            currentCoins = initialBonus;
+            saveUserCoins();
+        }
+        updateUserDisplay();
+    }
+
+    function saveUserCoins() {
+        if (!currentUser) return;
+        const walletData = localStorage.getItem(COIN_WALLET_KEY);
+        let wallet = walletData ? JSON.parse(walletData) : {};
+        wallet[currentUser.name] = currentCoins;
+        localStorage.setItem(COIN_WALLET_KEY, JSON.stringify(wallet));
+        updateUserDisplay();
+    }
+
+    function updateUserCoin(amount) {
+        currentCoins += amount;
+        saveUserCoins();
+        return currentCoins;
+    }
+
     // --- AUTHENTICATION LOGIC ---
     // JSONP callback needs to be global
     window.onAuthDataLoaded = function(json) {
@@ -127,7 +167,7 @@ if ('serviceWorker' in navigator) {
         if (foundUser) {
             currentUser = foundUser;
             localStorage.setItem(LOGIN_KEY, JSON.stringify(currentUser));
-            updateUserDisplay();
+            loadUserCoins(); // Load coins after login
             document.getElementById('loginModal').style.display = 'none';
             showToast(`WELCOME, ${currentUser.name}`);
             
@@ -147,6 +187,10 @@ if ('serviceWorker' in navigator) {
         const storedUser = localStorage.getItem(LOGIN_KEY);
         if (storedUser) {
             currentUser = JSON.parse(storedUser);
+            // playerStatsGlobalがまだロードされていない可能性があるので、
+            // loadUserCoinsはfetchAnalysisDataの後にも呼び出す必要があるが、
+            // とりあえずここでも呼ぶ（初期値0になるかもしれないが）
+            loadUserCoins();
         } else {
             // Do not show modal on load, just set null
             currentUser = null;
@@ -157,7 +201,8 @@ if ('serviceWorker' in navigator) {
     function updateUserDisplay() {
         const disp = document.getElementById('currentUserDisplay');
         if (currentUser) {
-            disp.textContent = currentUser.name;
+            // 表示変更: 名前 : 🪙残枚数
+            disp.textContent = `${currentUser.name} : 🪙${currentCoins.toLocaleString()}`;
             disp.className = 'user-status-display status-user';
         } else {
             disp.textContent = 'GUEST';
@@ -235,8 +280,8 @@ if ('serviceWorker' in navigator) {
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
         
-        // Dummy Coin Calculation: Wins * 50 + Games * 10
-        const coins = (pStats.wins * 50) + (pStats.games * 10);
+        // 修正: コインは所持コインを表示
+        const coins = currentCoins;
         
         // Avatar Logic
         const storedAvatar = localStorage.getItem(`avatar_${name}`);
@@ -287,6 +332,7 @@ if ('serviceWorker' in navigator) {
         document.getElementById('pageTitle').textContent = "MY PAGE";
     }
     
+    // ... existing handleAvatarUpload ...
     function handleAvatarUpload(input) {
         if (input.files && input.files[0] && currentUser) {
             const reader = new FileReader();
@@ -462,6 +508,118 @@ if ('serviceWorker' in navigator) {
             c.classList.remove('spinning'); 
             c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
         }, 1500);
+    }
+    
+    // --- SLOT MACHINE LOGIC ---
+    const slotSymbols = ['7', '🔔', '🍒', '🍇', '🍋', '💎'];
+    let slotIntervals = [null, null, null];
+    let slotValues = [0, 0, 0]; // Index of slotSymbols
+    let isSlotSpinning = [false, false, false];
+    const SLOT_BET = 50;
+    
+    function openSlotGame() {
+        if(!currentUser) {
+            showToast("ログインが必要です");
+            return;
+        }
+        document.getElementById('slotGameModal').style.display = 'flex';
+        document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
+        resetSlotUI();
+    }
+    
+    function closeSlotGame(e) {
+        if(e.target.id === 'slotGameModal' || e.target.className === 'close-btn') {
+            document.getElementById('slotGameModal').style.display = 'none';
+            // Stop everything if closed
+            slotIntervals.forEach(i => clearInterval(i));
+        }
+    }
+    
+    function resetSlotUI() {
+        document.getElementById('slotMessage').innerText = "WIN UP TO 1000!";
+        document.getElementById('slotStartBtn').disabled = false;
+        for(let i=0; i<3; i++) {
+            document.getElementById(`stop${i+1}`).disabled = true;
+            document.getElementById(`reel${i+1}`).classList.remove('spinning');
+        }
+    }
+    
+    function startSlot() {
+        if(currentCoins < SLOT_BET) {
+            document.getElementById('slotMessage').innerText = "NOT ENOUGH COINS!";
+            return;
+        }
+        
+        // Pay Bet
+        updateUserCoin(-SLOT_BET);
+        document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
+        
+        document.getElementById('slotMessage').innerText = "GOOD LUCK!";
+        document.getElementById('slotStartBtn').disabled = true;
+        
+        // Start Spinning
+        for(let i=0; i<3; i++) {
+            isSlotSpinning[i] = true;
+            document.getElementById(`stop${i+1}`).disabled = false;
+            document.getElementById(`reel${i+1}`).classList.add('spinning');
+            
+            // Loop symbols for visual effect (though CSS does the blur)
+            // CSSアニメーションだけだと値が変わらないので、裏で値を変える演出を入れるか
+            // ここではCSSのblur-spin中に中身を高速で変える
+            slotIntervals[i] = setInterval(() => {
+                const randIndex = Math.floor(Math.random() * slotSymbols.length);
+                document.getElementById(`reel${i+1}`).innerText = slotSymbols[randIndex];
+            }, 100);
+        }
+    }
+    
+    function stopReel(index) {
+        if(!isSlotSpinning[index]) return;
+        
+        clearInterval(slotIntervals[index]);
+        isSlotSpinning[index] = false;
+        document.getElementById(`stop${index+1}`).disabled = true;
+        document.getElementById(`reel${index+1}`).classList.remove('spinning');
+        
+        // Determine result for this reel
+        // 単純確率: ランダム
+        const finalIndex = Math.floor(Math.random() * slotSymbols.length);
+        slotValues[index] = finalIndex;
+        document.getElementById(`reel${index+1}`).innerText = slotSymbols[finalIndex];
+        
+        // Check if all stopped
+        if(!isSlotSpinning[0] && !isSlotSpinning[1] && !isSlotSpinning[2]) {
+            checkSlotResult();
+        }
+    }
+    
+    function checkSlotResult() {
+        const v1 = slotSymbols[slotValues[0]];
+        const v2 = slotSymbols[slotValues[1]];
+        const v3 = slotSymbols[slotValues[2]];
+        
+        let winAmount = 0;
+        
+        if (v1 === v2 && v2 === v3) {
+            // 3つ揃い
+            if (v1 === '7') winAmount = 1000;
+            else if (v1 === '💎') winAmount = 500;
+            else winAmount = 300;
+        } else if (v1 === v2 || v2 === v3 || v1 === v3) {
+            // 2つ揃い (簡易)
+             winAmount = 50;
+        }
+        
+        if (winAmount > 0) {
+            document.getElementById('slotMessage').innerText = `YOU WON ${winAmount}!`;
+            updateUserCoin(winAmount);
+            showToast(`WIN! +${winAmount} COINS`);
+        } else {
+            document.getElementById('slotMessage').innerText = "TRY AGAIN...";
+        }
+        
+        document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
+        document.getElementById('slotStartBtn').disabled = false;
     }
 
     // ================== MAP LOGIC ==================
@@ -963,6 +1121,11 @@ if ('serviceWorker' in navigator) {
                 rawAnalysisRankings = json.rankings; 
                 rawAnalysisMatches = json.matches;
                 processAnalysisData(); 
+                
+                // データ取得後にコイン初期化を再度試みる（初回ボーナス計算のため）
+                if(currentUser && currentCoins === 0) {
+                     loadUserCoins();
+                }
             }
         } catch(e) { console.error(e); }
     }
@@ -1153,7 +1316,7 @@ if ('serviceWorker' in navigator) {
         if(ri.next) {
             const range = ri.next.min - ri.current.min;
             const cur = p.games - ri.current.min;
-            barW = Math.min((cur/range)*100, 100);
+            barW = Math.min((currentExp / range) * 100, 100);
             txt = `経験値: ${p.games} / ${ri.next.min} (次: ${ri.next.name})`;
         } else { txt = `経験値: ${p.games} (提督)`; }
         document.getElementById('rankInfoArea').innerHTML = `<div class="rank-name">${ri.current.name} <span>${ri.current.icon}</span></div><div class="rank-progress-text">${txt}</div><div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${barW}%"></div></div>`;
