@@ -33,7 +33,8 @@
 
 <div class="container">
     <header class="app-header">
-        <div id="currentUserDisplay" class="user-status-display" onclick="showMyPage()"></div>
+        <!-- 修正: コイン表示に対応するためJSでテキスト制御 -->
+        <div id="currentUserDisplay" class="user-status-display" onclick="showMyPage()">GUEST</div>
         <div class="header-btn left" onclick="manualReload()">↻</div>
         <h1 id="pageTitle">MATCH INPUT</h1>
         <div class="subtitle">DEEP SPACE INTEGRATED SYSTEM</div>
@@ -214,16 +215,17 @@
                 <div class="game-card-title">CARD BATTLE</div>
             </div>
 
+            <!-- 追加: スロットゲーム -->
+            <div class="game-card" onclick="openSlotGame()">
+                <div class="game-status live">NEW</div>
+                <div class="game-icon">🎰</div>
+                <div class="game-card-title">SLOT MACHINE</div>
+            </div>
+
             <div class="game-card" onclick="openCoinGame()">
                 <div class="game-status live">LIVE</div>
                 <div class="game-icon">🪙</div>
                 <div class="game-card-title">COIN TOSS</div>
-            </div>
-
-            <div class="game-card locked">
-                <div class="game-status">OFFLINE</div>
-                <div class="game-icon">🔒</div>
-                <div class="game-card-title">COMING SOON</div>
             </div>
         </div>
     </div>
@@ -273,6 +275,44 @@
         </div>
     </div>
 </div>
+
+<!-- 追加: スロットゲームモーダル -->
+<div id="slotGameModal" onclick="closeSlotGame(event)">
+    <div class="modal-content" style="max-width:400px; text-align:center; border-color: #ffd700; background: #111;">
+        <button class="close-btn" onclick="closeSlotGame(event)">×</button>
+        <div class="modal-title" style="color: #ffd700;">CASINO SLOT</div>
+        
+        <div class="slot-machine-container">
+            <div class="reel-container">
+                <div id="reel1" class="reel">7</div>
+            </div>
+            <div class="reel-container">
+                <div id="reel2" class="reel">7</div>
+            </div>
+            <div class="reel-container">
+                <div id="reel3" class="reel">7</div>
+            </div>
+        </div>
+
+        <div class="stop-btn-area">
+            <button id="stop1" class="btn-stop" onclick="stopReel(0)" disabled>STOP</button>
+            <button id="stop2" class="btn-stop" onclick="stopReel(1)" disabled>STOP</button>
+            <button id="stop3" class="btn-stop" onclick="stopReel(2)" disabled>STOP</button>
+        </div>
+
+        <div class="slot-info-area">
+            <div style="font-size:0.8rem; color:#aaa;">BET: 50 COINS</div>
+            <div id="slotMessage" style="color:#ffd700; height:20px; font-weight:bold; margin:10px 0;">WIN UP TO 1000!</div>
+        </div>
+
+        <button id="slotStartBtn" class="btn-spin" onclick="startSlot()">SPIN!</button>
+        
+        <div style="margin-top:15px; font-size:0.9rem; color:#fff;">
+            WALLET: <span id="slotWallet" style="color:#ffd700;">0</span>
+        </div>
+    </div>
+</div>
+
 
 <div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
     <div class="modal-content">
