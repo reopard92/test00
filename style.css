@@ -836,31 +836,32 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 }
 
 /* =========================================
-   SLOT MACHINE STYLES
+   SLOT MACHINE STYLES (NEW)
    ========================================= */
 .slot-payout-table {
     background: rgba(0,0,0,0.6);
     border: 1px solid #ffd700;
     border-radius: 4px;
-    padding: 8px;
+    padding: 5px; /* パディングを削減 */
     margin-bottom: 15px;
-    font-size: 0.75rem;
+    font-size: 0.7rem; /* 文字サイズ縮小 */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 16px;
+    gap: 5px 12px; /* 間隔を詰める */
 }
 .payout-row {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     color: #fff;
+    white-space: nowrap; /* 折り返し防止 */
 }
 .payout-row.danger {
     color: #ff5252;
 }
 .payout-icon {
-    font-size: 1rem;
+    font-size: 0.9rem; /* アイコンサイズ調整 */
 }
 .payout-val {
     font-weight: bold;
