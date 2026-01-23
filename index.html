@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 49A</title>
+    <title>CODE NAME: 49B</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -43,7 +43,7 @@
     <!-- TOP SECTION -->
     <div id="view-top" class="view-section">
         <div class="section-title">WEATHER FORECAST</div>
-        <!-- 修正: CSSで高さを確保するための中身 -->
+        <!-- CSSで高さを確保するためのプレースホルダー（empty-slot）を含む -->
         <div id="weather-forecast" class="weather-container">
             <div class="weather-card"><div class="spinning">❖</div></div>
             <div class="weather-card empty-slot"></div>
@@ -198,7 +198,7 @@
         </div>
         <div id="scheduleTabs" class="month-tabs-area"></div>
         <div id="scheduleList" class="schedule-list">
-            <!-- 修正: CSSで高さを確保するためのプレースホルダー -->
+            <!-- CSSで高さを確保するためのプレースホルダー -->
             <div style="padding:20px; text-align:center; color:#888;">LOADING DATA...</div>
         </div>
     </div>
@@ -281,21 +281,21 @@
     </div>
 </div>
 
-<!-- スロットゲームモーダル (更新: 配当表 & レバー) -->
+<!-- スロットゲームモーダル (更新: 配当表シンプル化 & レバー) -->
 <div id="slotGameModal" onclick="closeSlotGame(event)">
     <div class="modal-content" style="max-width:480px; text-align:center; border-color: #ffd700; background: #111; padding: 20px 10px;">
         <button class="close-btn" onclick="closeSlotGame(event)">×</button>
         <div class="modal-title" style="color: #ffd700; margin-bottom: 5px;">CASINO SLOT</div>
         
-        <!-- 配当表エリア -->
+        <!-- 配当表エリア (シンプル版) -->
         <div class="slot-payout-table">
-            <div class="payout-row"><span class="payout-icon">777</span> <span class="payout-val">7777</span></div>
-            <div class="payout-row"><span class="payout-icon">💎💎💎</span> <span class="payout-val">1000</span></div>
-            <div class="payout-row"><span class="payout-icon">🔔🔔🔔</span> <span class="payout-val">500</span></div>
-            <div class="payout-row"><span class="payout-icon">🍇🍇🍇</span> <span class="payout-val">300</span></div>
-            <div class="payout-row"><span class="payout-icon">🍒🍒🍒</span> <span class="payout-val">100</span></div>
-            <div class="payout-row"><span class="payout-icon">Any 7</span> <span class="payout-val">20</span></div>
-            <div class="payout-row danger"><span class="payout-icon">💀💀💀</span> <span class="payout-val">-1000</span></div>
+            <div class="payout-row"><span class="payout-icon">7</span> <span class="payout-val">7777</span></div>
+            <div class="payout-row"><span class="payout-icon">💎</span> <span class="payout-val">1000</span></div>
+            <div class="payout-row"><span class="payout-icon">🔔</span> <span class="payout-val">500</span></div>
+            <div class="payout-row"><span class="payout-icon">🍇</span> <span class="payout-val">300</span></div>
+            <div class="payout-row"><span class="payout-icon">🍒</span> <span class="payout-val">100</span></div>
+            <div class="payout-row"><span class="payout-icon">Any7</span> <span class="payout-val">20</span></div>
+            <div class="payout-row danger"><span class="payout-icon">💀</span> <span class="payout-val">-1000</span></div>
         </div>
 
         <div class="slot-frame">
