@@ -94,6 +94,16 @@ if ('serviceWorker' in navigator) {
                 document.getElementById('sideMenu').classList.remove('open');
             }
         }, {passive: true});
+        
+        // スロットデータ保存用のイベントリスナー（非表示時・終了時）
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                saveSlotSession();
+            }
+        });
+        window.addEventListener('beforeunload', () => {
+            saveSlotSession();
+        });
     };
 
     // --- COIN MANAGEMENT LOGIC (UPDATED for GAS) ---
@@ -129,10 +139,14 @@ if ('serviceWorker' in navigator) {
         if (!currentUser) return;
         
         // メモリ上で即時反映（楽観的更新）
-        currentCoins += amount;
-        updateUserDisplay();
-        if(document.getElementById('view-mypage').classList.contains('active')) {
-            renderMyPage();
+        // スロットの場合は別途計算しているのでここでは加算しないケースもあるが、
+        // デイリーボーナス等の単発更新用として残す
+        if (isBonus) {
+            currentCoins += amount;
+            updateUserDisplay();
+            if(document.getElementById('view-mypage').classList.contains('active')) {
+                renderMyPage();
+            }
         }
 
         if (!COIN_MANAGER_URL || COIN_MANAGER_URL === "") return;
@@ -144,14 +158,14 @@ if ('serviceWorker' in navigator) {
             amount: amount
         };
 
+        // keepalive: true を追加して、画面遷移時でも送信されるようにする
         fetch(COIN_MANAGER_URL, {
             method: 'POST',
             mode: 'no-cors', // CORS回避のためno-cors（レスポンスは読めないが送信はできる）
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            keepalive: true
         }).then(() => {
-            // no-corsなので成功かどうかは不明だが、エラーが出なければOKとみなす
-            // 念のため少し後に再取得しても良いが、ここでは省略
             if(isBonus) {
                 // ローカルの最終取得日も更新しておく
                 const d = new Date();
@@ -574,14 +588,16 @@ if ('serviceWorker' in navigator) {
         }, 1500);
     }
     
-    // --- SLOT MACHINE LOGIC (LEVER) ---
-    // Added 💀 to symbols
+    // --- SLOT MACHINE LOGIC (LEVER & BATCH SAVE) ---
     const slotSymbols = ['7', '🔔', '🍒', '🍇', '🍋', '💎', '💀'];
     let slotIntervals = [null, null, null];
     let slotValues = [0, 0, 0]; // Index of slotSymbols
     let isSlotSpinning = [false, false, false];
     let isLeverLocked = false;
     const SLOT_BET = 20; // 20 coins
+    
+    // 現在のセッションでの増減額を保持する変数
+    let slotSessionDelta = 0;
     
     function openSlotGame() {
         if(!currentUser) {
@@ -590,15 +606,48 @@ if ('serviceWorker' in navigator) {
         }
         document.getElementById('slotGameModal').style.display = 'flex';
         document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
+        
+        // セッション増減をリセット
+        slotSessionDelta = 0;
+        
         resetSlotUI();
     }
     
     function closeSlotGame(e) {
         if(e.target.id === 'slotGameModal' || e.target.className === 'close-btn') {
+            // 保存処理を実行
+            saveSlotSession();
+            
             document.getElementById('slotGameModal').style.display = 'none';
             // Stop everything if closed
             slotIntervals.forEach(i => clearInterval(i));
         }
+    }
+    
+    // まとめて保存する関数
+    function saveSlotSession() {
+        if (slotSessionDelta === 0) return; // 変動なしなら送信しない
+        
+        if (!COIN_MANAGER_URL || COIN_MANAGER_URL === "" || !currentUser) return;
+
+        // GASへ送信
+        const payload = {
+            user: currentUser.name,
+            action: 'update',
+            amount: slotSessionDelta
+        };
+
+        // keepalive: true を追加
+        fetch(COIN_MANAGER_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true
+        }).catch(err => console.error("Session save error:", err));
+        
+        // 送信したのでリセット
+        slotSessionDelta = 0;
     }
     
     function resetSlotUI() {
@@ -633,9 +682,12 @@ if ('serviceWorker' in navigator) {
     }
     
     function startSlot() {
-        // Pay Bet
-        updateCoinData(-SLOT_BET);
+        // メモリ上で計算
+        currentCoins -= SLOT_BET;
+        slotSessionDelta -= SLOT_BET;
+        
         document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
+        updateUserDisplay(); // ヘッダー表示更新
         
         document.getElementById('slotMessage').innerText = "GOOD LUCK!";
         
@@ -704,17 +756,22 @@ if ('serviceWorker' in navigator) {
         }
         
         if (isNegative) {
-            updateCoinData(-winAmount);
+            // マイナスの場合
+            currentCoins -= winAmount;
+            slotSessionDelta -= winAmount;
             showToast(`LOST ${winAmount} COINS...`);
             document.getElementById('slotMessage').style.color = '#ff5252';
         } else if (winAmount > 0) {
-            updateCoinData(winAmount);
+            // プラスの場合
+            currentCoins += winAmount;
+            slotSessionDelta += winAmount;
             showToast(`WIN! +${winAmount} COINS`);
             document.getElementById('slotMessage').style.color = '#ffd700';
         } else {
             document.getElementById('slotMessage').style.color = '#fff';
         }
         
+        updateUserDisplay(); // ヘッダー表示更新
         document.getElementById('slotMessage').innerText = message;
         document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
         
