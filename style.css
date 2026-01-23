@@ -237,7 +237,7 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 .btn-send:disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; }
 .header-ctrl-area { position: absolute; top: 0; right: 0; margin-top: 60px; display: flex; gap: 10px; }
 
-/* GAME PORTAL STYLES & COIN RANKING */
+/* GAME PORTAL STYLES */
 .game-hero {
     background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1614728263952-84ea256f9679?q=80&w=1000&auto=format&fit=crop');
     background-size: cover;
@@ -251,19 +251,10 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     position: relative;
     overflow: hidden;
 }
-.game-hero.coin-hero {
-    background: linear-gradient(to bottom, #1a1a2e, #16213e); /* Dark blue background */
-    border-color: #ffd700;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
-}
 .game-hero::before {
     content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
     background: linear-gradient(90deg, transparent, #00ffff, transparent);
     box-shadow: 0 0 10px #00ffff;
-}
-.game-hero.coin-hero::before {
-    background: linear-gradient(90deg, transparent, #ffd700, transparent);
-    box-shadow: 0 0 10px #ffd700;
 }
 .game-tag {
     display: inline-block;
@@ -275,34 +266,13 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     margin-bottom: 10px;
     border: 1px solid rgba(0,255,255,0.3);
 }
-.game-hero h2 { font-size: 1.5rem; margin: 5px 0 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); font-weight: 300; }
+.game-hero h2 { font-size: 1.8rem; margin: 10px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); font-weight: 300; }
+.game-hero p { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; }
 .btn-hero {
     background: #00ffff; color: #000; border: none; padding: 10px 30px; font-weight: bold; letter-spacing: 2px;
     cursor: pointer; box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: 0.3s;
 }
 .btn-hero:hover { background: #fff; box-shadow: 0 0 25px rgba(0,255,255,0.8); }
-
-/* COIN RANKING LIST */
-.coin-ranking-list {
-    text-align: left;
-    max-height: 150px;
-    overflow-y: auto;
-    padding: 0 10px;
-}
-.coin-rank-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    font-size: 0.9rem;
-    color: #eee;
-}
-.coin-rank-row:last-child { border-bottom: none; }
-.cr-rank { width: 30px; font-weight: bold; color: #aaa; }
-.cr-rank.top1 { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
-.cr-rank.top2 { color: #c0c0c0; }
-.cr-rank.top3 { color: #cd7f32; }
-.cr-val { color: #ffd700; font-weight: bold; font-family: 'Courier New', monospace; }
 
 .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
 .game-card {
@@ -350,13 +320,14 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 .rank-bar-fill { height: 100%; background: #00ffff; width: 0%; box-shadow: 0 0 10px #00ffff; }
 .chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 30px; }
 
-/* Dropdown styles */
+/* Dropdown styles for Ranking page */
 .sector-select {
     padding: 8px 15px; font-size: 1rem;
     background-color: rgba(0, 0, 0, 0.6); color: #00ffff;
     border: 1px solid rgba(0, 255, 255, 0.5); border-radius: 4px;
     outline: none; cursor: pointer; width: 100%; max-width: 300px; display: block; margin: 0 auto;
 }
+
 .sector-filter::-webkit-scrollbar { display: none; }
 
 /* MY PAGE STYLES */
