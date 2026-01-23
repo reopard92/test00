@@ -1,5 +1,4 @@
-// Service Worker Registration
-    if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('sw.js').then(function(registration) {
                 console.log('ServiceWorker registration successful');
@@ -9,7 +8,6 @@
         });
     }
 
-    // --- CONFIGURATION ---
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzoybbIaxOq4EtWaBkvdPNzkN1_7lmFRnAQLbnu6A40YUQdbzX6gTfIY5CznZs13GYxZw/exec";
     const SCHEDULE_GAS_URL = "https://script.google.com/macros/s/AKfycbxkywDklSyaMf93hYhG-ULAyAEQ1qHGgaYjNewTxX34pfySOZKYsbwehygCccEvnchB/exec";
     const COIN_MANAGER_URL = "https://script.google.com/macros/s/AKfycbzIKbpFP8mr9XWi0B_WFswRpVZ5o_SGnOFOYRdPMnLP4kK-e61CCXLN3bUod4eNodQl/exec"; 
@@ -31,7 +29,6 @@
         { name: '提督',       min: 2000, icon: '🌌' }
     ];
 
-    // --- STATE VARIABLES ---
     let isEditMode = false;
     let isLoading = false;
     let playerStatsGlobal = {};
@@ -44,44 +41,36 @@
     let rawAnalysisMatches = [];
     let currentSector = 'ALL';
     
+    // スケジュールデータ保存用
     let globalScheduleData = [];
     let currentUser = null;
-    let currentCoins = 0;
-    let lastBonusDate = null;
+    let currentCoins = 0; // 現在のコイン所持数（メモリ上）
+    let lastBonusDate = null; // 最終ボーナス取得日
 
-    // --- INITIALIZATION ---
     window.onload = function() {
         initAuth(); // Initialize Authentication
         initSelectors();
-        
-        // Set Date
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
-        const dateEl = document.getElementById('matchDate');
-        if(dateEl) dateEl.textContent = `${yyyy}-${mm}-${dd}`;
-        
-        // Initial Fetch
+        document.getElementById('matchDate').textContent = `${yyyy}-${mm}-${dd}`;
         fetchAnalysisData();
-        fetchScheduleData();
-        fetchWeather();
+        fetchScheduleData(); // Real Fetch
+        fetchWeather(); // Fetch Weather
         
-        // Restore View
+        // Restore last view from sessionStorage to keep page state on refresh
         const lastView = sessionStorage.getItem('lastView');
         if (lastView) {
             switchMainView(lastView);
         } else {
+            // Default to TOP
             switchMainView('top'); 
         }
 
-        // Hide Loading Screen
         setTimeout(() => {
-            const ls = document.getElementById('loadingScreen');
-            if(ls) {
-                ls.style.opacity = 0;
-                setTimeout(() => { ls.style.display = 'none'; }, 800);
-            }
+            document.getElementById('loadingScreen').style.opacity = 0;
+            setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
         }, 1000);
         
         // Swipe Logic
@@ -92,16 +81,18 @@
 
         document.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].screenX;
+            // 右端(画面幅-100px以内)から左へスワイプでオープン
             if(touchStartX > window.innerWidth - 100 && touchStartX - touchEndX > 50) {
                 document.getElementById('sideMenu').classList.add('open');
                 updateSideMenuActiveState();
             }
+            // 右へスワイプでクローズ
             if(touchEndX - touchStartX > 50) {
                 document.getElementById('sideMenu').classList.remove('open');
             }
         }, {passive: true});
         
-        // Slot Data Save Events
+        // スロットデータ保存用のイベントリスナー（非表示時・終了時）
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
                 saveSlotSession();
@@ -112,14 +103,16 @@
         });
     };
 
-    // --- COIN MANAGEMENT ---
+    // --- COIN MANAGEMENT LOGIC ---
     function fetchCoinData(userName) {
         if (!COIN_MANAGER_URL || COIN_MANAGER_URL === "") {
+            console.warn("Coin Manager URL is not set.");
             currentCoins = 0;
             updateUserDisplay();
             return;
         }
         
+        // GASからデータ取得 (doGet)
         const url = `${COIN_MANAGER_URL}?user=${encodeURIComponent(userName)}`;
         fetch(url)
             .then(res => res.json())
@@ -128,6 +121,7 @@
                     currentCoins = parseInt(data.coins);
                     lastBonusDate = data.lastBonus;
                     updateUserDisplay();
+                    // マイページが開いていれば更新
                     if(document.getElementById('view-mypage').classList.contains('active')) {
                         renderMyPage();
                     }
@@ -135,15 +129,11 @@
             })
             .catch(err => console.error("Coin fetch error:", err));
     }
-    
-    function fetchCoinRanking() {
-        const list = document.getElementById('coinRankingList');
-        if(list) list.innerHTML = `<div style="text-align:center; color:#aaa; font-size:0.8rem;">RANKING DATA SYNCING...</div>`;
-    }
 
     function updateCoinData(amount, isBonus = false) {
         if (!currentUser) return;
         
+        // メモリ上で即時反映
         if (isBonus) {
             currentCoins += amount;
             updateUserDisplay();
@@ -154,6 +144,7 @@
 
         if (!COIN_MANAGER_URL || COIN_MANAGER_URL === "") return;
 
+        // GASへ送信
         const payload = {
             user: currentUser.name,
             action: isBonus ? 'bonus' : 'update',
@@ -170,18 +161,20 @@
             if(isBonus) {
                 const d = new Date();
                 lastBonusDate = `${d.getFullYear()}-${('0'+(d.getMonth()+1)).slice(-2)}-${('0'+d.getDate()).slice(-2)}`;
-                renderMyPage();
+                renderMyPage(); // ボタン状態更新のため
             }
         }).catch(err => console.error("Coin update error:", err));
     }
 
     function checkDailyBonus() {
-        if (!lastBonusDate) return true;
+        if (!lastBonusDate) return true; // 未取得ならOK
+        
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = ('0' + (today.getMonth() + 1)).slice(-2);
         const dd = ('0' + today.getDate()).slice(-2);
         const todayStr = `${yyyy}-${mm}-${dd}`;
+        
         return lastBonusDate !== todayStr;
     }
 
@@ -190,13 +183,15 @@
             showToast("ALREADY RECEIVED TODAY");
             return;
         }
+        
         const btn = document.getElementById('dailyBonusBtn');
         if(btn) btn.disabled = true;
+        
         showToast("BONUS CLAIMED: +500");
         updateCoinData(500, true);
     }
 
-    // --- AUTHENTICATION ---
+    // --- AUTHENTICATION LOGIC ---
     window.onAuthDataLoaded = function(json) {
         const pass = document.getElementById('loginPassInput').value;
         const btn = document.querySelector('.btn-login');
@@ -205,7 +200,7 @@
 
         if (!json || !json.table || !json.table.rows) {
             console.error("Auth Data Error:", json);
-            alert("ACCESS DENIED: DATA LOAD FAILED");
+            alert("ACCESS DENIED: DATA LOAD FAILED (Check Sheet Permissions)");
             btn.textContent = "AUTHENTICATE";
             btn.disabled = false;
             return;
@@ -272,7 +267,7 @@
         script.id = 'authScript';
         script.src = `https://docs.google.com/spreadsheets/d/${AUTH_SHEET_ID}/gviz/tq?tqx=responseHandler:onAuthDataLoaded&gid=${AUTH_SHEET_GID}`;
         script.onerror = function() {
-            alert("AUTH ERROR");
+            alert("AUTH ERROR: NETWORK OR SHEET ISSUE");
             btn.textContent = "AUTHENTICATE";
             btn.disabled = false;
         };
@@ -295,7 +290,6 @@
         }
     }
 
-    // --- VIEW / NAV ---
     function showMyPage() {
         document.getElementById('sideMenu').classList.remove('open');
         if (currentUser) {
@@ -310,6 +304,7 @@
         if (!currentUser) return;
         const name = currentUser.name;
         const pStats = playerStatsGlobal[name] || { wins: 0, losses: 0, games: 0, mvpCount: 0, matches: 0 };
+        const max = playerStatsGlobal._max || { wins:100, games:2000 };
         const rankInfo = getRankInfo(pStats.games);
         const nextRank = rankInfo.next;
         let expText = "MAX RANK";
@@ -320,6 +315,7 @@
             barW = Math.min((currentExp / range) * 100, 100);
             expText = `NEXT RANK: ${nextRank.min - pStats.games} EXP`;
         }
+        const coins = currentCoins;
         const canBonus = checkDailyBonus();
         const bonusBtnHtml = canBonus 
             ? `<button id="dailyBonusBtn" class="btn-bonus" onclick="claimDailyBonus()">🎁 GET DAILY BONUS (+500)</button>`
@@ -347,7 +343,7 @@
                 <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${barW}%"></div></div>
             </div>
             <div class="mypage-coin-area">
-                <div class="coin-val">${currentCoins.toLocaleString()}</div>
+                <div class="coin-val">${coins.toLocaleString()}</div>
                 <div class="coin-label">CRYPTO COINS</div>
                 <div id="dailyBonusArea" style="margin-top:10px;">${bonusBtnHtml}</div>
             </div>
@@ -379,6 +375,7 @@
         }
     }
 
+    // --- NAVIGATION LOGIC ---
     function toggleSideMenu() {
         const menu = document.getElementById('sideMenu');
         menu.classList.toggle('open');
@@ -422,7 +419,6 @@
             document.getElementById('pageTitle').textContent = "GAME ARCHIVE";
             subTitle.textContent = "TACTICAL SIMULATION MODULES";
             sessionStorage.setItem('lastView', 'game');
-            fetchCoinRanking();
         }
     }
 
@@ -443,6 +439,7 @@
         const titles = { 'top': 'HOME', 'match': 'MATCH INPUT', 'dashboard': 'DASHBOARD', 'ranking': 'RANKING', 'schedule': 'MISSION SCHEDULE', 'mypage': 'MY PAGE' };
         document.getElementById('pageTitle').textContent = titles[viewName] || 'TENNIS CHRONICLES';
 
+        // 修正: スケジュール画面のみBodyスクロール固定
         if (viewName === 'schedule') {
             document.body.classList.add('fixed-scroll');
         } else {
@@ -509,7 +506,7 @@
         setTimeout(() => { c.classList.remove('spinning'); c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; }, 1500);
     }
     
-    // --- SLOT MACHINE ---
+    // --- SLOT MACHINE LOGIC (LEVER & BATCH SAVE & PROBABILITY) ---
     const slotSymbols = ['7', '🔔', '🍒', '🍇', '🍋', '💎', '💀'];
     let slotIntervals = [null, null, null];
     let slotValues = [0, 0, 0];
@@ -597,6 +594,7 @@
         document.getElementById(`stop${index+1}`).disabled = true;
         document.getElementById(`reel${index+1}`).classList.remove('spinning');
         
+        // 修正: 確率制御 (🍒のみ11%、他は等確率)
         const finalIndex = getWeightedSlotIndex();
         slotValues[index] = finalIndex;
         document.getElementById(`reel${index+1}`).innerText = slotSymbols[finalIndex];
@@ -606,11 +604,14 @@
         }
     }
 
+    // 確率計算関数
     function getWeightedSlotIndex() {
         const r = Math.random() * 100;
+        // Cherry index in slotSymbols is 2 ('🍒')
         if (r < 11) {
             return 2; // Cherry
         } else {
+            // 残りの確率からCherry以外をランダム選出
             const otherIndices = [0, 1, 3, 4, 5, 6];
             const rand = Math.floor(Math.random() * otherIndices.length);
             return otherIndices[rand];
@@ -664,6 +665,10 @@
     }
 
     // ================== MAP LOGIC ==================
+    const courtDatabase = {
+        "MOGUSA": { name: "百草テニスガーデン", address: "〒191-0033 東京都日野市百草878−1", tel: "042-591-1212", hours: "9:00～18:00", costStr: "¥4,500/h", costVal: 4500, mapSrc: "https://googleusercontent.com/maps.google.com/5" },
+        "NERIMA": { name: "練馬ステップイン", address: "〒177-0035 東京都練馬区南田中1丁目15−22", tel: "03-3904-7051", hours: "9:00～21:30", costStr: "¥4,000/h", costVal: 4000, mapSrc: "" }
+    };
     function renderMapInfo(val) {
         const c = document.getElementById('mapContainer');
         const data = courtDatabase[val];
@@ -738,7 +743,7 @@
 
     function closeScheduleModal(e) { if(e.target.id === 'scheduleDetailModal' || e.target.className === 'close-btn') { document.getElementById('scheduleDetailModal').style.display = 'none'; } }
 
-    // ================== INPUT LOGIC ==================
+    // ================== INPUT LOGIC (Existing) ==================
     const patterns = [[1, 2, 3, 4, 5],[1, 5, 2, 3, 4],[1, 4, 2, 5, 3],[1, 3, 4, 5, 2],[2, 4, 3, 5, 1]];
 
     function initSelectors() {
