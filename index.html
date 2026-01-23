@@ -10,10 +10,10 @@
     <meta name="apple-mobile-web-app-title" content="TENNIS">
     <link rel="apple-touch-icon" href="./icon.png">
     
-    <!-- 外部ライブラリ (Chart.js) -->
+    <!-- External Libs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- CSSファイルの読み込み -->
+    <!-- Link to external CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -199,12 +199,11 @@
 
     <!-- GAME SECTION -->
     <div id="view-game" class="view-section">
-        <!-- COIN RANKING HEADER -->
-        <div class="ranking-header">
-            <div style="font-size:0.8rem; color:#00ffff; letter-spacing:2px; margin-bottom:10px;">TOTAL ASSET RANKING</div>
-            <div id="coinRankingList" class="coin-ranking-list">
-                <div style="padding:10px; color:#666;">CALCULATING...</div>
-            </div>
+        <div class="game-hero">
+            <div class="game-tag">DEV PHASE 1</div>
+            <h2>RESOURCE STRATEGY<br>CARD BATTLE</h2>
+            <p>1v1 TACTICAL CARD GAME</p>
+            <button class="btn-hero" onclick="window.location.href='https://reopard92.github.io/game/'">PLAY NOW</button>
         </div>
 
         <div class="section-title">MINI GAMES & TOOLS</div>
@@ -221,22 +220,17 @@
                 <div class="game-card-title">COIN TOSS</div>
             </div>
 
-            <div class="game-card" onclick="openSlotGame()">
-                <div class="game-status live">LIVE</div>
-                <div class="game-icon">🎰</div>
-                <div class="game-card-title">CYBER SLOTS</div>
-            </div>
-
-            <div class="game-card" onclick="openShop()">
-                <div class="game-status live">SHOP</div>
-                <div class="game-icon">🛒</div>
-                <div class="game-card-title">ITEM SHOP</div>
+            <div class="game-card locked">
+                <div class="game-status">OFFLINE</div>
+                <div class="game-icon">🔒</div>
+                <div class="game-card-title">COMING SOON</div>
             </div>
         </div>
     </div>
 
 </div>
 
+<!-- FOOTER NAV -->
 <nav id="bottomNav" class="bottom-nav">
     <button class="nav-item active" onclick="switchMainView('top')"><span class="nav-icon">🏠</span>TOP</button>
     <button class="nav-item" onclick="switchMainView('match')"><span class="nav-icon">🎾</span>INPUT</button>
@@ -263,21 +257,15 @@
     </div>
 </div>
 
-<div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
-    <div class="modal-content">
-        <button class="close-btn" onclick="closeScheduleModal(event)">×</button>
-        <div class="detail-header">
-            <div class="detail-date" id="modalScheduleDate"></div>
-            <div style="font-size:0.8rem; color:#888;">回答状況</div>
-        </div>
-        <ul class="detail-list" id="modalScheduleList"></ul>
+<div id="videoModal" onclick="closeVideoModal(event)">
+    <div class="video-container">
+        <div id="videoPlayer"></div>
     </div>
 </div>
 
-<!-- COIN MODAL -->
-<div id="coinGameModal" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
+<div id="coinGameModal" onclick="closeCoinGame(event)">
     <div class="modal-content" style="max-width:300px; text-align:center;">
-        <button class="close-btn" onclick="document.getElementById('coinGameModal').style.display='none'">×</button>
+        <button class="close-btn" onclick="closeCoinGame(event)">×</button>
         <div class="modal-title">COIN TOSS</div>
         <div class="coin-game-container">
             <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
@@ -286,76 +274,14 @@
     </div>
 </div>
 
-<!-- SLOT MODAL -->
-<div id="slotGameModal" class="modal-overlay" onclick="if(event.target===this && !isSpinning)closeGameModal('slotGameModal')">
-    <div class="modal-content slot-machine-frame">
-        <span class="close-btn" onclick="if(!isSpinning)closeGameModal('slotGameModal')">×</span >
-        <div style="color:#00ffff; margin-bottom:15px; letter-spacing:2px; font-weight:bold; text-shadow:0 0 10px rgba(0,255,255,0.5);">CYBER SLOTS</div>
-        
-        <div class="slot-main-body">
-            <div class="slot-container">
-                <div class="reel-wrapper">
-                    <div id="reel1" class="slot-reel">?</div>
-                    <button class="slot-stop-btn" id="stop1" onclick="stopReel(0)" disabled>STOP</button>
-                </div>
-                <div class="reel-wrapper">
-                    <div id="reel2" class="slot-reel">?</div>
-                    <button class="slot-stop-btn" id="stop2" onclick="stopReel(1)" disabled>STOP</button>
-                </div>
-                <div class="reel-wrapper">
-                    <div id="reel3" class="slot-reel">?</div>
-                    <button class="slot-stop-btn" id="stop3" onclick="stopReel(2)" disabled>STOP</button>
-                </div>
-            </div>
-            
-            <div class="lever-container" onclick="spinSlot()">
-                <div class="lever-base"></div>
-                <div class="lever-arm" id="slotLeverArm">
-                    <div class="lever-handle" id="slotLeverHandle"></div>
-                </div>
-            </div>
-        </div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
-            <div id="slotMsg" style="color:#aaa; font-size:0.9rem;">BET 20 COINS</div>
-            <div id="slotCredit" style="color:#ffd700; font-weight:bold; font-size:0.9rem;">CREDIT: -</div>
-        </div>
-        <div style="font-size:0.7rem; color:#666; margin-top:5px;">PULL THE LEVER TO START</div>
-        
-        <div style="margin-top:20px; font-size:0.6rem; color:#555; line-height:1.5; border-top:1px dashed #333; padding-top:10px;">
-            777: 7777 | 💎: 1000 | 🔔: 500 | 🍒: 300 | 🌙x3: 100
-        </div>
-    </div>
-</div>
-
-<!-- SHOP MODAL -->
-<div id="shopModal" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
+<div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
     <div class="modal-content">
-        <span class="close-btn" onclick="document.getElementById('shopModal').style.display='none'">×</span>
-        <div style="margin-bottom:10px; letter-spacing:2px;">ITEM SHOP</div>
-        <div class="holo-showcase">
-            <div class="holo-item">
-                <img src="./今田美桜.png" onerror="this.src='https://placehold.co/180x180/000/00ffff?text=CARD'" alt="ITEM" class="holo-img">
-            </div>
-            <div style="margin:10px 0; font-size:1.1rem; font-weight:bold;">LIMITED CARD<br><span style="color:#ffd700; font-size:0.9rem;">10,000 COINS</span></div>
-            <button class="hold-btn" onmousedown="startHold(this, event)" ontouchstart="startHold(this, event)" onmouseup="endHold(this)" ontouchend="endHold(this)" onmouseleave="endHold(this)">
-                <div class="hold-progress"></div>
-                <span style="position:relative; z-index:2;">HOLD TO BUY</span>
-            </button>
+        <button class="close-btn" onclick="closeScheduleModal(event)">×</button>
+        <div class="detail-header">
+            <div class="detail-date" id="modalScheduleDate"></div>
+            <div style="font-size:0.8rem; color:#888;">回答状況</div>
         </div>
-    </div>
-</div>
-
-<!-- CARD VIEW MODAL -->
-<div id="cardViewModal" class="modal-overlay" onclick="closeCardView()">
-    <div class="card-view-container">
-        <div id="holoCard" class="holo-card">
-            <div class="card-face">
-                <img src="./今田美桜.png" onerror="this.src='https://placehold.co/300x450/000/00ffff?text=RARE+CARD'" alt="RARE CARD">
-                <div class="holo-glare"></div>
-            </div>
-        </div>
-        <div style="color:white; margin-top:20px; text-align:center; font-size:0.8rem; opacity:0.7;">TILT YOUR DEVICE</div>
+        <ul class="detail-list" id="modalScheduleList"></ul>
     </div>
 </div>
 
@@ -374,17 +300,8 @@
 
 <div id="toast"></div>
 
-<!-- JSの読み込み：統合された1つのファイルを読み込む -->
+<!-- Link to external JS -->
 <script src="script.js"></script>
-
-<!-- Service Worker Register (Optional) -->
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-            navigator.serviceWorker.register('sw.js').catch(e => console.log('SW fail', e));
-        });
-    }
-</script>
 
 </body>
 </html>
