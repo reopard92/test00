@@ -19,11 +19,6 @@ body {
     padding-bottom: 80px;
     overscroll-behavior-x: none;
 }
-/* スケジュールページ表示時のみJSでこのクラスをbodyに付与 */
-body.fixed-scroll {
-    overflow: hidden;
-}
-
 .container {
     max-width: 900px;
     margin: 0 auto;
@@ -266,7 +261,8 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     margin-bottom: 10px;
     border: 1px solid rgba(0,255,255,0.3);
 }
-.game-hero h2 { font-size: 1.5rem; margin: 5px 0 15px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); font-weight: 300; }
+.game-hero h2 { font-size: 1.8rem; margin: 10px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); font-weight: 300; }
+.game-hero p { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; }
 .btn-hero {
     background: #00ffff; color: #000; border: none; padding: 10px 30px; font-weight: bold; letter-spacing: 2px;
     cursor: pointer; box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: 0.3s;
@@ -447,14 +443,10 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 }
 .month-tab.active { background: #00ffff; color: #000; font-weight: bold; box-shadow: 0 0 10px rgba(0,255,255,0.3); }
 
-/* スケジュールリスト: コンテナ内でスクロールさせる */
-.schedule-scroll-container {
-    height: calc(100vh - 250px); /* 画面高さからヘッダー等を引く */
-    overflow-y: auto; /* 縦スクロール */
-    min-height: 400px; /* 最低高さ確保 */
-}
+/* スケジュールリスト: スクロール制限なし（49B仕様） */
 .schedule-list {
     list-style: none; padding: 0; margin: 0;
+    /* 49Bはスクロールコンテナなしのため、そのまま表示 */
 }
 .schedule-item {
     display: flex; justify-content: space-between; align-items: center; padding: 20px 15px;
@@ -508,7 +500,7 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 .btn-guest { background: transparent; color: #ff5252; border: 1px solid #ff5252; padding: 5px 20px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
 
 /* =========================================
-   SLOT MACHINE STYLES (NEW)
+   SLOT MACHINE STYLES (49B仕様: 通常サイズ、レバーあり)
    ========================================= */
 .slot-payout-table {
     background: rgba(0,0,0,0.6); border: 1px solid #ffd700; border-radius: 4px;
@@ -525,24 +517,18 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin: 10px 0 20px 0;
 }
 
-/* スロット本体を少し大きく */
-.slot-machine-container.large-slot {
-    display: flex; justify-content: center; gap: 8px; background: #222; padding: 15px;
+.slot-machine-container {
+    display: flex; justify-content: center; gap: 8px; background: #222; padding: 12px;
     border-radius: 8px; border: 3px solid #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
 }
 
-.reel-wrapper {
-    display: flex; flex-direction: column; align-items: center; gap: 5px;
-}
-
-/* リールサイズ拡大 */
-.reel-container.large-reel {
-    width: 70px; height: 90px; background: #fff; border-radius: 4px; overflow: hidden;
+.reel-container {
+    width: 50px; height: 70px; background: #fff; border-radius: 4px; overflow: hidden;
     position: relative; border: 3px solid #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
 }
 
 .reel {
-    font-size: 3.5rem; line-height: 90px; text-align: center; color: #000;
+    font-size: 2.5rem; line-height: 70px; text-align: center; color: #000;
     font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
 }
 
@@ -554,29 +540,32 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
 @keyframes blur-spin { 0% { background-position: 0 0; } 100% { background-position: 0 60px; } }
 
 /* Slot Lever Styles */
-.slot-lever-container.large-lever {
-    position: relative; width: 40px; height: 120px; cursor: pointer; margin-bottom: 30px; margin-left: 5px;
+.slot-lever-container {
+    position: relative; width: 30px; height: 100px; cursor: pointer; margin-bottom: 10px;
 }
-.slot-lever-base { position: absolute; bottom: 0; width: 100%; height: 50px; background: #444; border-radius: 4px; border: 1px solid #666; }
+.slot-lever-base { position: absolute; bottom: 0; width: 100%; height: 40px; background: #444; border-radius: 4px; border: 1px solid #666; }
 .slot-lever-stick {
-    position: absolute; bottom: 20px; left: 15px; width: 12px; height: 100px;
+    position: absolute; bottom: 20px; left: 10px; width: 10px; height: 80px;
     background: #888; border-radius: 5px; transform-origin: bottom center;
     transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
 }
 .slot-lever-knob {
-    position: absolute; top: -15px; left: -12px; width: 36px; height: 36px;
+    position: absolute; top: -15px; left: -10px; width: 30px; height: 30px;
     background: radial-gradient(circle at 30% 30%, #ff5252, #b71c1c); border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 .slot-lever-stick.pulled { transform: rotateX(60deg) scaleY(0.8); }
 
-/* Stop button adjustment */
-.btn-stop.large-btn {
-    width: 60px; padding: 10px 0; background: linear-gradient(to bottom, #ff5252, #d32f2f);
-    color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
-    box-shadow: 0 4px 0 #b71c1c; transition: 0.1s; font-size: 0.8rem; margin-top: 5px;
+.stop-btn-area {
+    display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;
 }
-.btn-stop.large-btn:active { transform: translateY(4px); box-shadow: none; }
-.btn-stop.large-btn:disabled { background: #555; box-shadow: none; color: #888; cursor: not-allowed; transform: translateY(4px); }
+
+.btn-stop {
+    width: 50px; padding: 8px 0; background: linear-gradient(to bottom, #ff5252, #d32f2f);
+    color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
+    box-shadow: 0 4px 0 #b71c1c; transition: 0.1s; font-size: 0.7rem;
+}
+.btn-stop:active { transform: translateY(4px); box-shadow: none; }
+.btn-stop:disabled { background: #555; box-shadow: none; color: #888; cursor: not-allowed; transform: translateY(4px); }
 
 .coin-game-container {
     display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px;
