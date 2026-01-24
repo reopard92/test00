@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 49D</title>
+    <title>CODE NAME: 49E</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -190,22 +190,20 @@
         </div>
     </div>
 
-    <!-- SCHEDULE SECTION (修正: スクロールコンテナ追加) -->
+    <!-- SCHEDULE SECTION (49B仕様: リスト全体スクロール) -->
     <div id="view-schedule" class="view-section">
         <div class="section-title">MISSION SCHEDULE</div>
         <div style="text-align:center; margin: 15px 0 25px 0;">
             <a href="https://liff.line.me/2008858372-NgwrDQlQ" target="_blank" style="color:#00ffff; text-decoration:none; border-bottom:1px solid #00ffff; padding-bottom:3px; font-size:0.9rem; letter-spacing:1px;">日程調整記入はこちらから ↗</a>
         </div>
         <div id="scheduleTabs" class="month-tabs-area"></div>
-        <!-- ここをスクロール領域にする -->
-        <div id="scheduleContainer" class="schedule-scroll-container">
-            <ul id="scheduleList" class="schedule-list">
-                <div style="padding:20px; text-align:center; color:#888;">LOADING DATA...</div>
-            </ul>
+        <div id="scheduleList" class="schedule-list">
+            <!-- CSSで高さを確保するためのプレースホルダー -->
+            <div style="padding:20px; text-align:center; color:#888;">LOADING DATA...</div>
         </div>
     </div>
 
-    <!-- GAME SECTION (バナーはリソースバトルのまま) -->
+    <!-- GAME SECTION -->
     <div id="view-game" class="view-section">
         <div class="game-hero">
             <div class="game-tag">DEV PHASE 1</div>
@@ -283,7 +281,7 @@
     </div>
 </div>
 
-<!-- スロットゲームモーダル (更新: 配当表 & レバー) -->
+<!-- スロットゲームモーダル (49B仕様: 通常サイズ、シンプル配当、レバーあり) -->
 <div id="slotGameModal" onclick="closeSlotGame(event)">
     <div class="modal-content" style="max-width:480px; text-align:center; border-color: #ffd700; background: #111; padding: 20px 10px;">
         <button class="close-btn" onclick="closeSlotGame(event)">×</button>
@@ -301,34 +299,31 @@
         </div>
 
         <div class="slot-frame">
-            <div class="slot-machine-container large-slot">
-                <div class="reel-wrapper">
-                    <div class="reel-container large-reel">
-                        <div id="reel1" class="reel">7</div>
-                    </div>
-                    <button id="stop1" class="btn-stop large-btn" onclick="stopReel(0)" disabled>STOP</button>
+            <div class="slot-machine-container">
+                <div class="reel-container">
+                    <div id="reel1" class="reel">7</div>
                 </div>
-                <div class="reel-wrapper">
-                    <div class="reel-container large-reel">
-                        <div id="reel2" class="reel">7</div>
-                    </div>
-                    <button id="stop2" class="btn-stop large-btn" onclick="stopReel(1)" disabled>STOP</button>
+                <div class="reel-container">
+                    <div id="reel2" class="reel">7</div>
                 </div>
-                <div class="reel-wrapper">
-                    <div class="reel-container large-reel">
-                        <div id="reel3" class="reel">7</div>
-                    </div>
-                    <button id="stop3" class="btn-stop large-btn" onclick="stopReel(2)" disabled>STOP</button>
+                <div class="reel-container">
+                    <div id="reel3" class="reel">7</div>
                 </div>
             </div>
             
             <!-- レバーエリア -->
-            <div class="slot-lever-container large-lever" onclick="pullSlotLever()">
+            <div class="slot-lever-container" onclick="pullSlotLever()">
                 <div class="slot-lever-base"></div>
                 <div class="slot-lever-stick">
                     <div class="slot-lever-knob"></div>
                 </div>
             </div>
+        </div>
+
+        <div class="stop-btn-area">
+            <button id="stop1" class="btn-stop" onclick="stopReel(0)" disabled>STOP</button>
+            <button id="stop2" class="btn-stop" onclick="stopReel(1)" disabled>STOP</button>
+            <button id="stop3" class="btn-stop" onclick="stopReel(2)" disabled>STOP</button>
         </div>
 
         <div class="slot-info-area">
