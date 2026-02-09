@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 49E</title>
+    <title>CODE NAME: 49C</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -43,7 +43,7 @@
     <!-- TOP SECTION -->
     <div id="view-top" class="view-section">
         <div class="section-title">WEATHER FORECAST</div>
-        <!-- CSSで高さを確保するためのプレースホルダー -->
+        <!-- CSSで高さを確保するためのプレースホルダー（empty-slot）を含む -->
         <div id="weather-forecast" class="weather-container">
             <div class="weather-card"><div class="spinning">❖</div></div>
             <div class="weather-card empty-slot"></div>
@@ -190,7 +190,7 @@
         </div>
     </div>
 
-    <!-- SCHEDULE SECTION (49B仕様: リスト全体スクロール) -->
+    <!-- SCHEDULE SECTION -->
     <div id="view-schedule" class="view-section">
         <div class="section-title">MISSION SCHEDULE</div>
         <div style="text-align:center; margin: 15px 0 25px 0;">
@@ -281,7 +281,7 @@
     </div>
 </div>
 
-<!-- スロットゲームモーダル (49B仕様: 通常サイズ、シンプル配当、レバーあり) -->
+<!-- スロットゲームモーダル (更新: 配当表シンプル化 & レバー) -->
 <div id="slotGameModal" onclick="closeSlotGame(event)">
     <div class="modal-content" style="max-width:480px; text-align:center; border-color: #ffd700; background: #111; padding: 20px 10px;">
         <button class="close-btn" onclick="closeSlotGame(event)">×</button>
