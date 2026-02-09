@@ -526,8 +526,6 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     padding: 0;
     margin: 0;
     min-height: 400px; /* ここで高さを確保 */
-    max-height: 60vh;
-    overflow-y: auto;
 }
 .schedule-item {
     display: flex;
@@ -1006,3 +1004,4 @@ td { padding: 12px 5px; text-align: center; border-bottom: 1px solid rgba(255, 2
     cursor: not-allowed;
     transform: translateY(4px);
 }
+
