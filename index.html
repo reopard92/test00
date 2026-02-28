@@ -3,18 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODE NAME: 49B</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="TENNIS">
-    <link rel="apple-touch-icon" href="./icon.png">
-    
-    <!-- External Libs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Link to external CSS -->
-    <link rel="stylesheet" href="style.css">
+    <title>GAME ARCHIVE - DEEP SPACE</title>
+    <style>
+        /* =========================================
+           GLOBAL THEME: DEEP SPACE
+           ========================================= */
+        body {
+            font-family: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+            background-color: #020204;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 1.5px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 1.5px),
+                radial-gradient(white, rgba(255,255,255,.1) 1.5px, transparent 2px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            color: #e6e6e6;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 40px;
+            overscroll-behavior-x: none;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(20, 20, 30, 0.4);
+            padding: 30px;
+            border-radius: 2px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            position: relative;
+            min-height: 80vh;
+        }
+
+        /* --- STICKY HEADER --- */
+        .app-header {
+            text-align: center;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky; 
+            top: 0;
+            z-index: 5000;
+            background: rgba(2, 2, 4, 0.85); 
+            backdrop-filter: blur(10px);
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+        }
+        h1 {
+            color: #ffffff;
+            font-weight: 300;
+            font-size: 1.6rem;
+            letter-spacing: 3px;
+            margin: 0;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+        }
+        .subtitle {
+            font-size: 0.7rem;
+            color: #81d4fa;
+            letter-spacing: 2px;
+            margin-top: 3px;
+        }
+        .header-btn {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            background: transparent;
+            border: none;
+            color: #00ffff;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: 0.3s;
+            font-weight: bold;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+        }
+        .header-btn:active { transform: scale(0.9); text-shadow: 0 0 20px rgba(0, 255, 255, 1); }
+
+        /* --- USER STATUS DISPLAY --- */
+        .user-status-display {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            z-index: 5001;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: 'Courier New', monospace;
+        }
+        .status-guest { color: #ff5252; font-weight: bold; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
+        .status-user { color: #ffd700; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+
+        /* --- GAME PORTAL STYLES --- */
+        .section-title { font-size: 1.1rem; color: #fff; font-weight: 300; letter-spacing: 2px; margin: 30px 0 20px 0; border-left: 3px solid #00ffff; padding-left: 15px; }
+        .game-hero {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1614728263952-84ea256f9679?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+            border: 1px solid rgba(0,255,255,0.3);
+            box-shadow: 0 0 20px rgba(0,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .game-hero::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            box-shadow: 0 0 10px #00ffff;
+        }
+        .game-tag {
+            display: inline-block; background: rgba(0,255,255,0.1); color: #00ffff;
+            padding: 4px 12px; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 10px; border: 1px solid rgba(0,255,255,0.3);
+        }
+        .game-hero h2 { font-size: 1.8rem; margin: 10px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); font-weight: 300; }
+        .game-hero p { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; }
+        .btn-hero {
+            background: #00ffff; color: #000; border: none; padding: 10px 30px; font-weight: bold; letter-spacing: 2px;
+            cursor: pointer; box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: 0.3s;
+        }
+        .btn-hero:hover { background: #fff; box-shadow: 0 0 25px rgba(0,255,255,0.8); }
+
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
+        .game-card {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 20px;
+            text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1 / 1;
+        }
+        .game-card:hover { background: rgba(255,255,255,0.1); border-color: rgba(0,255,255,0.5); transform: translateY(-5px); }
+        .game-icon { font-size: 2.5rem; margin-bottom: 15px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+        .game-card-title { font-size: 0.8rem; font-weight: bold; color: #fff; letter-spacing: 1px; }
+        .game-status {
+            position: absolute; top: 10px; right: -25px; background: #333; color: #888;
+            font-size: 0.5rem; padding: 2px 25px; transform: rotate(45deg); width: 80px; text-align: center;
+        }
+        .game-status.live { background: #00ffff; color: #000; font-weight: bold; }
+
+        /* --- SLOT MACHINE STYLES --- */
+        .slot-payout-table {
+            background: rgba(0,0,0,0.6); border: 1px solid #ffd700; border-radius: 4px; padding: 5px; 
+            margin-bottom: 15px; font-size: 0.7rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px 12px;
+        }
+        .payout-row { display: flex; align-items: center; gap: 4px; color: #fff; white-space: nowrap; }
+        .payout-row.danger { color: #ff5252; }
+        .payout-icon { font-size: 0.9rem; }
+        .payout-val { font-weight: bold; color: #ffd700; }
+        .payout-row.danger .payout-val { color: #ff5252; }
+
+        .slot-frame { display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin: 10px 0 20px 0; }
+        .slot-machine-container {
+            display: flex; justify-content: center; gap: 8px; background: #222; padding: 12px;
+            border-radius: 8px; border: 3px solid #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+        .reel-container {
+            width: 50px; height: 70px; background: #fff; border-radius: 4px; overflow: hidden;
+            position: relative; border: 3px solid #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .reel { font-size: 2.5rem; line-height: 70px; text-align: center; color: #000; font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif; }
+        .reel.spinning {
+            animation: blur-spin 0.1s infinite; color: transparent; text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            background: repeating-linear-gradient(0deg, #fff 0%, #ccc 50%, #fff 100%); background-size: 100% 20px;
+        }
+        @keyframes blur-spin { 0% { background-position: 0 0; } 100% { background-position: 0 60px; } }
+
+        .slot-lever-container { position: relative; width: 30px; height: 100px; cursor: pointer; margin-bottom: 10px; }
+        .slot-lever-base { position: absolute; bottom: 0; width: 100%; height: 40px; background: #444; border-radius: 4px; border: 1px solid #666; }
+        .slot-lever-stick {
+            position: absolute; bottom: 20px; left: 10px; width: 10px; height: 80px; background: #888;
+            border-radius: 5px; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+        }
+        .slot-lever-knob {
+            position: absolute; top: -15px; left: -10px; width: 30px; height: 30px;
+            background: radial-gradient(circle at 30% 30%, #ff5252, #b71c1c); border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        .slot-lever-stick.pulled { transform: rotateX(60deg) scaleY(0.8); }
+
+        .stop-btn-area { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .btn-stop {
+            width: 50px; padding: 8px 0; background: linear-gradient(to bottom, #ff5252, #d32f2f); color: white; border: none;
+            border-radius: 4px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #b71c1c; transition: 0.1s; font-size: 0.7rem;
+        }
+        .btn-stop:active { transform: translateY(4px); box-shadow: none; }
+        .btn-stop:disabled { background: #555; box-shadow: none; color: #888; cursor: not-allowed; transform: translateY(4px); }
+
+        /* --- COIN TOSS STYLES --- */
+        .coin-game-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; }
+        .coin-large {
+            width: 120px; height: 120px; background: radial-gradient(circle at 30% 30%, #ffffff, #b0bec5);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: bold; color: #333; cursor: pointer; margin-bottom: 30px; border: 4px solid #fff;
+        }
+        .spinning { animation: spin 0.5s infinite ease-in-out; }
+        @keyframes spin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
+
+        /* --- MODALS & UI COMPONENTS --- */
+        #loginModal, #slotGameModal, #coinGameModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 6000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: rgba(15, 20, 30, 0.95); border: 1px solid #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+            width: 90%; max-width: 500px; padding: 30px; position: relative; border-radius: 4px;
+        }
+        .close-btn { position: absolute; top: 15px; right: 15px; color: #fff; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .modal-title { color: #fff; font-weight: 300; text-align: center; font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 2px; }
+
+        #loginPassInput {
+            width: 80%; padding: 10px; text-align: center; background: rgba(0,0,0,0.5); border: 1px solid #00ffff;
+            color: #fff; font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 20px; border-radius: 4px;
+        }
+        #loginPassInput:focus { outline: none; box-shadow: 0 0 15px rgba(0,255,255,0.4); }
+        .btn-login {
+            background: #00ffff; color: #000; border: none; padding: 10px 40px; font-weight: bold; letter-spacing: 2px;
+            cursor: pointer; box-shadow: 0 0 15px rgba(0,255,255,0.5); transition: 0.3s; margin-bottom: 15px;
+        }
+        .btn-guest { background: transparent; color: #ff5252; border: 1px solid #ff5252; padding: 5px 20px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
+        .btn-logout { background: transparent; color: #aaa; border: 1px solid #aaa; padding: 5px 15px; font-size: 0.7rem; cursor: pointer; margin-top: 10px; border-radius: 15px;}
+
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: rgba(0,0,0,0.9); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            text-align: center; border-radius: 2px; padding: 16px; position: fixed; z-index: 7000; left: 50%; bottom: 30px;
+            transform: translateX(-50%); opacity: 0; transition: 0.4s;
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+
+        #loadingScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020204;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease;
+        }
+        .loader-text { font-family: 'Courier New', Courier, monospace; color: #00ffff; font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 20px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .loader-bar { width: 200px; height: 1px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden; }
+        .loader-bar::after { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: #fff; box-shadow: 0 0 10px #fff; animation: load 2s ease-in-out forwards; }
+        @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
+
+        /* スマホ対応 */
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            h1 { font-size: 1.4rem; }
+        }
+    </style>
 </head>
 <body>
 
@@ -23,198 +269,16 @@
     <div class="loader-bar"></div>
 </div>
 
-<div id="sideMenu" class="side-menu-overlay" onclick="closeSideMenu(event)">
-    <div class="side-menu-content">
-        <div class="menu-item active" onclick="selectAppMode('tennis')">🎾 TENNIS</div>
-        <div class="menu-item" onclick="selectAppMode('game')">🎮 GAME</div>
-        <div class="menu-item" onclick="showMyPage()">👤 MY PAGE</div>
-    </div>
-</div>
-
 <div class="container">
     <header class="app-header">
-        <div id="currentUserDisplay" class="user-status-display" onclick="showMyPage()">GUEST</div>
-        <div class="header-btn left" onclick="manualReload()">↻</div>
-        <h1 id="pageTitle">MATCH INPUT</h1>
-        <div class="subtitle">DEEP SPACE INTEGRATED SYSTEM</div>
-        <div class="header-btn right" id="menuToggleBtn" onclick="toggleSideMenu()">≡</div>
+        <div id="currentUserDisplay" class="user-status-display" onclick="handleUserClick()">GUEST</div>
+        <button class="header-btn" onclick="location.reload()">↻</button>
+        <h1>GAME ARCHIVE</h1>
+        <div class="subtitle">TACTICAL SIMULATION MODULES</div>
     </header>
-    
-    <!-- TOP SECTION -->
-    <div id="view-top" class="view-section">
-        <div class="section-title">WEATHER FORECAST</div>
-        <!-- CSSで高さを確保するためのプレースホルダー（empty-slot）を含む -->
-        <div id="weather-forecast" class="weather-container">
-            <div class="weather-card"><div class="spinning">❖</div></div>
-            <div class="weather-card empty-slot"></div>
-            <div class="weather-card empty-slot"></div>
-            <div class="weather-card empty-slot"></div>
-            <div class="weather-card empty-slot"></div>
-        </div>
-
-        <div class="section-title">COURT NAVIGATION</div>
-        <div class="sector-filter-area" style="text-align:center; margin-bottom:20px;">
-            <select id="mapSectorSelect" class="sector-select" onchange="renderMapInfo(this.value)">
-                <option value="-">SELECT SECTOR</option>
-                <option value="MOGUSA">百草テニスガーデン</option>
-                <option value="NERIMA">練馬ステップイン</option>
-            </select>
-        </div>
-        <div id="mapContainer">
-            <div class="empty-map-state">
-                <div class="spinning" style="display:inline-block; margin-bottom:10px;">❖</div><br>
-                WAITING FOR NAVI INPUT...
-            </div>
-        </div>
-    </div>
-
-    <!-- MY PAGE SECTION -->
-    <div id="view-mypage" class="view-section">
-        <div id="myPageContent">
-            <!-- Content injected by JS -->
-        </div>
-        <input type="file" id="avatarInput" hidden accept="image/*" onchange="handleAvatarUpload(this)">
-    </div>
-
-    <!-- MATCH INPUT SECTION -->
-    <div id="view-match" class="view-section active">
-        <div class="input-header-area">
-            <div id="matchDate"></div>
-            <select id="courtSelect" onchange="saveState()" disabled>
-                <option value="-">-</option>
-                <option value="練馬ステップイン">練馬ステップイン</option>
-                <option value="百草テニスガーデン">百草テニスガーデン</option>
-                <option value="モリパーク テニスガーデン">モリパーク テニスガーデン</option>
-                <option value="白子町">白子町</option>
-            </select>
-            <div class="header-ctrl-area">
-                 <button id="editBtn" class="btn-ctrl" onclick="toggleEditMode()">EDIT</button>
-                 <button id="resetBtn" class="btn-ctrl" onclick="secureReset()" disabled>RESET</button>
-            </div>
-        </div>
-
-        <div class="round-title">ROUND 01</div>
-        <div class="player-inputs">
-            <div class="input-group"><label>I</label><select id="r1_p1" class="player-select" onchange="updateSchedule('r1')" disabled></select></div>
-            <div class="input-group"><label>II</label><select id="r1_p2" class="player-select" onchange="updateSchedule('r1')" disabled></select></div>
-            <div class="input-group"><label>III</label><select id="r1_p3" class="player-select" onchange="updateSchedule('r1')" disabled></select></div>
-            <div class="input-group"><label>IV</label><select id="r1_p4" class="player-select" onchange="updateSchedule('r1')" disabled></select></div>
-            <div class="input-group"><label>V</label><select id="r1_p5" class="player-select" onchange="updateSchedule('r1')" disabled></select></div>
-        </div>
-        <table class="input-match-table">
-            <thead><tr><th>No.</th><th>PAIR A</th><th>G</th><th></th><th>G</th><th>PAIR B</th><th>REST</th></tr></thead>
-            <tbody id="r1_matchTableBody"></tbody>
-        </table>
-        <div style="text-align: center;" class="ranking-area"><h3>RANKING // 1st Phase</h3></div>
-        <table class="standard-table">
-            <thead><tr><th>#</th><th>NAME</th><th>WIN</th><th>RATE</th><th>G</th></tr></thead>
-            <tbody id="r1_rankingTableBody"></tbody>
-        </table>
-
-        <div class="round-title">ROUND 02</div>
-        <div class="player-inputs">
-            <div class="input-group"><label>I</label><select id="r2_p1" class="player-select" onchange="updateSchedule('r2')" disabled></select></div>
-            <div class="input-group"><label>II</label><select id="r2_p2" class="player-select" onchange="updateSchedule('r2')" disabled></select></div>
-            <div class="input-group"><label>III</label><select id="r2_p3" class="player-select" onchange="updateSchedule('r2')" disabled></select></div>
-            <div class="input-group"><label>IV</label><select id="r2_p4" class="player-select" onchange="updateSchedule('r2')" disabled></select></div>
-            <div class="input-group"><label>V</label><select id="r2_p5" class="player-select" onchange="updateSchedule('r2')" disabled></select></div>
-        </div>
-        <table class="input-match-table">
-            <thead><tr><th>No.</th><th>PAIR A</th><th>G</th><th></th><th>G</th><th>PAIR B</th><th>REST</th></tr></thead>
-            <tbody id="r2_matchTableBody"></tbody>
-        </table>
-        <div style="text-align: center;" class="ranking-area"><h3>RANKING // 2nd Phase</h3></div>
-        <table class="standard-table">
-            <thead><tr><th>#</th><th>NAME</th><th>WIN</th><th>RATE</th><th>G</th></tr></thead>
-            <tbody id="r2_rankingTableBody"></tbody>
-        </table>
-
-        <div style="text-align: center; margin-top:30px;" class="ranking-area"><h3 style="color:#fff;">TOTAL RANKING (TODAY)</h3></div>
-        <table class="standard-table">
-            <thead><tr><th>#</th><th>NAME</th><th>WIN</th><th>RATE</th><th>G</th></tr></thead>
-            <tbody id="total_input_rankingTableBody"></tbody>
-        </table>
-
-        <button id="sendButton" class="btn-send" onclick="sendToSpreadsheet()" disabled>TRANSMIT DATA</button>
-    </div>
-
-    <!-- DASHBOARD SECTION -->
-    <div id="view-dashboard" class="view-section">
-        <div class="section-title">活動状況サマリー</div>
-        <div class="dashboard-grid">
-            <div class="stat-card"><div class="stat-label">開催回数</div><div class="stat-value highlight" id="totalMissions">0</div></div>
-            <div class="stat-card"><div class="stat-label">総ゲーム数</div><div class="stat-value" id="totalGames">0</div></div>
-            <div class="stat-card"><div class="stat-label">平均ゲーム</div><div class="stat-value" id="avgGames">-</div></div>
-            <div class="stat-card"><div class="stat-label">最新MVP</div><div class="stat-value" id="latestMvp">-</div></div>
-        </div>
-        <div class="section-title">勝率分析 (TOP 5)</div>
-        <div class="chart-container">
-            <canvas id="winRateChart"></canvas>
-        </div>
-        <div class="section-title" style="margin-top:40px;">対戦履歴ログ</div>
-        <div id="logsContainer"></div>
-    </div>
-
-    <!-- RANKING SECTION -->
-    <div id="view-ranking" class="view-section">
-        <div class="section-title">通算個人ランキング</div>
-        <div class="sector-filter-area" style="text-align:center; margin-bottom:20px;">
-            <select id="sectorSelect" class="sector-select" onchange="filterRanking(this.value)">
-                <option value="ALL">ALL SECTORS</option>
-                <option value="練馬ステップイン">練馬</option>
-                <option value="百草テニスガーデン">百草</option>
-                <option value="モリパーク テニスガーデン">モリパーク</option>
-                <option value="白子町">白子町</option>
-            </select>
-        </div>
-        <div style="text-align:center; font-size:0.7rem; color:#888; margin-bottom:10px;">行をタップして詳細を表示</div>
-        <table>
-            <thead><tr><th>順位</th><th>名前</th><th>勝利数</th><th>勝率</th><th>MVP</th></tr></thead>
-            <tbody id="leaderboardBody"></tbody>
-        </table>
-        <div class="medal-legend">
-            <span>👑 最高勝率</span> <span>🔥 勝率70%↑</span> <span>💪🏼 最多試合</span> <span>⭐ MVP</span><br>
-            <span>🎯 完封最多</span> <span>❤️‍🔥 接戦勝率No.1</span>
-        </div>
-        <div class="rank-legend">
-            <span>🌑 候補生 (0~)</span> <span>🛸 パイロット (100~)</span> <span>🛰️ 士官 (300~)</span><br>
-            <span>🚀 指揮官 (600~)</span> <span>🪐 艦長 (1000~)</span> <span>🌌 提督 (2000~)</span>
-        </div>
-        <div style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-            <div class="section-title">最強ペアランキング</div>
-            <div style="text-align:center; font-size:0.7rem; color:#666; margin-bottom:10px;">※2試合以上組んだペアのみ対象</div>
-            <table class="standard-table">
-                <thead><tr><th>順位</th><th>ペア</th><th>勝敗</th><th>勝率</th></tr></thead>
-                <tbody id="pairRankingBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- SCHEDULE SECTION -->
-<div id="view-schedule" class="view-section">
-        <div class="section-title">MISSION SCHEDULE</div>
-        
-        <!-- ▼▼▼ ここをバナーに変更しました ▼▼▼ -->
-        <div class="schedule-banner-container">
-            <a href="https://liff.line.me/2008858372-NgwrDQlQ" target="_blank" class="schedule-banner">
-                <div class="banner-icon">📅</div>
-                <div class="banner-text">
-                    <div class="banner-title">日程調整を入力する</div>
-                    <div class="banner-sub">LINE公式アカウントへ移動 </div>
-                </div>
-            </a>
-        </div>
-        <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
-
-        <div id="scheduleTabs" class="month-tabs-area"></div>
-        <div id="scheduleList" class="schedule-list">
-            <!-- CSSで高さを確保するためのプレースホルダー -->
-            <div style="padding:20px; text-align:center; color:#888;">LOADING DATA...</div>
-        </div>
-    </div>
 
     <!-- GAME SECTION -->
-    <div id="view-game" class="view-section">
+    <div id="view-game">
         <div class="game-hero">
             <div class="game-tag">DEV PHASE 1</div>
             <h2>RESOURCE STRATEGY<br>CARD BATTLE</h2>
@@ -222,15 +286,8 @@
             <button class="btn-hero" onclick="window.location.href='https://reopard92.github.io/game/'">PLAY NOW</button>
         </div>
 
-        <div class="section-title">MINI GAMES & TOOLS</div>
+        <div class="section-title">CASINO & TOOLS</div>
         <div class="game-grid">
-            <div class="game-card" onclick="window.location.href='https://reopard92.github.io/game/'">
-                <div class="game-status live">BETA</div>
-                <div class="game-icon">⚔️</div>
-                <div class="game-card-title">CARD BATTLE</div>
-            </div>
-
-            <!-- スロットゲーム -->
             <div class="game-card" onclick="openSlotGame()">
                 <div class="game-status live">NEW</div>
                 <div class="game-icon">🎰</div>
@@ -242,62 +299,40 @@
                 <div class="game-icon">🪙</div>
                 <div class="game-card-title">COIN TOSS</div>
             </div>
+            
+            <div class="game-card locked">
+                <div class="game-icon">🃏</div>
+                <div class="game-card-title">POKER (DEV)</div>
+            </div>
         </div>
     </div>
-
 </div>
-
-<!-- FOOTER NAV -->
-<nav id="bottomNav" class="bottom-nav">
-    <button class="nav-item active" onclick="switchMainView('top')"><span class="nav-icon">🏠</span>TOP</button>
-    <button class="nav-item" onclick="switchMainView('match')"><span class="nav-icon">🎾</span>INPUT</button>
-    <button class="nav-item" onclick="switchMainView('dashboard')"><span class="nav-icon">📈</span>DATA</button>
-    <button class="nav-item" onclick="switchMainView('ranking')"><span class="nav-icon">👑</span>RANK</button>
-    <button class="nav-item" onclick="switchMainView('schedule')"><span class="nav-icon">📅</span>SCHEDULE</button>
-</nav>
 
 <!-- MODALS -->
-<div id="playerModal" onclick="closeModal(event)">
-    <div class="modal-content">
-        <button class="close-btn" onclick="closeModal(event)">×</button>
-        <div class="modal-title" id="modalPlayerName"></div>
-        <div id="rankInfoArea" class="rank-info-area"></div>
-        <div class="modal-medals" id="modalMedals"></div>
-        <div class="section-title" style="font-size:0.9rem;">能力チャート</div>
-        <div class="chart-container" style="height:200px; margin-bottom:15px;">
-            <canvas id="radarChart"></canvas>
+<!-- ログインモーダル -->
+<div id="loginModal">
+    <div class="modal-content" style="text-align:center; max-width:320px;">
+        <button class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</button>
+        <div class="modal-title">ACCESS LOGIN</div>
+        <div style="margin-bottom:20px; color:#aaa; font-size:0.8rem;">ENTER PASSCODE TO IDENTIFY</div>
+        <input type="number" id="loginPassInput" placeholder="PASSCODE">
+        <button class="btn-login" onclick="attemptLogin()">AUTHENTICATE</button>
+        <div style="margin-top:20px;">
+            <button class="btn-guest" onclick="enableGuestMode()">CONTINUE AS GUEST</button>
         </div>
-        <div class="section-title" style="font-size:0.9rem;">勝率推移</div>
-        <div class="chart-container" style="height:150px; margin-bottom:0;">
-            <canvas id="historyChart"></canvas>
-        </div>
-    </div>
-</div>
-
-<div id="videoModal" onclick="closeVideoModal(event)">
-    <div class="video-container">
-        <div id="videoPlayer"></div>
-    </div>
-</div>
-
-<div id="coinGameModal" onclick="closeCoinGame(event)">
-    <div class="modal-content" style="max-width:300px; text-align:center;">
-        <button class="close-btn" onclick="closeCoinGame(event)">×</button>
-        <div class="modal-title">COIN TOSS</div>
-        <div class="coin-game-container">
-            <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
-            <div style="font-size:0.8rem; color:#aaa;">TAP COIN TO FLIP</div>
+        <div id="logoutArea" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+            <button class="btn-logout" onclick="handleLogout()">LOGOUT CURRENT USER</button>
         </div>
     </div>
 </div>
 
-<!-- スロットゲームモーダル (更新: 配当表シンプル化 & レバー) -->
+<!-- スロットゲームモーダル -->
 <div id="slotGameModal" onclick="closeSlotGame(event)">
     <div class="modal-content" style="max-width:480px; text-align:center; border-color: #ffd700; background: #111; padding: 20px 10px;">
         <button class="close-btn" onclick="closeSlotGame(event)">×</button>
         <div class="modal-title" style="color: #ffd700; margin-bottom: 5px;">CASINO SLOT</div>
         
-        <!-- 配当表エリア (シンプル版) -->
+        <!-- 配当表エリア -->
         <div class="slot-payout-table">
             <div class="payout-row"><span class="payout-icon">7</span> <span class="payout-val">7777</span></div>
             <div class="payout-row"><span class="payout-icon">💎</span> <span class="payout-val">1000</span></div>
@@ -310,23 +345,15 @@
 
         <div class="slot-frame">
             <div class="slot-machine-container">
-                <div class="reel-container">
-                    <div id="reel1" class="reel">7</div>
-                </div>
-                <div class="reel-container">
-                    <div id="reel2" class="reel">7</div>
-                </div>
-                <div class="reel-container">
-                    <div id="reel3" class="reel">7</div>
-                </div>
+                <div class="reel-container"><div id="reel1" class="reel">7</div></div>
+                <div class="reel-container"><div id="reel2" class="reel">7</div></div>
+                <div class="reel-container"><div id="reel3" class="reel">7</div></div>
             </div>
             
-            <!-- レバーエリア -->
+            <!-- レバー -->
             <div class="slot-lever-container" onclick="pullSlotLever()">
                 <div class="slot-lever-base"></div>
-                <div class="slot-lever-stick">
-                    <div class="slot-lever-knob"></div>
-                </div>
+                <div class="slot-lever-stick"><div class="slot-lever-knob"></div></div>
             </div>
         </div>
 
@@ -347,36 +374,317 @@
     </div>
 </div>
 
-
-<div id="scheduleDetailModal" onclick="closeScheduleModal(event)">
-    <div class="modal-content">
-        <button class="close-btn" onclick="closeScheduleModal(event)">×</button>
-        <div class="detail-header">
-            <div class="detail-date" id="modalScheduleDate"></div>
-            <div style="font-size:0.8rem; color:#888;">回答状況</div>
-        </div>
-        <ul class="detail-list" id="modalScheduleList"></ul>
-    </div>
-</div>
-
-<div id="loginModal">
-    <div class="modal-content" style="text-align:center; max-width:320px;">
-        <button class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</button>
-        <div class="modal-title">ACCESS LOGIN</div>
-        <div style="margin-bottom:20px; color:#aaa; font-size:0.8rem;">ENTER PASSCODE TO IDENTIFY</div>
-        <input type="number" id="loginPassInput" placeholder="PASSCODE">
-        <button class="btn-login" onclick="attemptLogin()">AUTHENTICATE</button>
-        <div style="margin-top:20px;">
-            <button class="btn-guest" onclick="enableGuestMode()">CONTINUE AS GUEST</button>
+<!-- コイントスモーダル -->
+<div id="coinGameModal" onclick="closeCoinGame(event)">
+    <div class="modal-content" style="max-width:300px; text-align:center;">
+        <button class="close-btn" onclick="closeCoinGame(event)">×</button>
+        <div class="modal-title">COIN TOSS</div>
+        <div class="coin-game-container">
+            <div id="gameCoin" class="coin-large" onclick="playCoinToss()">TAP</div>
+            <div style="font-size:0.8rem; color:#aaa;">TAP COIN TO FLIP</div>
         </div>
     </div>
 </div>
 
+<!-- トースト通知 -->
 <div id="toast"></div>
 
-<!-- Link to external JS -->
-<script src="script.js"></script>
+<script>
+    // --- 構成設定 ---
+    const COIN_MANAGER_URL = "https://script.google.com/macros/s/AKfycbzIKbpFP8mr9XWi0B_WFswRpVZ5o_SGnOFOYRdPMnLP4kK-e61CCXLN3bUod4eNodQl/exec"; 
+    const AUTH_SHEET_ID = '18J_8wm-Qc3yRV-eEwdtB_55CYOAsVGy26AIU7aCvSQw';
+    const AUTH_SHEET_GID = '835965305';
+    const LOGIN_KEY = 'tennis_user_auth'; // 既存のテニスアプリと共有
+
+    let currentUser = null;
+    let currentCoins = 0;
+
+    window.onload = function() {
+        initAuth();
+
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.opacity = 0;
+            setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
+        }, 800);
+
+        // スロットデータ保存イベント
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') saveSlotSession();
+        });
+        window.addEventListener('beforeunload', () => {
+            saveSlotSession();
+        });
+    };
+
+    // --- 認証 & コイン管理 ---
+    function initAuth() {
+        const storedUser = localStorage.getItem(LOGIN_KEY);
+        if (storedUser) {
+            currentUser = JSON.parse(storedUser);
+            fetchCoinData(currentUser.name);
+        } else {
+            currentUser = null;
+            updateUserDisplay();
+        }
+    }
+
+    function fetchCoinData(userName) {
+        if (!COIN_MANAGER_URL) return;
+        const url = `${COIN_MANAGER_URL}?user=${encodeURIComponent(userName)}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    currentCoins = parseInt(data.coins);
+                    updateUserDisplay();
+                }
+            })
+            .catch(err => console.error("Coin fetch error:", err));
+    }
+
+    function updateUserDisplay() {
+        const disp = document.getElementById('currentUserDisplay');
+        if (currentUser) {
+            disp.textContent = `${currentUser.name} : 🪙${currentCoins.toLocaleString()}`;
+            disp.className = 'user-status-display status-user';
+        } else {
+            disp.textContent = 'GUEST';
+            disp.className = 'user-status-display status-guest';
+        }
+    }
+
+    function handleUserClick() {
+        document.getElementById('loginModal').style.display = 'flex';
+        if (currentUser) {
+            document.getElementById('logoutArea').style.display = 'block';
+        } else {
+            document.getElementById('logoutArea').style.display = 'none';
+        }
+    }
+
+    window.onAuthDataLoaded = function(json) {
+        const pass = document.getElementById('loginPassInput').value;
+        const btn = document.querySelector('.btn-login');
+        const script = document.getElementById('authScript');
+        if(script) script.remove();
+
+        if (!json || !json.table || !json.table.rows) {
+            alert("ACCESS DENIED: DATA LOAD FAILED");
+            btn.textContent = "AUTHENTICATE"; btn.disabled = false; return;
+        }
+
+        const rows = json.table.rows;
+        let foundUser = null;
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row.c[0] || !row.c[1]) continue;
+            if (String(pass) === String(row.c[1].v)) {
+                foundUser = { name: row.c[0].v };
+                break;
+            }
+        }
+
+        if (foundUser) {
+            currentUser = foundUser;
+            localStorage.setItem(LOGIN_KEY, JSON.stringify(currentUser));
+            fetchCoinData(currentUser.name);
+            document.getElementById('loginModal').style.display = 'none';
+            showToast(`WELCOME, ${currentUser.name}`);
+        } else {
+            alert("ACCESS DENIED: INVALID PASSCODE");
+        }
+        btn.textContent = "AUTHENTICATE"; btn.disabled = false;
+        document.getElementById('loginPassInput').value = "";
+    };
+
+    function attemptLogin() {
+        const pass = document.getElementById('loginPassInput').value;
+        if (!pass) return;
+        const btn = document.querySelector('.btn-login');
+        btn.textContent = "VERIFYING..."; btn.disabled = true;
+
+        const script = document.createElement('script');
+        script.id = 'authScript';
+        script.src = `https://docs.google.com/spreadsheets/d/${AUTH_SHEET_ID}/gviz/tq?tqx=responseHandler:onAuthDataLoaded&gid=${AUTH_SHEET_GID}`;
+        script.onerror = function() {
+            alert("AUTH ERROR: NETWORK OR SHEET ISSUE");
+            btn.textContent = "AUTHENTICATE"; btn.disabled = false;
+        };
+        document.body.appendChild(script);
+    }
+
+    function enableGuestMode() {
+        document.getElementById('loginModal').style.display = 'none';
+        if (!currentUser) showToast("GUEST MODE ACTIVE");
+    }
+
+    function handleLogout() {
+        if (confirm("LOGOUT CURRENT USER?")) {
+            localStorage.removeItem(LOGIN_KEY);
+            currentUser = null;
+            currentCoins = 0;
+            updateUserDisplay();
+            document.getElementById('loginModal').style.display = 'none';
+            showToast("LOGGED OUT");
+        }
+    }
+
+    // --- COIN TOSS ---
+    function openCoinGame() {
+        document.getElementById('coinGameModal').style.display = 'flex';
+        const c = document.getElementById('gameCoin');
+        c.classList.remove('spinning'); c.textContent = "TAP";
+    }
+    function closeCoinGame(e) {
+        if(e.target.id === 'coinGameModal' || e.target.className === 'close-btn') {
+            document.getElementById('coinGameModal').style.display = 'none';
+        }
+    }
+    function playCoinToss() {
+        const c = document.getElementById('gameCoin');
+        if(c.classList.contains('spinning')) return;
+        c.classList.add('spinning'); c.textContent = "";
+        setTimeout(() => { 
+            c.classList.remove('spinning'); 
+            c.textContent = Math.random() < 0.5 ? "HEAD" : "TAIL"; 
+        }, 1500);
+    }
+
+    // --- SLOT MACHINE ---
+    const slotSymbols = ['7', '🔔', '🍒', '🍇', '🍋', '💎', '💀'];
+    let slotIntervals = [null, null, null];
+    let slotValues = [0, 0, 0];
+    let isSlotSpinning = [false, false, false];
+    let isLeverLocked = false;
+    const SLOT_BET = 20;
+    let slotSessionDelta = 0;
+
+    function openSlotGame() {
+        if(!currentUser) { showToast("LOGIN REQUIRED"); return; }
+        document.getElementById('slotGameModal').style.display = 'flex';
+        document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
+        slotSessionDelta = 0;
+        resetSlotUI();
+    }
+
+    function closeSlotGame(e) {
+        if(e.target.id === 'slotGameModal' || e.target.className === 'close-btn') {
+            saveSlotSession();
+            document.getElementById('slotGameModal').style.display = 'none';
+            slotIntervals.forEach(i => clearInterval(i));
+        }
+    }
+
+    function saveSlotSession() {
+        if (slotSessionDelta === 0 || !COIN_MANAGER_URL || !currentUser) return;
+        const payload = { user: currentUser.name, action: 'update', amount: slotSessionDelta };
+        fetch(COIN_MANAGER_URL, {
+            method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload), keepalive: true
+        }).catch(err => console.error(err));
+        slotSessionDelta = 0;
+    }
+
+    function resetSlotUI() {
+        document.getElementById('slotMessage').innerText = "PULL THE LEVER!";
+        document.getElementById('slotMessage').style.color = '#ffd700';
+        isLeverLocked = false;
+        const stick = document.querySelector('.slot-lever-stick');
+        if(stick) stick.classList.remove('pulled');
+        for(let i=0; i<3; i++) {
+            document.getElementById(`stop${i+1}`).disabled = true;
+            document.getElementById(`reel${i+1}`).classList.remove('spinning');
+        }
+    }
+
+    function pullSlotLever() {
+        if(isLeverLocked) return;
+        if(currentCoins < SLOT_BET) { document.getElementById('slotMessage').innerText = "NOT ENOUGH COINS!"; return; }
+        
+        isLeverLocked = true;
+        document.querySelector('.slot-lever-stick').classList.add('pulled');
+        setTimeout(() => {
+            document.querySelector('.slot-lever-stick').classList.remove('pulled');
+            startSlot();
+        }, 300);
+    }
+
+    function startSlot() {
+        currentCoins -= SLOT_BET;
+        slotSessionDelta -= SLOT_BET;
+        document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
+        updateUserDisplay();
+        document.getElementById('slotMessage').innerText = "GOOD LUCK!";
+        document.getElementById('slotMessage').style.color = '#fff';
+        
+        for(let i=0; i<3; i++) {
+            isSlotSpinning[i] = true;
+            document.getElementById(`stop${i+1}`).disabled = false;
+            document.getElementById(`reel${i+1}`).classList.add('spinning');
+            slotIntervals[i] = setInterval(() => {
+                document.getElementById(`reel${i+1}`).innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+            }, 100);
+        }
+    }
+
+    function stopReel(index) {
+        if(!isSlotSpinning[index]) return;
+        clearInterval(slotIntervals[index]);
+        isSlotSpinning[index] = false;
+        document.getElementById(`stop${index+1}`).disabled = true;
+        document.getElementById(`reel${index+1}`).classList.remove('spinning');
+        
+        const finalIndex = Math.floor(Math.random() * slotSymbols.length);
+        slotValues[index] = finalIndex;
+        document.getElementById(`reel${index+1}`).innerText = slotSymbols[finalIndex];
+        
+        if(!isSlotSpinning[0] && !isSlotSpinning[1] && !isSlotSpinning[2]) checkSlotResult();
+    }
+
+    function checkSlotResult() {
+        const v1 = slotSymbols[slotValues[0]];
+        const v2 = slotSymbols[slotValues[1]];
+        const v3 = slotSymbols[slotValues[2]];
+        let winAmount = 0; let isNegative = false; let message = "TRY AGAIN...";
+        
+        if (v1 === v2 && v2 === v3) {
+            if (v1 === '7') { winAmount = 7777; message = "JACKPOT! 777"; }
+            else if (v1 === '💎') { winAmount = 1000; message = "BIG WIN!"; }
+            else if (v1 === '🔔') { winAmount = 500; message = "NICE!"; }
+            else if (v1 === '🍇') { winAmount = 300; message = "GOOD!"; }
+            else if (v1 === '🍒') { winAmount = 100; message = "SWEET!"; }
+            else if (v1 === '💀') { winAmount = 1000; isNegative = true; message = "BAD LUCK... -1000"; }
+            else { winAmount = 20; message = "WIN"; }
+        } else {
+            let sevenCount = (v1==='7'?1:0) + (v2==='7'?1:0) + (v3==='7'?1:0);
+            if(sevenCount > 0) { winAmount = 20; message = "LUCKY 7!"; }
+        }
+        
+        if (isNegative) {
+            currentCoins -= winAmount; slotSessionDelta -= winAmount;
+            showToast(`LOST ${winAmount} COINS...`);
+            document.getElementById('slotMessage').style.color = '#ff5252';
+        } else if (winAmount > 0) {
+            currentCoins += winAmount; slotSessionDelta += winAmount;
+            showToast(`WIN! +${winAmount} COINS`);
+            document.getElementById('slotMessage').style.color = '#ffd700';
+        } else {
+            document.getElementById('slotMessage').style.color = '#aaa';
+        }
+        
+        updateUserDisplay();
+        document.getElementById('slotMessage').innerText = message;
+        document.getElementById('slotWallet').innerText = currentCoins.toLocaleString();
+        isLeverLocked = false;
+    }
+
+    // --- UI TOOLS ---
+    function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg; t.className = "show";
+        setTimeout(() => { t.className = t.className.replace("show", "") }, 3000);
+    }
+</script>
 
 </body>
 </html>
-
