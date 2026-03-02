@@ -76,7 +76,6 @@
         .header-btn {
             position: absolute;
             top: 20px;
-            left: 10px;
             background: transparent;
             border: none;
             color: #00ffff;
@@ -88,11 +87,11 @@
             cursor: pointer;
             z-index: 100;
             transition: 0.3s;
-            font-weight: bold;
-            font-size: 1.8rem;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
         }
         .header-btn:active { transform: scale(0.9); text-shadow: 0 0 20px rgba(0, 255, 255, 1); }
+        .header-btn.left { left: 10px; font-weight: bold; font-size: 1.8rem; }
+        .header-btn.right { right: 10px; font-size: 2rem; }
 
         /* --- USER STATUS DISPLAY --- */
         .user-status-display {
@@ -108,6 +107,33 @@
         }
         .status-guest { color: #ff5252; font-weight: bold; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
         .status-user { color: #ffd700; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+
+        /* --- SIDE MENU --- */
+        .side-menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 6000;
+            visibility: hidden; opacity: 0; display: flex; justify-content: flex-end;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .side-menu-overlay.open { visibility: visible; opacity: 1; }
+        .side-menu-content {
+            width: 80%; max-width: 300px; height: 100%; background: rgba(10, 15, 20, 0.95);
+            border-left: 1px solid rgba(0,255,255,0.3); padding-top: 90px; display: flex; flex-direction: column;
+            transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .side-menu-overlay.open .side-menu-content { transform: translateX(0); }
+        .menu-item {
+            padding: 20px 30px; color: #fff; font-size: 1.1rem; letter-spacing: 2px;
+            border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-transform: uppercase;
+            opacity: 0; transform: translateX(30px); transition: all 0.4s ease;
+        }
+        .side-menu-overlay.open .menu-item { opacity: 1; transform: translateX(0); }
+        .side-menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.2s; }
+        .side-menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.3s; }
+        .side-menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.4s; }
+        .menu-item:hover { background: rgba(0,255,255,0.1); padding-left: 40px; color: #00ffff; }
+        .menu-item.active { color: #00ffff; border-left: 4px solid #00ffff; background: rgba(0,255,255,0.05); }
+
 
         /* --- GAME PORTAL STYLES --- */
         .section-title { font-size: 1.1rem; color: #fff; font-weight: 300; letter-spacing: 2px; margin: 30px 0 20px 0; border-left: 3px solid #00ffff; padding-left: 15px; }
@@ -269,10 +295,22 @@
     <div class="loader-bar"></div>
 </div>
 
+<!-- SIDE MENU -->
+<div id="sideMenu" class="side-menu-overlay" onclick="closeSideMenu(event)">
+    <div class="side-menu-content">
+        <!-- テニスアプリへのリンク (ご自身のテニスアプリのURLに書き換えてください) -->
+        <div class="menu-item" onclick="window.location.href='https://reopard92.github.io/tennis02/'">🎾 TENNIS</div>
+        <div class="menu-item active" onclick="closeSideMenu(event)">🎮 GAME</div>
+        <div class="menu-item" onclick="handleUserClick()">👤 LOGIN / LOGOUT</div>
+    </div>
+</div>
+
 <div class="container">
     <header class="app-header">
         <div id="currentUserDisplay" class="user-status-display" onclick="handleUserClick()">GUEST</div>
-        <button class="header-btn" onclick="location.reload()">↻</button>
+        <button class="header-btn left" onclick="location.reload()">↻</button>
+        <!-- ハンバーガーメニューボタンを追加 -->
+        <div class="header-btn right" onclick="toggleSideMenu()">≡</div>
         <h1>GAME ARCHIVE</h1>
         <div class="subtitle">TACTICAL SIMULATION MODULES</div>
     </header>
@@ -411,6 +449,17 @@
         });
     };
 
+    // --- SIDE MENU LOGIC ---
+    function toggleSideMenu() {
+        document.getElementById('sideMenu').classList.toggle('open');
+    }
+    
+    function closeSideMenu(e) {
+        if(e.target.id === 'sideMenu' || (e.target.classList.contains('menu-item') && !e.target.classList.contains('active'))) {
+            document.getElementById('sideMenu').classList.remove('open');
+        }
+    }
+
     // --- 認証 & コイン管理 ---
     function initAuth() {
         const storedUser = localStorage.getItem(LOGIN_KEY);
@@ -449,6 +498,7 @@
     }
 
     function handleUserClick() {
+        document.getElementById('sideMenu').classList.remove('open');
         document.getElementById('loginModal').style.display = 'flex';
         if (currentUser) {
             document.getElementById('logoutArea').style.display = 'block';
