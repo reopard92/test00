@@ -272,15 +272,6 @@
         }
         #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
-        #loadingScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020204;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease;
-        }
-        .loader-text { font-family: 'Courier New', Courier, monospace; color: #00ffff; font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 20px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        .loader-bar { width: 200px; height: 1px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden; }
-        .loader-bar::after { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: #fff; box-shadow: 0 0 10px #fff; animation: load 2s ease-in-out forwards; }
-        @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
-
         /* スマホ対応 */
         @media (max-width: 600px) {
             .container { padding: 15px; }
@@ -290,18 +281,13 @@
 </head>
 <body>
 
-<div id="loadingScreen">
-    <div class="loader-text">SYSTEM INITIALIZING...</div>
-    <div class="loader-bar"></div>
-</div>
-
 <!-- SIDE MENU -->
 <div id="sideMenu" class="side-menu-overlay" onclick="closeSideMenu(event)">
     <div class="side-menu-content">
         <!-- テニスアプリへのリンク (ご自身のテニスアプリのURLに書き換えてください) -->
         <div class="menu-item" onclick="window.location.href='https://reopard92.github.io/tennis02/'">🎾 TENNIS</div>
         <div class="menu-item active" onclick="closeSideMenu(event)">🎮 GAME</div>
-        <div class="menu-item" onclick="handleUserClick()">👤 LOGIN / LOGOUT</div>
+        <div class="menu-item" onclick="handleUserClick()">👤 MY PAGE</div>
     </div>
 </div>
 
@@ -434,11 +420,6 @@
 
     window.onload = function() {
         initAuth();
-
-        setTimeout(() => {
-            document.getElementById('loadingScreen').style.opacity = 0;
-            setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 800);
-        }, 800);
 
         // スロットデータ保存イベント
         document.addEventListener('visibilitychange', () => {
